@@ -72,15 +72,50 @@
             </div>
           </div>
           <div class="center"></div>
-          <div class="right"></div>
+          <div class="right">
+            <div class="position-icon"></div>
+          </div>
         </div>
       </div>
       <footer class="footer">
-        3
+        <aplayer :music="videoUpload.music"></aplayer>
       </footer>
     </div>
   </div>
 </template>
+<script>
+import aplayer from 'vue-aplayer'
+import musicUrl from '@/assets/audio/test1.mp3'
+import musicAuthor from '@/assets/images/logo.png'
+export default {
+  name: '',
+  components: {
+    aplayer
+  },
+  data() {
+    return {
+      videoUpload: {
+        progress: false,
+        progressPercent: 0,
+        successPercent: 0,
+        music: {
+          title: '测试标题',
+          artist: 'jwj',
+          pic: musicAuthor,
+          src: musicUrl,
+          lrc: '[00:00.00]lrc here\n[00:01.00]aplayer'
+        }
+      }
+    }
+  },
+  created() {
+
+  },
+  mounted: {
+
+  }
+}
+</script>
 <style lang="scss" scoped>
   .main{
     height:100%;
@@ -236,8 +271,19 @@
             flex:1;
           }
           .right{
+            position: relative;
             width:350px;
             border-left:1px solid #ebebeb;
+            .position-icon{
+              position: absolute;
+              left: -11px;
+              top: 50%;
+              margin-top: -64px;
+              width: 18px;
+              height: 129px;
+              background: url('~@/assets/images/r_switch.png');
+              z-index: 14;
+            }
           }
         }
       }

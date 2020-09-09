@@ -1,5 +1,21 @@
 # vue-music
 
+# 在线文档
+
+## 接口文档
+[接口文档](https://www.showdoc.com.cn/1043208427970778) passowrd:music
+
+# 常用api
+
+## vue-aplayer 播放插件
+[vue-aplayer](https://github.com/SevenOutman/vue-aplayer/blob/develop/docs/README.zh-CN.md)
+
+## 框架类
+[Element-ui](https://element.eleme.cn/#/zh-CN/component/installation)
+
+# 其它
+
+
 ## Project setup
 ```
 npm install

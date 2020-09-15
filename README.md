@@ -14,7 +14,7 @@
 [Element-ui](https://element.eleme.cn/#/zh-CN/component/installation)
 
 # 其它
-
+[示例页面](http://5sing.kugou.com/index.html)
 
 ## Project setup
 ```

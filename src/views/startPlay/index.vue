@@ -71,14 +71,23 @@
               </div>
             </div>
           </div>
-          <div class="center"></div>
+          <div class="center">
+
+          </div>
           <div class="right">
             <div class="position-icon"></div>
           </div>
         </div>
       </div>
       <footer class="footer">
-        <aplayer :music="videoUpload.music"></aplayer>
+        <aplayer
+          :mini="true"
+          :list-max-height="'60px'"
+          class="main-aplayer"
+          :music="videoOptions.music"
+          :show-lrc="true"
+          :autoplay="true"
+        ></aplayer>
       </footer>
     </div>
   </div>
@@ -94,7 +103,7 @@ export default {
   },
   data() {
     return {
-      videoUpload: {
+      videoOptions: {
         progress: false,
         progressPercent: 0,
         successPercent: 0,
@@ -111,7 +120,7 @@ export default {
   created() {
 
   },
-  mounted: {
+  methods: {
 
   }
 }
@@ -290,6 +299,11 @@ export default {
       .footer{
         height:60px;
         box-shadow: 0 0 1px 1px rgba(0,0,0,.05);
+        .main-aplayer{
+          width:100%;
+          height:100%;
+          margin:0;
+        }
       }
     }
   }

@@ -84,7 +84,46 @@
             </div>
           </div>
           <div class="demand-list">
-            <div class="list"></div>
+            <div class="list-head">
+              <div class="left"></div>
+              <div class="right">
+                <div class="list-title">
+                  帖子标题帖子标题帖子标题帖子标题帖子标题
+                  帖子标题帖子标题帖子标题
+                </div>
+                <div class="list-text ellipsis2">
+                  开头四十字内容预览开头四十字内容预览四十开头四
+                  十字内容预览开头四十字内容预览四十
+                  开头四十字内容预览开头四十字内容预览四十开头四
+                  十字内容预览开头四十字内容预览四十
+                </div>
+              </div>
+            </div>
+            <div class="list-head">
+              <div class="left"></div>
+              <div class="right">
+                <div class="list-title">
+                  帖子标题帖子标题帖子标题帖子标题帖子标题
+                  帖子标题帖子标题帖子标题
+                </div>
+                <div class="list-text ellipsis2">
+                  开头四十字内容预览开头四十字内容预览四十开头四
+                  十字内容预览开头四十字内容预览四十
+                  开头四十字内容预览开头四十字内容预览四十开头四
+                  十字内容预览开头四十字内容预览四十
+                </div>
+              </div>
+            </div>
+            <div v-for="item in 4" :key="item" class="lists">
+              <div class="list">
+                <i class="icon list-icon"></i>
+                <span class="text ellipsis1">帖子标题帖子标题帖子标题帖子标题帖子</span>
+              </div>
+              <div class="list">
+                <i class="icon list-icon"></i>
+                <span class="text ellipsis1">帖子标题帖子标题帖子标题帖子标题帖子</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -250,8 +289,80 @@ export default {
           }
           .demand-list{
             padding:10px;
+            margin-top:18px;
             display:flex;
+            flex-wrap:wrap;
             justify-content: space-between;
+            .list-head{
+              width:460px;
+              padding:20px;
+              height:100px;
+              background-color: #f8f8f8;
+              border-radius: 6px;
+              display:flex;
+              .left{
+                width:100px;
+                height:100px;
+                margin-right:32px;
+                border-radius: 6px;
+                background-size: cover;
+                background-repeat: no-repeat;
+                background-image:url('~@/assets/images/index/qr-code.png');
+              }
+              .right{
+                flex:1;
+                display:flex;
+                flex-direction: column;
+                .list-title{
+                  font-family: PingFangSC-Regular;
+                  font-size: 16px;
+                  line-height: 24px;
+                  letter-spacing: 0px;
+                  color: #333333;
+                  margin-bottom:16px;
+                }
+                .list-text{
+                  flex:1;
+                  font-family: PingFangSC-Regular;
+                  font-size: 14px;
+                  color: #999999;
+                  overflow: hidden;
+                }
+              }
+            }
+            >.lists{
+              >.list{
+                width: 500px;
+                height: 60px;
+                border-radius: 6px;
+                display:flex;
+                align-items:center;
+                // &.active{
+                //   background-color: #f8f8f8;
+                // }
+                .list-icon{
+                  margin-left:20px;
+                  margin-right:10px;
+                  width: 30px;
+                  height: 30px;
+                  border-radius: 2px;
+                  background-size: cover;
+                  background-repeat: no-repeat;
+                  background-image:url('~@/assets/images/index/icon-wechat.png');
+                }
+                >.text{
+                  flex:1;
+                  font-size: 16px;
+                  line-height: 24px;
+                  color: #333333;
+                }
+              }
+            }
+            .lists:nth-child(even){
+              >.list{
+                background-color: #f8f8f8;
+              }
+            }
           }
         }
       }

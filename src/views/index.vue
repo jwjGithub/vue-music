@@ -5,22 +5,27 @@
         <div class="head-main">
           <div class="left">
             <div class="img mrx27 ml48">
-              <img src="@/assets/images/logo.png" />
-            </div>
-            <div class="search-input-row">
-              <el-input class="search-input" placeholder="歌曲/歌单/音乐人"></el-input>
-              <div class="search-icon">
-                <i class="el-icon-search"></i>
-              </div>
+              <img src="@/assets/images/index/logo.png" />
             </div>
           </div>
+          <div class="center">
+            <el-button class="text-btn active" type="text">首页</el-button>
+            <el-button class="text-btn" type="text">词曲库</el-button>
+            <el-button class="text-btn" type="text">Beat/BGM</el-button>
+            <el-button class="text-btn" type="text">合作</el-button>
+            <el-button class="text-btn" type="text">榜单</el-button>
+          </div>
           <div class="right">
-            <el-button class="text-btn" type="text">登录</el-button>
-            <el-button class="text-btn" type="text">注册</el-button>
-            <div class="musician">
+            <div class="search-input-row mr11">
+              <el-input class="search-input" placeholder="歌曲/歌单/音乐人"></el-input>
+              <div class="search-icon">
+                <i class="icon icon-search"></i>
+              </div>
+            </div>
+            <!-- <div class="musician">
               <i class="icon icon-musician"></i>
               <span>音乐人</span>
-            </div>
+            </div> -->
             <el-popover
               placement="bottom"
               width="116"
@@ -45,14 +50,44 @@
               </div>
               <div slot="reference" class="upload">
                 <i class="icon icon-upload"></i>
-                <div class="">上传</div>
               </div>
             </el-popover>
-
+            <i class="icon icon-user pointer"></i>
           </div>
           <div class="right"></div>
         </div>
       </header>
+      <!-- banner轮播图 -->
+      <div class="banner">
+        <el-row>
+          <el-col :span="24">
+            <el-carousel height="460px">
+              <el-carousel-item v-for="item in 4" :key="item">
+                <div class="carousel">
+                  {{ item }}
+                </div>
+              </el-carousel-item>
+            </el-carousel>
+          </el-col>
+        </el-row>
+      </div>
+      <!-- 公司需求 -->
+      <div class="demand">
+        <div class="demand-main">
+          <div class="title">
+            <div class="left">
+              <i class="icon gsxq mr15"></i>
+              <i class="icon icon-gsxq"></i>
+            </div>
+            <div class="right">
+              <span class="more">查看更多 ></span>
+            </div>
+          </div>
+          <div class="demand-list">
+            <div class="list"></div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -65,7 +100,7 @@ export default {
   .main{
     .main-content{
       .head{
-        height:72px;
+        height:80px;
         box-shadow:0 2px 8px 0 rgba(0, 0, 0, 0.04);
         .head-main{
           width:auto;
@@ -78,86 +113,145 @@ export default {
             display:flex;
             align-items:center;
             .img{
-              width:124px;
-              height:44px;
+              width:176px;
+              height:45px;
               >img{
                 width:100%;
                 height:100%;
               }
             }
+          }
+          .center{
+            display:flex;
+            align-items:center;
+            .text-btn{
+              padding:12px 10px;
+              color:inherit;
+              margin: 0 10px;
+              border-bottom:4px solid #FFF;
+              &:hover,&.active{
+                border-bottom:4px solid #ffae00;
+                color:#ffae00;
+              }
+            }
+          }
+          .right{
+            display:flex;
+            align-items:center;
             .search-input-row{
               display:flex;
               align-items:center;
-              width: 315px;
+              width: 240px;
               height: 40px;
               padding: 0;
               border-radius: 20px;
               background-color: #f8f8f8;
               .search-icon{
-                height:20px;
+                height:24px;
                 padding-left:12px;
-                border-left:1px solid #e5e5e5;
-                .el-icon-search{
-                  color:#B8B8B8;
+                padding-right:23px;
+                .icon-search{
                   cursor: pointer;
-                  &:hover{
-                    color:#000;
-                  }
+                  width: 24px;
+                  height: 24px;
+                  background-size: contain;
+                  background-position: center center;
+                  background-image:url('~@/assets/images/index/icon-search.png');
                 }
               }
             }
-          }
-          .right{
-            padding-right:48px;
-            display:flex;
-            align-items:center;
-            .text-btn{
-              padding:0 10px;
-              color:inherit;
-              &:hover{
-                color:#00B0A8;
-              }
-            }
-            .musician{
-              display: flex;
-              align-items: center;
-              padding-right: 12px;
-              margin-right: 12px;
-              padding-left: 8px;
-              cursor: pointer;
-              height: 72px;
-              font-size:14px;
-              .icon-musician{
-                width: 32px;
-                height: 32px;
-                margin-right: 6px;
-                background-size: contain;
-                background-position: center center;
-                background-image:url('~@/assets/images/musician.png');
-              }
-              &:hover{
-                background:#f8f8f8;
-              }
-            }
             .upload{
-              width: 92px;
+              width: 80px;
               height: 80px;
-              margin-right: 48px;
-              border-radius: 0px 0px 4px 4px;
-              background-color: #00B0A8;
+              margin-right: 23px;
+              background-color: #ffae00;
+              border-radius: 3px;
               text-align: center;
+              justify-content: center;;
+              align-items:center;
               color:#FFF;
               font-size:16px;
               cursor: pointer;
               .icon-upload{
-                width: 28px;
+                width: 32px;
                 height: 28px;
-                margin-top:10px;
+                margin-top:24px;
                 background-size: contain;
                 background-position: center center;
-                background-image:url('~@/assets/images/upload.png');
+                background-image:url('~@/assets/images/index/icon-upload.png');
               }
             }
+            .icon-user{
+              width: 26px;
+              height: 28px;
+              margin-right: 6px;
+              background-size: contain;
+              background-position: center center;
+              background-image:url('~@/assets/images/index/login-user.png');
+            }
+          }
+        }
+      }
+      .banner{
+        .carousel{
+          width:100%;
+          height:100%;
+          background-size: cover;
+          background-position: center center;
+          background-image:url('~@/assets/images/index/banner.png');
+        }
+      }
+      .demand{
+        width:100%;
+        min-height:568px;
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center 146px;
+        background-image:url('~@/assets/images/index/index-bg-3.png');
+        .demand-main{
+          width:1080px;
+          margin: 0 auto;
+          .title{
+            height:84px;
+            display:flex;
+            align-items:flex-end;
+            justify-content:space-between;
+            padding-bottom:10px;
+            border-bottom:1px solid #EEE;
+            .left{
+              display:flex;
+              align-items:flex-end;
+              .gsxq{
+                width:120px;
+                height:29px;
+                background-size: cover;
+                background-position: center center;
+                background-image:url('~@/assets/images/index/gsxq.png');
+              }
+              .icon-gsxq{
+                width:40px;
+                height:40px;
+                background-size: cover;
+                background-position: center center;
+                background-image:url('~@/assets/images/index/icon-gsxq.png');
+              }
+            }
+            .right{
+              .more{
+                padding-right: 10px;
+                cursor: pointer;
+                font-size: 14px;
+                color: #999999;
+                &:hover{
+                  text-decoration:underline;
+                }
+              }
+            }
+          }
+          .demand-list{
+            padding:10px;
+            display:flex;
+            justify-content: space-between;
           }
         }
       }
@@ -187,7 +281,7 @@ export default {
       .text-btn{
         color:inherit;
         &:hover{
-          color:#00B0A8;
+          color:#ffae00;
         }
       }
     }

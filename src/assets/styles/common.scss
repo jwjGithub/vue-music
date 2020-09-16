@@ -47,3 +47,8 @@
     .fw#{$n}{ font-weight: (100 * $n) !important; }
   }
 }
+
+// 手势
+.pointer{
+  cursor: pointer;
+}

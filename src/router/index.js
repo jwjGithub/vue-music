@@ -6,6 +6,11 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
+    name: 'Index',
+    component: () => import('@/views/index')
+  },
+  {
+    path: '/startPlay',
     name: 'StartPlay',
     component: () => import('@/views/startPlay')
   },

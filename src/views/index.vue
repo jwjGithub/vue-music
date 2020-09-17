@@ -127,6 +127,23 @@
           </div>
         </div>
       </div>
+      <!-- 精品推荐 -->
+      <div class="recommend">
+        <div class="recommend-main">
+          <div class="title">
+            <div class="left">
+              <i class="icon jptj mr15"></i>
+              <i class="icon icon-jptj"></i>
+            </div>
+            <div class="right">
+              <span class="more">查看更多 ></span>
+            </div>
+          </div>
+          <div class="recommend-list">
+            <div class="list"></div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -331,6 +348,10 @@ export default {
               }
             }
             >.lists{
+              width:100%;
+              display:flex;
+              flex-wrap:wrap;
+              justify-content: space-between;
               >.list{
                 width: 500px;
                 height: 60px;
@@ -362,6 +383,64 @@ export default {
               >.list{
                 background-color: #f8f8f8;
               }
+            }
+          }
+        }
+      }
+      .recommend{
+        width:100%;
+        min-height:568px;
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-image:url('~@/assets/images/index/index-bg-2.png');
+        .recommend-main{
+          width:1080px;
+          margin: 0 auto;
+          .title{
+            height:84px;
+            display:flex;
+            align-items:flex-end;
+            justify-content:space-between;
+            padding-bottom:10px;
+            border-bottom:1px solid #EEE;
+            .left{
+              display:flex;
+              align-items:flex-end;
+              .jptj{
+                width:120px;
+                height:29px;
+                background-size: cover;
+                background-position: center center;
+                background-image:url('~@/assets/images/index/jptj.png');
+              }
+              .icon-jptj{
+                width:40px;
+                height:40px;
+                background-size: cover;
+                background-position: center center;
+                background-image:url('~@/assets/images/index/icon-jptj.png');
+              }
+            }
+            .right{
+              .more{
+                padding-right: 10px;
+                cursor: pointer;
+                font-size: 14px;
+                color: #999999;
+                &:hover{
+                  text-decoration:underline;
+                }
+              }
+            }
+          }
+          .recommend-list{
+            margin-top:18px;
+            display:flex;
+            flex-wrap:wrap;
+            justify-content: space-between;
+            .list{
+
             }
           }
         }

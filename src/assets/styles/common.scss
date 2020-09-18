@@ -52,3 +52,28 @@
 .pointer{
   cursor: pointer;
 }
+.text-left{
+  text-align:left;
+}
+.text-center{
+  text-align:center;
+}
+.text-right{
+  text-align:right;
+}
+// flex 布局
+.space-between{
+  display:flex;
+  justify-content: space-between;
+}
+.justify-center{
+  display:flex;
+  justify-content: center;
+}
+.align-center{
+  display:flex;
+  align-items:center;
+}
+.flex-1{
+  flex:1;
+}

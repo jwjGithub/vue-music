@@ -7,7 +7,14 @@ const routes = [
   {
     path: '/',
     name: 'Index',
+    meta: { title: '首页' },
     component: () => import('@/views/index')
+  },
+  {
+    path: '/register',
+    name: 'Register',
+    meta: { title: '注册' },
+    component: () => import('@/views/register')
   },
   {
     path: '/startPlay',

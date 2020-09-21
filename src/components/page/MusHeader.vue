@@ -51,11 +51,54 @@
           </div>
         </el-popover>
         <i class="icon icon-user pointer"></i>
+        <div class="register-login">
+          <span class="login-btn pointer">登录</span>
+          <span>/</span>
+          <el-popover
+            placement="bottom"
+            width="116"
+            trigger="hover"
+          >
+            <div class="popover-list">
+              <div class="list">
+                <el-button class="text-btn" type="text" @click="goRegister('user')">音乐人注册</el-button>
+              </div>
+              <div class="list">
+                <el-button class="text-btn" type="text" @click="goRegister('company')">公司注册</el-button>
+              </div>
+            </div>
+            <span slot="reference" class="login-btn pointer">注册</span>
+          </el-popover>
+        </div>
       </div>
       <div class="right"></div>
     </div>
   </header>
 </template>
+<script>
+export default {
+  name: 'MusHeader',
+  data() {
+    return {
+
+    }
+  },
+  created() {
+
+  },
+  methods: {
+    // 跳转注册
+    goRegister(type) {
+      this.$router.push({
+        path: '/register',
+        query: {
+          type: type
+        }
+      })
+    }
+  }
+}
+</script>
 <style lang="scss" scoped>
 .header{
   height:80px;
@@ -146,6 +189,14 @@
         background-size: contain;
         background-position: center center;
         background-image:url('~@/assets/images/index/login-user.png');
+      }
+      .register-login{
+        font-size:14px;
+        .login-btn{
+          &:hover{
+            color:#ffae00;
+          }
+        }
       }
     }
   }

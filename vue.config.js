@@ -7,7 +7,7 @@ function resolve(dir) {
 }
 const name = 'Music' // 标题
 
-// const port = process.env.port || 8080 // 端口
+const port = process.env.port || 9081 // 端口
 
 module.exports = {
   // 如果应用被部署在一个子路径上，你就需要用这个选项指定这个子路径。例如，如果你的应用被部署在 https://www.xxx.com/admin/，则设置 baseUrl 为 /admin/。
@@ -23,8 +23,8 @@ module.exports = {
     overlay: {
       warnings: false,
       errors: false
-    }
-    // port: port
+    },
+    port: port
   },
   configureWebpack: {
     name: name,

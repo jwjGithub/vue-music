@@ -1,91 +1,68 @@
 <template>
   <div class="main start-play">
     <div class="main-contnet">
-      <header class="head">
-        <div class="head-main">
-          <div class="left">
-            <div class="img mrx27 ml48">
-              <img src="@/assets/images/logo.png" />
-            </div>
-            <div class="search-input-row">
-              <el-input class="search-input" placeholder="歌曲/歌单/音乐人"></el-input>
-              <div class="search-icon">
-                <i class="el-icon-search"></i>
-              </div>
-            </div>
-          </div>
-          <div class="right">
-            <el-button class="text-btn" type="text">登录</el-button>
-            <el-button class="text-btn" type="text">注册</el-button>
-            <div class="musician">
-              <i class="icon icon-musician"></i>
-              <span>音乐人</span>
-            </div>
-            <el-popover
-              placement="bottom"
-              width="116"
-              trigger="hover"
-            >
-              <div class="popover-list">
-                <div class="list">
-                  <el-button class="text-btn" type="text">上传原创</el-button>
-                </div>
-                <div class="list">
-                  <el-button class="text-btn" type="text">上传翻唱</el-button>
-                </div>
-                <div class="list">
-                  <el-button class="text-btn" type="text">上传伴奏</el-button>
-                </div>
-                <div class="list">
-                  <el-button class="text-btn" type="text">上传视频</el-button>
-                </div>
-                <div class="list">
-                  <el-button class="text-btn" type="text">歌曲管理</el-button>
-                </div>
-              </div>
-              <div slot="reference" class="upload">
-                <i class="icon icon-upload"></i>
-                <div class="">上传</div>
-              </div>
-            </el-popover>
-
-          </div>
-          <div class="right"></div>
-        </div>
-      </header>
+      <mus-header></mus-header>
       <div class="content">
         <div class="content-main">
           <div class="left">
             <div class="tap-list">
-              <div class="list active">
+              <div class="list" :class="listActive == 1 ? 'active' : ''" @click="listActive = 1">
                 <i class="icon icon-playlist mr15"></i>
                 <span>播放列表</span>
               </div>
-              <div class="list">
+              <div class="list" :class="listActive == 2 ? 'active' : ''" @click="listActive = 2">
                 <i class="icon icon-history mr15"></i>
                 <span>播放历史</span>
               </div>
-              <div class="list">
+              <div class="list" :class="listActive == 3 ? 'active' : ''" @click="listActive = 3">
                 <i class="icon icon-collect_b mr15"></i>
                 <span>收藏的歌曲</span>
               </div>
             </div>
           </div>
           <div class="center">
-
+            <div class="table-head">
+              <div class="w4"></div>
+              <div class="w4"></div>
+              <div class="songname">歌曲名称</div>
+              <div class="btns"></div>
+              <div class="singer">歌手名</div>
+              <div class="duration">播放数</div>
+            </div>
+            <div v-loading="loading" class="table-body">
+              <el-scrollbar class="custom-scrollbar">
+                <div v-for="(item,index) in dataList" :key="index" class="table-row">
+                  <div class="table-col w4 text-center">
+                    <el-checkbox v-model="item.checkbox"></el-checkbox>
+                  </div>
+                  <div class="table-col w4">{{ index + 1 }}</div>
+                  <div class="table-col songname ellipsis">{{ item.title }}</div>
+                  <div class="table-col btns">
+                    <i class="icon icon-audition" @click="startPlay(item)"></i>
+                    <!-- <i class="icon icon-pause_s"></i> -->
+                    <i class="icon icon-more"></i>
+                    <i class="icon icon-collect"></i>
+                    <i class="icon icon-delete"></i>
+                  </div>
+                  <div class="table-col singer ellipsis">{{ item.authorName }}</div>
+                  <div class="table-col duration">{{ item.auditionCounts }}</div>
+                </div>
+              </el-scrollbar>
+            </div>
+            <div class="table-footer">底部</div>
           </div>
           <div class="right">
             <div class="position-icon"></div>
+            <iframe :src="lrcTxt"></iframe>
+            <div v-html="lrcTxt"></div>
           </div>
         </div>
       </div>
       <footer class="footer">
         <aplayer
-          :mini="true"
-          :list-max-height="'60px'"
           class="main-aplayer"
           :music="videoOptions.music"
-          :show-lrc="true"
+          :show-lrc="false"
           :autoplay="true"
         ></aplayer>
       </footer>
@@ -96,6 +73,15 @@
 import aplayer from 'vue-aplayer'
 import musicUrl from '@/assets/audio/test1.mp3'
 import musicAuthor from '@/assets/images/logo.png'
+import {
+  getUserDefaultMusicList,
+  getUserHisMusicList,
+  getUserCollectMusicList,
+  getCompanyOptionalBaseList,
+  getCompanyOptionalMusicList,
+  getMusicInfo
+} from '@/api/startPlay'
+import { getFileTxt } from '@/api/getFile'
 export default {
   name: '',
   components: {
@@ -103,6 +89,9 @@ export default {
   },
   data() {
     return {
+      loading: false,
+      lrcTxt: '',
+      listActive: 1, // 当前列表类型 1默认播放列表 2播放历史 3收藏的歌曲
       videoOptions: {
         progress: false,
         progressPercent: 0,
@@ -114,14 +103,96 @@ export default {
           src: musicUrl,
           lrc: '[00:00.00]lrc here\n[00:01.00]aplayer'
         }
+      },
+      dataInfo: {}, // 当前播放详情
+      dataList: [] // 播放列表
+    }
+  },
+  watch: {
+    listActive(val) {
+      console.log(val)
+      switch (val) {
+        case 1:
+          this.getUserDefaultMusicList()
+          break
+        case 2:
+          this.getUserHisMusicList()
+          break
+        case 3:
+          this.getUserCollectMusicList()
+          break
+        default:
+          break
       }
     }
   },
   created() {
-
+    this.getUserDefaultMusicList()
   },
   methods: {
-
+    // 获取当前登录人默认播放列表
+    getUserDefaultMusicList() {
+      this.loading = true
+      getUserDefaultMusicList().then(res => {
+        this.dataList = res.data || []
+        this.loading = false
+      }).catch(() => {
+        this.loading = false
+      })
+    },
+    // 获取当前登录人历史播放列表
+    getUserHisMusicList() {
+      this.loading = true
+      getUserHisMusicList().then(res => {
+        this.dataList = res.data || []
+        this.loading = false
+      }).catch(() => {
+        this.loading = false
+      })
+    },
+    // 获取当前登录人（音乐人）收藏播放列表
+    getUserCollectMusicList() {
+      this.loading = true
+      getUserCollectMusicList().then(res => {
+        this.dataList = res.data || []
+        this.loading = false
+      }).catch(() => {
+        this.loading = false
+      })
+    },
+    // 设置当前播放列表类型
+    setListActive(type) {
+      this.listActive = type
+    },
+    // 播放
+    startPlay(row) {
+      this.dataInfo = JSON.parse(JSON.stringify(row))
+      this.getMusicInfo()
+    },
+    // 获取音乐详情
+    getMusicInfo() {
+      let json = {
+        musicId: this.dataInfo.musicId, // 音乐id
+        isPlay: true // 是否播放true/false
+      }
+      getMusicInfo(json).then(res => {
+        console.log(res, '---bof')
+        let data = res.data || {}
+        this.videoOptions.music.title = data.title
+        this.videoOptions.music.artist = data.author
+        this.videoOptions.music.pic = data.imgTempUrl
+        this.videoOptions.music.src = data.musicTempUrl
+        this.lrcTxt = data.lrcTempUrl
+        this.$forceUpdate()
+        this.getFileTxt()
+      })
+    },
+    getFileTxt() {
+      getFileTxt(this.lrcTxt)
+      // getFileTxt(this.lrcTxt).then(res => {
+      //   console.log(res, '--')
+      // })
+    }
   }
 }
 </script>
@@ -133,105 +204,9 @@ export default {
       display:flex;
       flex-direction: column;
       justify-content:space-between;
-      .head{
-        height:72px;
-        box-shadow:0 2px 8px 0 rgba(0, 0, 0, 0.04);
-        .head-main{
-          width:auto;
-          height:100%;
-          max-width:1440px;
-          margin:0 auto;
-          display:flex;
-          justify-content: space-between;
-          .left{
-            display:flex;
-            align-items:center;
-            .img{
-              width:124px;
-              height:44px;
-              >img{
-                width:100%;
-                height:100%;
-              }
-            }
-            .search-input-row{
-              display:flex;
-              align-items:center;
-              width: 315px;
-              height: 40px;
-              padding: 0;
-              border-radius: 20px;
-              background-color: #f8f8f8;
-              .search-icon{
-                height:20px;
-                padding-left:12px;
-                border-left:1px solid #e5e5e5;
-                .el-icon-search{
-                  color:#B8B8B8;
-                  cursor: pointer;
-                  &:hover{
-                    color:#000;
-                  }
-                }
-              }
-            }
-          }
-          .right{
-            padding-right:48px;
-            display:flex;
-            align-items:center;
-            .text-btn{
-              padding:0 10px;
-              color:inherit;
-              &:hover{
-                color:#00B0A8;
-              }
-            }
-            .musician{
-              display: flex;
-              align-items: center;
-              padding-right: 12px;
-              margin-right: 12px;
-              padding-left: 8px;
-              cursor: pointer;
-              height: 72px;
-              font-size:14px;
-              .icon-musician{
-                width: 32px;
-                height: 32px;
-                margin-right: 6px;
-                background-size: contain;
-                background-position: center center;
-                background-image:url('~@/assets/images/musician.png');
-              }
-              &:hover{
-                background:#f8f8f8;
-              }
-            }
-            .upload{
-              width: 92px;
-              height: 80px;
-              margin-right: 48px;
-              border-radius: 0px 0px 4px 4px;
-              background-color: #00B0A8;
-              text-align: center;
-              color:#FFF;
-              font-size:16px;
-              cursor: pointer;
-              .icon-upload{
-                width: 28px;
-                height: 28px;
-                margin-top:10px;
-                background-size: contain;
-                background-position: center center;
-                background-image:url('~@/assets/images/upload.png');
-              }
-            }
-          }
-        }
-      }
       .content{
         flex:1;
+        overflow: hidden;
         .content-main{
           height:100%;
           display:flex;
@@ -277,7 +252,104 @@ export default {
             }
           }
           .center{
+            padding:25px 30px 0;
             flex:1;
+            display:flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+            .table-head{
+              height:38px;
+              display:flex;
+              align-items:center;
+              border-bottom: 1px solid #f2f2f2;
+              >div{
+                font-size:12px;
+                color:#333;
+              }
+            }
+            .table-body{
+              flex:1;
+              overflow: hidden;
+              .table-row{
+                display:flex;
+                font-size:12px;
+                color:#333;
+                .table-col{
+                  height:50px;
+                  line-height:50px;
+                  &.btns{
+                    display:flex;
+                    align-items: center;
+                    justify-content: center;
+                    >.icon{
+                      cursor: pointer;
+                      width:16px;
+                      height:16px;
+                      margin:0 5px;
+                      display: none;
+                      &.icon-audition{
+                        height:14px;
+                        background-image:url('~@/assets/images/icon/audition.png');
+                      }
+                      &.icon-pause_s{
+                        display:none;
+                        background-image:url('~@/assets/images/icon/pause_s.png');
+                      }
+                      &.icon-more{
+                        background-image:url('~@/assets/images/icon/more.png');
+                      }
+                      &.icon-collect{
+                        background-image:url('~@/assets/images/icon/collect.png');
+                      }
+                      &.icon-delete{
+                        background-image:url('~@/assets/images/icon/delete.png');
+                      }
+                    }
+                  }
+                }
+                &:hover,&.active{
+                  background-color:#f9f9f9;
+                  .table-col{
+                    &.btns{
+                      >.icon{
+                        display: block;
+                      }
+                    }
+                  }
+                }
+              }
+            }
+            .table-footer{
+              height: 60px;
+              border-top: 1px solid #f2f2f2;
+              display:flex;
+              align-items:center;
+              justify-content: space-between;
+            }
+            .table-head,.table-body{
+              .songname{
+                width:calc(63% - 240px);
+                text-align: left;
+              }
+              .btns{
+                width:16%;
+                margin-left: 10px;
+                min-width:170px;
+                overflow:hidden;
+              }
+              .singer{
+                width: 21%;
+                margin-left: 10px;
+                text-align: left;
+              }
+              .duration{
+                width:60px;
+                overflow:hidden;
+                text-align: center;
+                margin-right:25px;
+              }
+            }
           }
           .right{
             position: relative;
@@ -325,14 +397,28 @@ export default {
   min-width:116px;
 }
 .popover-list{
-    .list{
-      text-align: center;;
-      .text-btn{
-        color:inherit;
-        &:hover{
-          color:#00B0A8;
-        }
+  .list{
+    text-align: center;;
+    .text-btn{
+      color:inherit;
+      &:hover{
+        color:#00B0A8;
       }
     }
   }
+}
+
+.main-aplayer{
+
+  .aplayer-body{
+    .aplayer-pic{
+      width:60px;
+      height:60px;
+    }
+    .aplayer-info{
+      height:55px !important;
+      padding:5px 10px 0 10px !important;
+    }
+  }
+}
 </style>

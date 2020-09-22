@@ -3,33 +3,34 @@
     <div class="footer-content">
       <div class="links">
         <div class="w12">
-          <div class="link-title">词曲库</div>
-          <div class="link-btn">词作者</div>
-          <div class="link-btn">曲作者</div>
+          <div class="link-title">快速菜单</div>
+          <div class="link-btn">词曲库</div>
+          <div class="link-btn">公司需求</div>
+          <div class="link-btn">主流榜单</div>
         </div>
         <div class="w16">
-          <div class="link-title">Beat/BGM</div>
-          <div class="link-btn">成品伴奏</div>
-          <div class="link-btn">背景音乐</div>
-          <div class="link-btn">配乐</div>
+          <div class="link-title">实用功能</div>
+          <div class="link-btn">商务合作</div>
+          <div class="link-btn">举报投诉</div>
+          <div class="link-btn">诚聘英才</div>
         </div>
         <div class="w14">
-          <div class="link-title">榜单</div>
-          <div class="link-btn">酷狗top500</div>
-          <div class="link-btn">QQ音乐热歌榜</div>
-          <div class="link-btn">抖音热歌榜</div>
+          <div class="link-title">友情链接</div>
+          <div class="link-btn" @click="goLocation('http://www.ncac.gov.cn/')">国家版权局</div>
+          <div class="link-btn" @click="goLocation('http://www.ccopyright.com.cn/')">中国版权保护中心</div>
+          <div class="link-btn" @click="goLocation('http://www.cnipr.com/')">中国知识产权网</div>
         </div>
         <div class="w14">
           <div class="link-title">帮助中心</div>
-          <div class="link-btn">联系我们</div>
           <div class="link-btn">常见问题</div>
-          <div class="link-btn">隐私政策</div>
+          <div class="link-btn">问题反馈</div>
+          <div class="link-btn">优化建议</div>
         </div>
       </div>
       <div class="contacts">
         <div class="contacts-list">
           <i class="icon icon-phone mr11"></i>
-          <span class="phone mr31">400-123-3333</span>
+          <span class="phone mr31">186-2450-0357</span>
           <i class="icon icon-wechat ml24"></i>
           <i class="icon icon-micro-blog ml24"></i>
         </div>
@@ -114,6 +115,7 @@
     height: 60px;
     border-top:1px solid #AAA;
     .footer-bottom-text{
+      text-align: center;
       width:1080px;
       line-height:60px;
       margin: 0 auto;

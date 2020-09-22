@@ -47,7 +47,11 @@
     .fw#{$n}{ font-weight: (100 * $n) !important; }
   }
 }
-
+.ellipsis{
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
 // 手势
 .pointer{
   cursor: pointer;

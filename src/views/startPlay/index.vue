@@ -6,15 +6,19 @@
         <div class="content-main">
           <div class="left">
             <div class="tap-list">
-              <div class="list" :class="listActive == 1 ? 'active' : ''" @click="listActive = 1">
+              <div v-for="(item,index) in typeList" :key="index" class="list" :class="listActive == item.id ? 'active' : ''" @click="listActive = item.id">
+                <i class="icon icon-playlist mr15"></i>
+                <span>{{ item.baseName }}</span>
+              </div>
+              <div class="list" :class="listActive == 'bflb' ? 'active' : ''" @click="listActive = 'bflb'">
                 <i class="icon icon-playlist mr15"></i>
                 <span>播放列表</span>
               </div>
-              <div class="list" :class="listActive == 2 ? 'active' : ''" @click="listActive = 2">
+              <div class="list" :class="listActive == 'bfls' ? 'active' : ''" @click="listActive = 'bfls'">
                 <i class="icon icon-history mr15"></i>
                 <span>播放历史</span>
               </div>
-              <div class="list" :class="listActive == 3 ? 'active' : ''" @click="listActive = 3">
+              <div class="list" :class="listActive == 'scdgq' ? 'active' : ''" @click="listActive = 'scdgq'">
                 <i class="icon icon-collect_b mr15"></i>
                 <span>收藏的歌曲</span>
               </div>
@@ -41,20 +45,37 @@
                     <i class="icon icon-audition" @click="startPlay(item)"></i>
                     <!-- <i class="icon icon-pause_s"></i> -->
                     <i class="icon icon-more"></i>
-                    <i class="icon icon-collect"></i>
-                    <i class="icon icon-delete"></i>
+                    <i class="icon icon-collect" @click="addToCollect(item)"></i>
+                    <i class="icon icon-delete" @click="deletePlayList(item)"></i>
                   </div>
                   <div class="table-col singer ellipsis">{{ item.authorName }}</div>
                   <div class="table-col duration">{{ item.auditionCounts }}</div>
                 </div>
               </el-scrollbar>
             </div>
-            <div class="table-footer">底部</div>
+            <div class="table-footer">
+              <div class="table-footer-left">
+                <el-checkbox v-model="allChecked" @change="allCheckedChange">全选</el-checkbox>
+              </div>
+              <div class="table-footer-right ft12">
+                共有
+                <span class="ml5 mr5">19</span>
+                首歌
+              </div>
+            </div>
           </div>
           <div class="right">
             <div class="position-icon"></div>
-            <iframe :src="lrcTxt"></iframe>
-            <div v-html="lrcTxt"></div>
+            <!-- <iframe :src="lrcTxt"></iframe> -->
+            <div class="music-head-img">
+              <img :src="videoOptions.music.pic" />
+            </div>
+            <div class="music-lrc">
+              <el-scrollbar class="custom-scrollbar">
+                <pre class="pre" v-html="lrcTxt"></pre>
+                <lrc></lrc>
+              </el-scrollbar>
+            </div>
           </div>
         </div>
       </div>
@@ -73,25 +94,36 @@
 import aplayer from 'vue-aplayer'
 import musicUrl from '@/assets/audio/test1.mp3'
 import musicAuthor from '@/assets/images/logo.png'
+import lrc from './index2'
 import {
   getUserDefaultMusicList,
   getUserHisMusicList,
   getUserCollectMusicList,
   getCompanyOptionalBaseList,
   getCompanyOptionalMusicList,
-  getMusicInfo
+  getMusicInfo,
+  addToCollect,
+  removeFromCollect,
+  addToDefault,
+  removeFromDefault,
+  removeFromhistory,
+  addToCompanyOptional,
+  removeFromCompanyOptional,
+  getLrc
 } from '@/api/startPlay'
 import { getFileTxt } from '@/api/getFile'
 export default {
   name: '',
   components: {
-    aplayer
+    aplayer,
+    lrc
   },
   data() {
     return {
       loading: false,
       lrcTxt: '',
-      listActive: 1, // 当前列表类型 1默认播放列表 2播放历史 3收藏的歌曲
+      listActive: 'bflb', // 当前列表类型
+      allChecked: false, // 全选
       videoOptions: {
         progress: false,
         progressPercent: 0,
@@ -104,6 +136,7 @@ export default {
           lrc: '[00:00.00]lrc here\n[00:01.00]aplayer'
         }
       },
+      typeList: [], // 歌曲自选库列表
       dataInfo: {}, // 当前播放详情
       dataList: [] // 播放列表
     }
@@ -112,24 +145,33 @@ export default {
     listActive(val) {
       console.log(val)
       switch (val) {
-        case 1:
+        case 'bflb':
           this.getUserDefaultMusicList()
           break
-        case 2:
+        case 'bfls':
           this.getUserHisMusicList()
           break
-        case 3:
+        case 'scdgq':
           this.getUserCollectMusicList()
           break
         default:
+          // 查询自选库列表
+          this.getCompanyOptionalMusicList()
           break
       }
     }
   },
   created() {
+    this.getCompanyOptionalBaseList()
     this.getUserDefaultMusicList()
   },
   methods: {
+    // 获取当前登录人所在公司自选库列表
+    getCompanyOptionalBaseList() {
+      getCompanyOptionalBaseList().then(res => {
+        this.typeList = res.data || []
+      })
+    },
     // 获取当前登录人默认播放列表
     getUserDefaultMusicList() {
       this.loading = true
@@ -160,6 +202,16 @@ export default {
         this.loading = false
       })
     },
+    // 获取获取自选库音乐播放列表
+    getCompanyOptionalMusicList() {
+      this.loading = true
+      getCompanyOptionalMusicList({ opBaseId: this.listActive }).then(res => {
+        this.dataList = res.data || []
+        this.loading = false
+      }).catch(() => {
+        this.loading = false
+      })
+    },
     // 设置当前播放列表类型
     setListActive(type) {
       this.listActive = type
@@ -182,9 +234,121 @@ export default {
         this.videoOptions.music.artist = data.author
         this.videoOptions.music.pic = data.imgTempUrl
         this.videoOptions.music.src = data.musicTempUrl
-        this.lrcTxt = data.lrcTempUrl
+        // this.lrcTxt = data.lrcTempUrl
         this.$forceUpdate()
         this.getFileTxt()
+      })
+      this.getLrc(this.dataInfo.musicId)
+    },
+    // 删除播放列表
+    deletePlayList(row) {
+      switch (this.listActive) {
+        case 'bflb':
+          this.removeFromDefault([row.id])
+          break
+        case 'bfls':
+          this.removeFromhistory([row.id])
+          break
+        case 'scdgq':
+          this.removeFromCollect([row.id])
+          break
+        default:
+          // 从自选库列表移除
+          this.removeFromCompanyOptional([row.id])
+          break
+      }
+      // 手动移除列表
+      this.removePlayList([row.id])
+    },
+    // 移除播放列表
+    removePlayList(list) {
+      list.forEach(id => {
+        console.log(this.dataList, 'datalist')
+        for (let i = 0, len = this.dataList.length; i < len; i++) {
+          let item = this.dataList[i]
+          if (id === item.id) {
+            this.dataList.splice(i, 1)
+            break
+          }
+        }
+      })
+    },
+    // 添加到收藏列表
+    addToCollect(row) {
+      addToCollect([row.id]).then(res => {
+        this.$notify.success({
+          title: '添加成功'
+        })
+      })
+    },
+    // 添加播放列表
+    addPlayList(row) {
+      switch (this.listActive) {
+        case 'bflb':
+          this.removeFromDefault([row.id])
+          break
+        case 'bfls':
+          this.removeFromhistory([row.id])
+          break
+        case 'scdgq':
+          this.removeFromCollect([row.id])
+          break
+        default:
+          // 从自选库列表移除
+          this.removeFromCompanyOptional([row.id])
+          break
+      }
+    },
+    // 从收藏列表移除
+    removeFromCollect(ids) {
+      removeFromCollect(ids).then(res => {
+        this.$notify.success({
+          title: '操作成功'
+        })
+        // this.getUserCollectMusicList()
+      })
+    },
+    // 从默认列表移除
+    removeFromDefault(ids) {
+      removeFromDefault(ids).then(res => {
+        this.$notify.success({
+          title: '操作成功'
+        })
+        // this.getUserDefaultMusicList()
+      })
+    },
+    // 从历史列表移除
+    removeFromhistory(ids) {
+      removeFromhistory(ids).then(res => {
+        this.$notify.success({
+          title: '操作成功'
+        })
+        // this.getUserHisMusicList()
+      })
+    },
+    // 从自选库列表移除
+    removeFromCompanyOptional(ids) {
+      removeFromCompanyOptional(ids).then(res => {
+        this.$notify.success({
+          title: '操作成功'
+        })
+        // this.getCompanyOptionalMusicList()
+      })
+    },
+    // 全选change事件
+    allCheckedChange(val) {
+      this.dataList.forEach(item => {
+        item.checkbox = val
+      })
+      // this.$forceUpdate()
+    },
+    // 获取歌词
+    getLrc(id) {
+      getLrc({ musicId: id }).then(res => {
+        if (res.data && res.data.type === 'txt') {
+          this.lrcTxt = res.data.txt
+        }
+        console.log(res.data.txt, '---')
       })
     },
     getFileTxt() {
@@ -355,6 +519,30 @@ export default {
             position: relative;
             width:350px;
             border-left:1px solid #ebebeb;
+            display:flex;
+            flex-direction: column;
+            .music-head-img{
+              width: 210px;
+              height: 210px;
+              margin: 20px auto 0 auto;
+              border-radius: 5px;
+              box-shadow: 0 4px 14px 0 rgba(0,0,0,.12);
+              >img{
+                width:100%;
+                height:100%;
+              }
+            }
+            .music-lrc{
+              flex:1;
+              overflow: hidden;
+              padding:20px;
+              .pre{
+                text-align: center;
+                font-size:14px;
+                line-height: 2;
+                color:#666;
+              }
+            }
             .position-icon{
               position: absolute;
               left: -11px;

@@ -48,3 +48,67 @@ export function getMusicInfo(data) {
     data: data
   })
 }
+// 添加到收藏列表
+export function addToCollect(data) {
+  return request({
+    url: '/music/base/addToCollect',
+    method: 'post',
+    data: data
+  })
+}
+// 从收藏列表移除
+export function removeFromCollect(data) {
+  return request({
+    url: '/music/base/removeFromCollect',
+    method: 'post',
+    data: data
+  })
+}
+// 添加到默认列表
+export function addToDefault(data) {
+  return request({
+    url: '/music/base/addToDefault',
+    method: 'post',
+    data: data
+  })
+}
+// 从默认列表移除
+export function removeFromDefault(data) {
+  return request({
+    url: '/music/base/removeFromDefault',
+    method: 'post',
+    data: data
+  })
+}
+// 从历史列表移除
+export function removeFromhistory(data) {
+  return request({
+    url: '/music/base/removeFromhistory',
+    method: 'post',
+    data: data
+  })
+}
+// 添加到自选库列表
+export function addToCompanyOptional(data) {
+  return request({
+    url: '/music/base/addToCompanyOptional',
+    method: 'post',
+    data: data
+  })
+}
+// 从自选库列表移除
+export function removeFromCompanyOptional(data) {
+  return request({
+    url: '/music/base/removeFromCompanyOptional',
+    method: 'post',
+    data: data
+  })
+}
+// 获取歌词
+export function getLrc(data) {
+  return request({
+    url: '/music/base/getLrc',
+    method: 'post',
+    data: data
+  })
+}

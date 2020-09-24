@@ -191,6 +191,7 @@ export default {
         if (this.$refs.music) {
           let time = this.$refs.music.currentTime
           this.music.currentTime = time
+          this.$emit('lrcChange', time * 1000)
         }
         this.music.lastTime = nowTime
       }

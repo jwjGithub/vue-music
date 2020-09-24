@@ -71,7 +71,13 @@
             </div>
             <div class="music-lrc">
               <el-scrollbar class="custom-scrollbar">
-                <pre class="pre" v-html="lrcTxt"></pre>
+                <pre v-if="lrcType == 'txt'" class="pre" v-html="lrcTxt"></pre>
+                <div v-if="lrcType == 'lrc'" class="lyric-lrc">
+                  <p v-for="(item,index) in lrcTxt" :key="index" :class="lrcTime >= item.time && lrcTime <= lrcTxt[index + 1].time? 'lrc-select': ''">
+                    <!-- lrcTime > item.time && lrcTime < item? 'lrc-select' : '' -->
+                    {{ item.text }}
+                  </p>
+                </div>
                 <!-- <lrc></lrc> -->
               </el-scrollbar>
             </div>
@@ -79,7 +85,13 @@
         </div>
       </div>
       <footer class="footer">
-        <mus-aplayer ref="music" :list="dataList" :music-info="musicInfo" @play="startPlay"></mus-aplayer>
+        <mus-aplayer
+          ref="music"
+          :list="dataList"
+          :music-info="musicInfo"
+          @play="startPlay"
+          @lrcChange="lrcChange"
+        ></mus-aplayer>
       </footer>
     </div>
   </div>
@@ -118,6 +130,8 @@ export default {
     return {
       loading: false,
       lrcTxt: '',
+      lrcType: '',
+      lrcTime: 0, // 当前播放时间
       listActive: 'bflb', // 当前列表类型
       allChecked: false, // 全选
       // videoOptions: {
@@ -146,7 +160,6 @@ export default {
   },
   watch: {
     listActive(val) {
-      console.log(val)
       switch (val) {
         case 'bflb':
           this.getUserDefaultMusicList()
@@ -235,13 +248,11 @@ export default {
         isPlay: true // 是否播放true/false
       }
       getMusicInfo(json).then(res => {
-        console.log(res, '---bof')
         let data = res.data || {}
         this.musicInfo.title = data.title
         this.musicInfo.artist = data.artist
         this.musicInfo.pic = data.imgTempUrl
         this.musicInfo.src = data.musicTempUrl
-        // this.lrcTxt = data.lrcTempUrl
         this.$forceUpdate()
       })
       this.getLrc(this.dataInfo.musicId)
@@ -269,7 +280,6 @@ export default {
     // 移除播放列表
     removePlayList(list) {
       list.forEach(id => {
-        console.log(this.dataList, 'datalist')
         for (let i = 0, len = this.dataList.length; i < len; i++) {
           let item = this.dataList[i]
           if (id === item.id) {
@@ -311,7 +321,6 @@ export default {
         this.$notify.success({
           title: '操作成功'
         })
-        // this.getUserCollectMusicList()
       })
     },
     // 从默认列表移除
@@ -320,7 +329,6 @@ export default {
         this.$notify.success({
           title: '操作成功'
         })
-        // this.getUserDefaultMusicList()
       })
     },
     // 从历史列表移除
@@ -329,7 +337,6 @@ export default {
         this.$notify.success({
           title: '操作成功'
         })
-        // this.getUserHisMusicList()
       })
     },
     // 从自选库列表移除
@@ -338,7 +345,6 @@ export default {
         this.$notify.success({
           title: '操作成功'
         })
-        // this.getCompanyOptionalMusicList()
       })
     },
     // 全选change事件
@@ -354,8 +360,26 @@ export default {
         if (res.data && res.data.type === 'txt') {
           this.lrcTxt = res.data.txt
         }
+        if (res.data && res.data.type === 'lrc') {
+          this.lrcTxt = res.data.lrc || []
+        }
+        this.lrcType = res.data && res.data.type
         console.log(res.data.txt, '---')
       })
+    },
+    // 获取当前播放时间
+    lrcChange(time) {
+      this.lrcTime = time || 0
+      console.log(time, 'time')
+    },
+    setLrcClass(item, index) {
+      let oldItem = index > 0 ? this.lrcTxt[index - 1] : 0
+      if (this.lrcTime >= item.time && this.lrcTime <= oldItem.time) {
+        console.log('1111111111111111')
+        return 'lrc-select'
+      } else {
+        return ''
+      }
     }
   }
 }
@@ -541,6 +565,21 @@ export default {
                 font-size:14px;
                 line-height: 2;
                 color:#666;
+              }
+              .lyric-lrc{
+                >p{
+                  font-family: '宋体';
+                  text-align: center;
+                  font-size:14px;
+                  line-height: 3;
+                  color:#666;
+                }
+                .lrc-select{
+                  color:red !important;
+                }
+                // .lrc-select:last-child{
+                //   color:red !important;
+                // }
               }
             }
             .position-icon{

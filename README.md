@@ -27,6 +27,10 @@ npm install --registry=https://registry.npm.taobao.org
 ```
 npm run serve
 ```
+### 打包测试环境
+```
+npm run build:prod
+```
 
 ### Compiles and minifies for production
 ```

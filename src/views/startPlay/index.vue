@@ -48,7 +48,7 @@
                     <i class="icon icon-collect" @click="addToCollect(item)"></i>
                     <i class="icon icon-delete" @click="deletePlayList(item)"></i>
                   </div>
-                  <div class="table-col singer ellipsis">{{ item.authorName }}</div>
+                  <div class="table-col singer ellipsis">{{ item.authorNames }}</div>
                   <div class="table-col duration">{{ item.auditionCounts }}</div>
                 </div>
               </el-scrollbar>
@@ -66,26 +66,20 @@
           </div>
           <div class="right">
             <div class="position-icon"></div>
-            <!-- <iframe :src="lrcTxt"></iframe> -->
             <div class="music-head-img">
-              <img :src="videoOptions.music.pic" />
+              <img :src="musicInfo.pic" />
             </div>
             <div class="music-lrc">
               <el-scrollbar class="custom-scrollbar">
                 <pre class="pre" v-html="lrcTxt"></pre>
-                <lrc></lrc>
+                <!-- <lrc></lrc> -->
               </el-scrollbar>
             </div>
           </div>
         </div>
       </div>
       <footer class="footer">
-        <aplayer
-          class="main-aplayer"
-          :music="videoOptions.music"
-          :show-lrc="false"
-          :autoplay="true"
-        ></aplayer>
+        <mus-aplayer ref="music" :list="dataList" :music-info="musicInfo" @play="startPlay"></mus-aplayer>
       </footer>
     </div>
   </div>
@@ -94,7 +88,8 @@
 import aplayer from 'vue-aplayer'
 import musicUrl from '@/assets/audio/test1.mp3'
 import musicAuthor from '@/assets/images/logo.png'
-import lrc from './index2'
+import MusAplayer from '@/components/MusAplayer'
+// import lrc from './index2'
 import {
   getUserDefaultMusicList,
   getUserHisMusicList,
@@ -115,8 +110,9 @@ import { getFileTxt } from '@/api/getFile'
 export default {
   name: '',
   components: {
-    aplayer,
-    lrc
+    // aplayer,
+    // lrc,
+    MusAplayer
   },
   data() {
     return {
@@ -124,17 +120,24 @@ export default {
       lrcTxt: '',
       listActive: 'bflb', // 当前列表类型
       allChecked: false, // 全选
-      videoOptions: {
-        progress: false,
-        progressPercent: 0,
-        successPercent: 0,
-        music: {
-          title: '测试标题',
-          artist: 'jwj',
-          pic: musicAuthor,
-          src: musicUrl,
-          lrc: '[00:00.00]lrc here\n[00:01.00]aplayer'
-        }
+      // videoOptions: {
+      //   progress: false,
+      //   progressPercent: 0,
+      //   successPercent: 0,
+      //   music: {
+      //     title: '测试标题',
+      //     artist: 'jwj',
+      //     pic: musicAuthor,
+      //     src: musicUrl,
+      //     lrc: '[00:00.00]lrc here\n[00:01.00]aplayer'
+      //   }
+      // },
+      // 音乐对象
+      musicInfo: {
+        title: '暂无歌曲', // 歌曲名称
+        artist: '', // 作者
+        pic: '', // 歌曲头像
+        src: '' // 歌曲链接
       },
       typeList: [], // 歌曲自选库列表
       dataInfo: {}, // 当前播放详情
@@ -178,6 +181,7 @@ export default {
       getUserDefaultMusicList().then(res => {
         this.dataList = res.data || []
         this.loading = false
+        this.$refs.music.play()
       }).catch(() => {
         this.loading = false
       })
@@ -188,6 +192,7 @@ export default {
       getUserHisMusicList().then(res => {
         this.dataList = res.data || []
         this.loading = false
+        this.$refs.music.play()
       }).catch(() => {
         this.loading = false
       })
@@ -198,6 +203,7 @@ export default {
       getUserCollectMusicList().then(res => {
         this.dataList = res.data || []
         this.loading = false
+        this.$refs.music.play()
       }).catch(() => {
         this.loading = false
       })
@@ -208,6 +214,7 @@ export default {
       getCompanyOptionalMusicList({ opBaseId: this.listActive }).then(res => {
         this.dataList = res.data || []
         this.loading = false
+        this.$refs.music.play()
       }).catch(() => {
         this.loading = false
       })
@@ -230,13 +237,12 @@ export default {
       getMusicInfo(json).then(res => {
         console.log(res, '---bof')
         let data = res.data || {}
-        this.videoOptions.music.title = data.title
-        this.videoOptions.music.artist = data.author
-        this.videoOptions.music.pic = data.imgTempUrl
-        this.videoOptions.music.src = data.musicTempUrl
+        this.musicInfo.title = data.title
+        this.musicInfo.artist = data.artist
+        this.musicInfo.pic = data.imgTempUrl
+        this.musicInfo.src = data.musicTempUrl
         // this.lrcTxt = data.lrcTempUrl
         this.$forceUpdate()
-        this.getFileTxt()
       })
       this.getLrc(this.dataInfo.musicId)
     },
@@ -350,12 +356,6 @@ export default {
         }
         console.log(res.data.txt, '---')
       })
-    },
-    getFileTxt() {
-      getFileTxt(this.lrcTxt)
-      // getFileTxt(this.lrcTxt).then(res => {
-      //   console.log(res, '--')
-      // })
     }
   }
 }

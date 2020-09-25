@@ -14,7 +14,22 @@ const routes = [
     path: '/register',
     name: 'Register',
     meta: { title: '注册' },
-    component: () => import('@/views/register')
+    component: () => import('@/views/register/index'),
+    redirect: '/register/company',
+    children: [
+      {
+        path: 'company',
+        name: 'RegisterCompany',
+        meta: { title: '公司注册' },
+        component: () => import('@/views/register/company/index')
+      },
+      {
+        path: 'musician',
+        name: 'RegisterMusician',
+        meta: { title: '音乐人注册' },
+        component: () => import('@/views/register/musician/index')
+      }
+    ]
   },
   {
     path: '/startPlay',

@@ -61,7 +61,7 @@
           >
             <div class="popover-list">
               <div class="list">
-                <el-button class="text-btn" type="text" @click="goRegister('user')">音乐人注册</el-button>
+                <el-button class="text-btn" type="text" @click="goRegister('musician')">音乐人注册</el-button>
               </div>
               <div class="list">
                 <el-button class="text-btn" type="text" @click="goRegister('company')">公司注册</el-button>
@@ -90,10 +90,7 @@ export default {
     // 跳转注册
     goRegister(type) {
       this.$router.push({
-        path: '/register',
-        query: {
-          type: type
-        }
+        path: '/register/' + type
       })
     }
   }

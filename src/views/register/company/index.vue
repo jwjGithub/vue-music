@@ -21,7 +21,7 @@
             </div>
           </div>
           <div class="register-form">
-            <el-form ref="form" :model="form" :rules="rules" label-width="160px" :inline="true">
+            <el-form ref="form" :model="form" :rules="rules" label-width="300px">
               <el-form-item v-if="addActive == 0" label="用户名：" prop="username">
                 <el-input v-model="form.username" class="w24"></el-input>
               </el-form-item>
@@ -31,7 +31,7 @@
               <el-form-item v-if="addActive == 0" label="手机验证码：" prop="phoneCode">
                 <div class="w24 text-left">
                   <el-input v-model="form.phoneCode" class="w10"></el-input>
-                  <el-button type="success" class="w13 ml10" :disabled="phoneSendCodeType" @click="getPhoneSendCode">{{ phoneSendCodeCount }}</el-button>
+                  <el-button v-loading="loading" type="success" class="w13 ml10" :disabled="phoneSendCodeType" @click="getPhoneSendCode">{{ phoneSendCodeCount }}</el-button>
                 </div>
               </el-form-item>
               <el-form-item v-if="addActive == 0" label="邮箱：" prop="email">
@@ -39,20 +39,48 @@
               </el-form-item>
               <el-form-item v-if="addActive == 0" label="邮箱验证码：" prop="emailCode">
                 <el-input v-model="form.emailCode" class="w10"></el-input>
-                <el-button type="success" class="w13 ml10" :disabled="emailSendCodeType" @click="getEmailSendCode">{{ emailSendCodeCount }}</el-button>
+                <el-button v-loading="loading" type="success" class="w13 ml10" :disabled="emailSendCodeType" @click="getEmailSendCode">{{ emailSendCodeCount }}</el-button>
               </el-form-item>
-              <el-form-item v-if="addActive == 2" label="真名：" prop="realname">
-                <el-input v-model="form.realname" class="w24"></el-input>
+              <el-form-item v-if="addActive == 1" label="真实姓名：" prop="realname">
+                <el-input v-model="form.realname" class="w50"></el-input>
               </el-form-item>
-              <el-form-item v-if="addActive == 2" label="性别：" prop="gender">
-                <el-select v-model="form.gender" clearable placeholder="" class="w24">
+              <el-form-item v-if="addActive == 1" label="性别：" prop="gender">
+                <el-select v-model="form.gender" clearable placeholder="" class="w50">
                   <el-option label="男" value="MALE" />
                   <el-option label="女" value="FEMALE" />
                   <el-option label="未知" value="UNKNOW" />
                 </el-select>
               </el-form-item>
+              <el-form-item v-if="addActive == 1" label="公司名称：" prop="companyName">
+                <el-input v-model="form.companyName" class="w50"></el-input>
+              </el-form-item>
+              <el-form-item v-if="addActive == 1" label="公司性质：" prop="address">
+                <el-input v-model="form.address" class="w50"></el-input>
+              </el-form-item>
+              <el-form-item v-if="addActive == 1" label="地址：" prop="address">
+                <el-input v-model="form.address" class="w50"></el-input>
+              </el-form-item>
+              <el-form-item v-if="addActive == 1" label="简介：" style="padding-bottom:66px;" prop="address">
+                <Editor v-model="form.address" class="w50" />
+              </el-form-item>
+              <el-form-item v-if="addActive == 1" label="网址：" prop="address">
+                <el-input v-model="form.address" class="w50"></el-input>
+              </el-form-item>
+              <el-form-item label="营业执照：" prop="picName">
+                <!-- :headers="{'accessToken': getToken()}" -->
+                <el-upload
+                  class="avatar-uploader w24"
+                  :action="baseURL + '/company/signup/uploadLisence'"
+                  :before-upload="handleBeforeUpload"
+                  :show-file-list="false"
+                  :on-success="handleSuccess"
+                >
+                  <img v-if="imgUrl" :src="imgUrl" class="avatar">
+                  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                </el-upload>
+              </el-form-item>
               <el-form-item label=" ">
-                <el-button type="warning" class="w24 mt24" @click="handleConfirm">下一步</el-button>
+                <el-button v-loading="loading" type="warning" class="w24 mt24" @click="handleConfirm">下一步</el-button>
               </el-form-item>
             </el-form>
           </div>
@@ -65,13 +93,39 @@
 <script>
 import {
   getCompanyPhoneVerificationCode,
-  getCompanyEmailVerificationCode
+  getCompanyEmailVerificationCode,
+  validityCode
 } from '@/api/register/company'
+import Editor from '@/components/Editor'
 export default {
-  name: 'Register',
+  name: 'RegisterCompany',
+  components: {
+    Editor
+  },
   data() {
+    let validatePhone = (rule, value, callback) => {
+      let reg = /^1[0-9]{10}$/
+      if (value === '') {
+        callback(new Error('请输入手机号'))
+      } else if (!reg.test(value)) {
+        callback(new Error('请输入正确的手机号'))
+      } else {
+        callback()
+      }
+    }
+    let validateEmail = (rule, value, callback) => {
+      let reg = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/
+      if (value === '') {
+        callback(new Error('请输入邮箱'))
+      } else if (!reg.test(value)) {
+        callback(new Error('请输入正确的邮箱格式'))
+      } else {
+        callback()
+      }
+    }
     return {
-      addActive: 0, // 添加步骤
+      imgUrl: '', // 图片地址
+      addActive: 1, // 添加步骤
       phoneSendCodeType: false, // 获取手机验证码状态 false 可以获取 true 不可获取
       phoneSendCodeCount: '获取验证码',
       emailSendCodeType: false, // 获取邮箱验证码状态 false 可以获取 true 不可获取
@@ -95,17 +149,17 @@ export default {
         companyName: '', // 公司名
         address: '', // 地址
         introduction: '', // 公司介绍
-        file: '' // 公司附件
+        lisenceAtt: '' // 公司附件Id
       },
       rules: {
         username: [
           { required: true, message: '请输入用户名', trigger: 'blur' }
         ],
         mobile: [
-          { required: true, message: '请输入手机号', trigger: 'blur' }
+          { required: true, validator: validatePhone, trigger: 'blur' }
         ],
         email: [
-          { required: true, message: '请输入邮箱', trigger: 'blur' }
+          { required: true, validator: validateEmail, trigger: 'blur' }
         ],
         phoneCode: [
           { required: true, message: '请输入手机验证码', trigger: 'blur' }
@@ -134,13 +188,31 @@ export default {
   methods: {
     // 保存回调
     handleConfirm() {
+      // 公司注册第一步效验
       this.$refs['form'].validate((valid) => {
         if (valid) {
-          // if (this.form.userId) {
-          //   this.saveEdit()
-          // } else {
-          //   this.saveAdd()
-          // }
+          let phoneJson = {
+            mobile: this.form.mobile,
+            vercode: this.form.phoneCode,
+            type: 'mobile'
+          }
+          this.loading = true
+          // 验证手机验证码
+          validityCode(phoneJson).then(res => {
+            let emailJson = {
+              email: this.form.email,
+              vercode: this.form.emailCode,
+              type: 'email'
+            }
+            validityCode(emailJson).then(res => {
+              this.loading = false
+              this.addActive = 1 // 跳转第二步
+            }).catch(() => {
+              this.loading = false
+            })
+          }).catch(() => {
+            this.loading = false
+          })
         } else {
           return false
         }
@@ -150,30 +222,25 @@ export default {
     getPhoneSendCode() {
       let bl = true
       this.$refs['form'].validateField(['mobile', 'username'], valid => { // 验证手机号码是否正确
-        if (!valid) {
-          // getPhoneSendCode(json).then(res => {
-          //   console.log(res, '--res')
-          // })
-          console.log('手机号正确')
-        } else {
+        if (valid) {
           bl = false
+          console.log('手机号正确')
           return false
         }
       })
-
-      console.log('效验')
       if (!bl) return false
       let json = {
         mobile: this.form.mobile,
         username: this.form.username
       }
+      this.loading = true
       getCompanyPhoneVerificationCode(json).then(res => {
         let _this = this
         this.phoneSendCodeType = true
         this.phoneSendCodeCount = '60秒后重新获取'
         let count = 60
         let indexS = ''
-
+        this.loading = false
         function countTimeout() {
           indexS = setTimeout(() => {
             if (count <= 1) {
@@ -187,52 +254,32 @@ export default {
           }, 1000)
         }
         countTimeout()
+      }).catch(() => {
+        this.loading = false
       })
-      // let _this = this
-      // this.phoneSendCodeType = true
-      // this.phoneSendCodeCount = '60秒后重新获取'
-      // let count = 60
-      // let indexS = ''
-
-      // function countTimeout() {
-      //   indexS = setTimeout(() => {
-      //     if (count <= 1) {
-      //       _this.phoneSendCodeType = false
-      //       _this.phoneSendCodeCount = '获取验证码'
-      //     } else {
-      //       count -= 1
-      //       _this.phoneSendCodeCount = count + '秒后重新获取'
-      //       countTimeout()
-      //     }
-      //   }, 1000)
-      // }
-      // countTimeout()
     },
     // 获取邮箱验证码
     getEmailSendCode() {
       let bl = true
       this.$refs['form'].validateField(['email'], valid => { // 验证手机号码是否正确
-        if (!valid) {
-          // getPhoneSendCode(json).then(res => {
-          //   console.log(res, '--res')
-          // })
-          console.log('邮箱正确')
-        } else {
+        if (valid) {
           bl = false
+          console.log('邮箱正确')
           return false
         }
       })
-      console.log('效验')
       if (!bl) return false
       let json = {
         email: this.form.email
       }
+      this.loading = true
       getCompanyEmailVerificationCode(json).then(res => {
         let _this = this
         this.emailSendCodeType = true
         this.emailSendCodeCount = '60秒后重新获取'
         let count = 60
         let indexS = ''
+        this.loading = false
         function countTimeout() {
           indexS = setTimeout(() => {
             if (count <= 1) {
@@ -246,7 +293,30 @@ export default {
           }, 1000)
         }
         countTimeout()
+      }).catch(() => {
+        this.loading = false
       })
+    },
+    // 选择文件回调
+    handleBeforeUpload(file) {
+      const reg = '.*\\.(jpg|png|gif|JPG|PNG|GIF)'
+      if (file.name.match(reg) == null) {
+        this.$notify.error({ title: '对不起，上传格式不正确，请重新上传' })
+        return false
+      }
+      if (file.size > 1024 * 1024 * 10) {
+        this.$notify.error({ title: '对不起，文件不能大于10M，请重新上传' })
+        return false
+      }
+      return true
+    },
+    // 上传成功回调
+    handleSuccess(res, file, fileList) {
+      console.log(res, '---')
+      this.imgUrl = res.data.url
+      this.form.lisenceAtt = res.data.id
+      // this.dialogOption.imgUrl = res.data.imageUrl || ''
+      // this.form.avatarKey = res.data.imageKey || ''
     }
   }
 }
@@ -307,7 +377,7 @@ export default {
           }
         }
         .register-form{
-          width:600px;
+          width:800px;
           margin:100px auto 100px auto;
         }
       }
@@ -324,6 +394,35 @@ export default {
   }
   .el-button{
     border-radius: 20px;
+  }
+  .el-loading-mask{
+    border-radius: 20px;
+  }
+  // 头像上传样式
+  .avatar-uploader{
+    text-align: left;
+    .el-upload {
+      border: 1px dashed #d9d9d9;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      // &:hover {
+      //   border-color: #409EFF;
+      // }
+      .avatar-uploader-icon {
+        font-size: 28px;
+        color: #8c939d;
+        width: 100px;
+        height: 100px;
+        line-height: 100px;
+        text-align: center;
+      }
+      .avatar {
+        width: 100px;
+        height: 100px;
+        display: block;
+      }
+    }
   }
 }
 </style>

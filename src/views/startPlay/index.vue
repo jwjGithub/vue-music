@@ -118,7 +118,6 @@ import {
   removeFromCompanyOptional,
   getLrc
 } from '@/api/startPlay'
-import { getFileTxt } from '@/api/getFile'
 export default {
   name: '',
   components: {

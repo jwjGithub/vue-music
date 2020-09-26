@@ -25,9 +25,9 @@ export function saveCompanyRegister(data) {
   })
 }
 // 验证验证码
-export function ValidityCode(data) {
+export function validityCode(data) {
   return request({
-    url: '/company/signup/do_ver_code',
+    url: '/sys/sms/doVerCode',
     method: 'post',
     data: data
   })

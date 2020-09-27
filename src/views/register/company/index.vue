@@ -9,19 +9,23 @@
               <i class="icon steps-1"></i>
               <span class="ml30">基础信息</span>
             </div>
-            <div>></div>
-            <div class="step">
-              <i class="icon steps-2"></i>
+            <div>
+              <i class="icon icon-sjx"></i>
+            </div>
+            <div class="step" :class="addActive != 0 ? 'active' : ''">
+              <i class="icon" :class="addActive != 0 ? 'steps-3-active' : 'steps-2'"></i>
               <span class="ml30">详细信息</span>
             </div>
-            <div>></div>
-            <div class="step">
-              <i class="icon steps-3"></i>
+            <div>
+              <i class="icon icon-sjx"></i>
+            </div>
+            <div class="step" :class="addActive == 2 ? 'active' : ''">
+              <i class="icon" :class="addActive == 2 ? 'steps-3-active' : 'steps-3'"></i>
               <span class="ml30">注册成功</span>
             </div>
           </div>
           <div class="register-form">
-            <el-form ref="form" :model="form" :rules="rules" label-width="300px">
+            <el-form ref="form" :model="form" :rules="rules" label-width="260px">
               <el-form-item v-if="addActive == 0" label="用户名：" prop="username">
                 <el-input v-model="form.username" class="w24"></el-input>
               </el-form-item>
@@ -44,33 +48,34 @@
               <el-form-item v-if="addActive == 1" label="真实姓名：" prop="realname">
                 <el-input v-model="form.realname" class="w50"></el-input>
               </el-form-item>
-              <el-form-item v-if="addActive == 1" label="性别：" prop="gender">
-                <el-select v-model="form.gender" clearable placeholder="" class="w50">
-                  <el-option label="男" value="MALE" />
-                  <el-option label="女" value="FEMALE" />
-                  <el-option label="未知" value="UNKNOW" />
-                </el-select>
-              </el-form-item>
               <el-form-item v-if="addActive == 1" label="公司名称：" prop="companyName">
                 <el-input v-model="form.companyName" class="w50"></el-input>
               </el-form-item>
-              <el-form-item v-if="addActive == 1" label="公司性质：" prop="address">
-                <el-input v-model="form.address" class="w50"></el-input>
+              <el-form-item v-if="addActive == 1" label="公司性质：" prop="companyType">
+                <el-select v-model="form.companyType" clearable placeholder="" class="w50">
+                  <el-option label="国有企业" :value="1" />
+                  <el-option label="集体企业" :value="2" />
+                  <el-option label="联营企业" :value="3" />
+                  <el-option label="股份合作制企业" :value="4" />
+                  <el-option label="私营企业" :value="5" />
+                  <el-option label="合伙企业" :value="6" />
+                </el-select>
               </el-form-item>
               <el-form-item v-if="addActive == 1" label="地址：" prop="address">
                 <el-input v-model="form.address" class="w50"></el-input>
               </el-form-item>
-              <el-form-item v-if="addActive == 1" label="简介：" style="padding-bottom:66px;" prop="address">
-                <Editor v-model="form.address" class="w50" />
+              <el-form-item v-if="addActive == 1" label="简介：" style="padding-bottom:66px;" prop="introduction">
+                <Editor v-model="form.introduction" class="w50" />
               </el-form-item>
-              <el-form-item v-if="addActive == 1" label="网址：" prop="address">
-                <el-input v-model="form.address" class="w50"></el-input>
+              <el-form-item v-if="addActive == 1" label="网址：" prop="url">
+                <el-input v-model="form.url" class="w50"></el-input>
               </el-form-item>
-              <el-form-item label="营业执照：" prop="picName">
+              <el-form-item v-if="addActive == 1" label="营业执照：" prop="lisenceAtt">
                 <!-- :headers="{'accessToken': getToken()}" -->
                 <el-upload
                   class="avatar-uploader w24"
                   :action="baseURL + '/company/signup/uploadLisence'"
+                  accept="image/*"
                   :before-upload="handleBeforeUpload"
                   :show-file-list="false"
                   :on-success="handleSuccess"
@@ -80,9 +85,16 @@
                 </el-upload>
               </el-form-item>
               <el-form-item label=" ">
-                <el-button v-loading="loading" type="warning" class="w24 mt24" @click="handleConfirm">下一步</el-button>
+                <el-button v-if="addActive == 0" v-loading="loading" type="warning" class="w24 mt24" @click="handleConfirm">下一步</el-button>
+                <el-button v-if="addActive == 1" v-loading="loading" type="warning" class="w24 mt24" @click="handleSubmit">提交</el-button>
               </el-form-item>
             </el-form>
+            <div v-if="addActive == 2" class="register-ok">
+              <div class="register-ok-row">
+                <div class="register-ok-bg"></div>
+                <el-button v-if="addActive == 2" v-loading="loading" plain type="warning" class="w24 mt24">前往个人中心</el-button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -94,7 +106,8 @@
 import {
   getCompanyPhoneVerificationCode,
   getCompanyEmailVerificationCode,
-  validityCode
+  validityCode,
+  saveCompanyRegister
 } from '@/api/register/company'
 import Editor from '@/components/Editor'
 export default {
@@ -125,7 +138,7 @@ export default {
     }
     return {
       imgUrl: '', // 图片地址
-      addActive: 1, // 添加步骤
+      addActive: 0, // 添加步骤
       phoneSendCodeType: false, // 获取手机验证码状态 false 可以获取 true 不可获取
       phoneSendCodeCount: '获取验证码',
       emailSendCodeType: false, // 获取邮箱验证码状态 false 可以获取 true 不可获取
@@ -145,10 +158,12 @@ export default {
         email: '', // 邮箱
         mobile: '', // 手机号
         realname: '', // 真名
-        gender: '', //  性别 male 男 female 女 unknown 未知
+        // gender: '', //  性别 male 男 female 女 unknown 未知
         companyName: '', // 公司名
         address: '', // 地址
+        companyType: '', // 公司性质
         introduction: '', // 公司介绍
+        url: '', // 网址
         lisenceAtt: '' // 公司附件Id
       },
       rules: {
@@ -167,17 +182,23 @@ export default {
         emailCode: [
           { required: true, message: '请输入邮箱验证码', trigger: 'blur' }
         ],
-        userType: [
-          { required: true, message: '请选择用户类型', trigger: ['blur', 'change'] }
+        realname: [
+          { required: true, message: '请输入真实姓名', trigger: 'blur' }
         ],
-        status: [
-          { required: true, message: '请选择用户状态', trigger: ['blur', 'change'] }
+        companyName: [
+          { required: true, message: '请输入公司名称', trigger: 'blur' }
         ],
-        gender: [
-          { required: true, message: '请选择性别', trigger: ['blur', 'change'] }
+        companyType: [
+          { required: true, message: '请选择公司性质', trigger: ['blur', 'change'] }
         ],
-        userManageroleId: [
-          { required: true, message: '请选择角色', trigger: ['blur', 'change'] }
+        address: [
+          { required: true, message: '请输入公司地址', trigger: 'blur' }
+        ],
+        introduction: [
+          { required: true, message: '请输入公司简介', trigger: 'blur' }
+        ],
+        lisenceAtt: [
+          { required: true, message: '请上传营业执照', trigger: ['blur', 'change'] }
         ]
       }
     }
@@ -186,7 +207,7 @@ export default {
 
   },
   methods: {
-    // 保存回调
+    // 第一步保存回调
     handleConfirm() {
       // 公司注册第一步效验
       this.$refs['form'].validate((valid) => {
@@ -210,6 +231,22 @@ export default {
             }).catch(() => {
               this.loading = false
             })
+          }).catch(() => {
+            this.loading = false
+          })
+        } else {
+          return false
+        }
+      })
+    },
+    // 第二部保存回调
+    handleSubmit() {
+      this.$refs['form'].validate((valid) => {
+        if (valid) {
+          this.loading = true
+          saveCompanyRegister(this.form).then(res => {
+            this.addActive = 2 // 注册完成
+            this.loading = false
           }).catch(() => {
             this.loading = false
           })
@@ -315,8 +352,6 @@ export default {
       console.log(res, '---')
       this.imgUrl = res.data.url
       this.form.lisenceAtt = res.data.id
-      // this.dialogOption.imgUrl = res.data.imageUrl || ''
-      // this.form.avatarKey = res.data.imageKey || ''
     }
   }
 }
@@ -358,11 +393,23 @@ export default {
               background-size: cover;
               background-image:url('~@/assets/images/register/steps-2.png');
             }
+            .steps-2-active{
+              width:30px;
+              height:30px;
+              background-size: cover;
+              background-image:url('~@/assets/images/register/steps-2-active.png');
+            }
             .steps-3{
               width:30px;
               height:30px;
               background-size: cover;
               background-image:url('~@/assets/images/register/steps-3.png');
+            }
+            .steps-3-active{
+              width:30px;
+              height:30px;
+              background-size: cover;
+              background-image:url('~@/assets/images/register/steps-3-active.png');
             }
             >span{
               font-family: PingFangSC-Regular;
@@ -375,10 +422,33 @@ export default {
               }
             }
           }
+          .icon-sjx{
+            width:25px;
+            height:40px;
+            background-size: cover;
+            background-image:url('~@/assets/images/register/icon-sjx.png');
+          }
         }
         .register-form{
           width:800px;
           margin:100px auto 100px auto;
+          .register-ok{
+            display:flex;
+            align-items:center;
+            justify-content: center;
+            .register-ok-row{
+              display:flex;
+              flex-direction: column;
+              align-items: center;
+              .register-ok-bg{
+                width:276px;
+                height:209px;
+                background-repeat: no-repeat;
+                background-size: cover;
+                background-image:url('~@/assets/images/register/company-register-ok.png');
+              }
+            }
+          }
         }
       }
     }

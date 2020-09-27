@@ -2,5 +2,16 @@
   display:inline-block;
   background-repeat: no-repeat;
   background-size:cover;
+  background-position: center center;
   vertical-align: middle;
+  &.icon-pass-show{
+    width: 22px;
+    height: 16px;
+    background-image:url('~@/assets/images/index/icon-pass-show.png');
+  }
+  &.icon-pass-hidden{
+    width: 20px;
+    height: 10px;
+    background-image:url('~@/assets/images/index/icon-pass-hidden.png');
+  }
 }

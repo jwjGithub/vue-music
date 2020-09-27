@@ -52,7 +52,7 @@
         </el-popover>
         <i class="icon icon-user pointer"></i>
         <div class="register-login">
-          <span class="login-btn pointer">登录</span>
+          <span class="login-btn pointer" @click="openLogin">登录</span>
           <span>/</span>
           <el-popover
             placement="bottom"
@@ -71,8 +71,54 @@
           </el-popover>
         </div>
       </div>
-      <div class="right"></div>
     </div>
+    <el-dialog
+      :visible.sync="dialogOption.show"
+      :show-close="false"
+      class="dialog-login"
+    >
+      <div slot="title" class="dialog-title">
+        <div>登录曲库</div>
+        <i class="icon qr-code"></i>
+      </div>
+      <div class="">
+        <el-form ref="form" :model="form" :rules="rules" class="text-center">
+          <el-form-item prop="username">
+            <el-input v-model="form.username" class="w28" placeholder="请输入通行证、手机号或邮箱"></el-input>
+          </el-form-item>
+          <el-form-item prop="password">
+            <el-input
+              v-model="form.password"
+              class="w28"
+              placeholder="请输入密码"
+              :type="dialogOption.showPass == true ? 'text' : 'password'"
+            >
+              <i
+                slot="suffix"
+                class="pointer mr20 icon"
+                :class="dialogOption.showPass == true ? 'icon-pass-show' : 'icon-pass-hidden'"
+
+                @click="dialogOption.showPass = !dialogOption.showPass"
+              ></i>
+            </el-input>
+          </el-form-item>
+          <el-form-item label=" ">
+            <el-button v-loading="dialogOption.loading" plain type="warning" class="w28" @click="handleConfirm">登录</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <div class="left">
+          <span class="btn">用户协议</span>
+          <span>丨</span>
+          <span class="btn">隐私政策</span>
+        </div>
+        <div class="right">
+          <span class="btn mr34">注册</span>
+          <span class="btn">忘记密码</span>
+        </div>
+      </div>
+    </el-dialog>
   </header>
 </template>
 <script>
@@ -80,13 +126,30 @@ export default {
   name: 'MusHeader',
   data() {
     return {
+      dialogOption: {
+        showPass: false, // 是否显示密码
+        loading: false,
+        show: false
+      },
+      form: {
 
+      },
+      rules: {
+
+      }
     }
   },
   created() {
 
   },
   methods: {
+    openLogin() {
+      this.dialogOption.show = true
+    },
+    // 登录提交
+    handleConfirm() {
+      this.dialogOption.show = false
+    },
     // 跳转注册
     goRegister(type) {
       this.$router.push({
@@ -136,6 +199,7 @@ export default {
     .right{
       display:flex;
       align-items:center;
+      padding-right:20px;
       .search-input-row{
         display:flex;
         align-items:center;
@@ -209,6 +273,58 @@ export default {
       color: #000;
       font-size: 14px;
       background: transparent;
+    }
+  }
+  .dialog-login{
+    .el-dialog{
+      width:500px;
+      border-radius: 10px;
+    }
+    .dialog-title{
+      height:54px;
+      display:flex;
+      align-items:center;
+      justify-content: center;
+      position: relative;
+      font-size: 24px;
+      color: #666666;
+      .qr-code{
+        position: absolute;
+        right:0;
+        width: 54px;
+        height: 54px;
+        background-size: contain;
+        background-position: center center;
+        background-image:url('~@/assets/images/index/qr-code.png');
+      }
+    }
+    .dialog-footer{
+      height:60px;
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      padding:0 28px;
+      font-size: 14px;
+      color: #333333;
+      .btn{
+        &:hover{
+          cursor: pointer;
+          text-decoration: underline;
+        }
+      }
+    }
+    .el-dialog__header{
+      padding:16px 16px 0 16px;
+    }
+    .el-dialog__footer{
+      padding:0;
+      background: #f8f8f8;
+      border-radius: 0px 0px 10px 10px
+    }
+    .el-input--suffix{
+      .el-input__inner{
+        padding-right: 44px;
+      }
     }
   }
 }

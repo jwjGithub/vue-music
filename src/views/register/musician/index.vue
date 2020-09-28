@@ -151,6 +151,7 @@ export default {
       } else if (!reg.test(value)) {
         callback(new Error('请输入正确的手机号'))
       } else {
+        console.log('value', value)
         verifyMobile({ mobile: value }).then(res => {
           callback()
         }).catch((err) => {
@@ -225,7 +226,7 @@ export default {
       },
       rules: {
         username: [
-          { required: true, message: '请输入用户名', trigger: 'blur' }
+          { required: true, validator: validateUserName, trigger: 'blur' }
         ],
         mobile: [
           { required: true, validator: validatePhone, trigger: 'blur' }

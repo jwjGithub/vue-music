@@ -123,7 +123,7 @@ import {
 import {
   doVerCode,
   sendShortMess,
-  sendMailVercode
+  sendHtmlMail
 } from '@/api/common'
 import Editor from '@/components/Editor'
 export default {
@@ -372,11 +372,11 @@ export default {
       if (!bl) return false
       let json = {
         email: this.form.email,
-        subject: '邮箱验证码',
-        content: '邮箱验证码{}'
+        name: this.form.username || ' ',
+        prefix: 'Mail_Send_Musician_Ver'
       }
       this.loading = true
-      sendMailVercode(json).then(res => {
+      sendHtmlMail(json).then(res => {
         let _this = this
         this.emailSendCodeType = true
         this.emailSendCodeCount = '60秒后重新获取'

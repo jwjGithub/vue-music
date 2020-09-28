@@ -24,3 +24,11 @@ export function sendMailVercode(data) {
     data: data
   })
 }
+// 发送一个HTML格式邮件-带类型 Mail_Send_Musician_Ver 音乐人注册邮件验证码
+export function sendHtmlMail(data) {
+  return request({
+    url: '/sys/sms/sendHtmlMail',
+    method: 'post',
+    data: data
+  })
+}

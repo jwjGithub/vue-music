@@ -35,7 +35,7 @@
               <el-form-item v-if="addActive == 0" label="手机验证码：" prop="phoneCode">
                 <div class="w24 text-left">
                   <el-input v-model="form.phoneCode" class="w10"></el-input>
-                  <el-button v-loading="loading" type="success" class="w13 ml10" :disabled="phoneSendCodeType" @click="getPhoneSendCode">{{ phoneSendCodeCount }}</el-button>
+                  <el-button v-loading="loading" type="success" class="btn-success w13 ml10" :disabled="phoneSendCodeType" @click="getPhoneSendCode">{{ phoneSendCodeCount }}</el-button>
                 </div>
               </el-form-item>
               <el-form-item v-if="addActive == 0" label="邮箱：" prop="email">
@@ -43,7 +43,7 @@
               </el-form-item>
               <el-form-item v-if="addActive == 0" label="邮箱验证码：" prop="emailCode">
                 <el-input v-model="form.emailCode" class="w10"></el-input>
-                <el-button v-loading="loading" type="success" class="w13 ml10" :disabled="emailSendCodeType" @click="getEmailSendCode">{{ emailSendCodeCount }}</el-button>
+                <el-button v-loading="loading" type="success" class="btn-success w13 ml10" :disabled="emailSendCodeType" @click="getEmailSendCode">{{ emailSendCodeCount }}</el-button>
               </el-form-item>
               <el-form-item v-if="addActive == 1" label="真实姓名：" prop="realname">
                 <el-input v-model="form.realname" class="w50"></el-input>
@@ -95,14 +95,14 @@
                 </el-upload>
               </el-form-item> -->
               <el-form-item label=" ">
-                <el-button v-if="addActive == 0" v-loading="loading" type="warning" class="w24 mt24" @click="handleConfirm">下一步</el-button>
-                <el-button v-if="addActive == 1" v-loading="loading" type="warning" class="w24 mt24" @click="handleSubmit">注册</el-button>
+                <el-button v-if="addActive == 0" v-loading="loading" type="warning" class="btn-success w24 mt24" @click="handleConfirm">下一步</el-button>
+                <el-button v-if="addActive == 1" v-loading="loading" type="warning" class="btn-success w24 mt24" @click="handleSubmit">注册</el-button>
               </el-form-item>
             </el-form>
             <div v-if="addActive == 2" class="register-ok">
               <div class="register-ok-row">
                 <div class="register-ok-bg"></div>
-                <el-button v-if="addActive == 2" v-loading="loading" plain type="warning" class="w24 mt24">前往个人中心</el-button>
+                <el-button v-if="addActive == 2" v-loading="loading" plain type="warning" class="btn-success w24 mt24">前往个人中心</el-button>
               </div>
             </div>
           </div>
@@ -529,7 +529,7 @@ export default {
       border-radius: 20px;
     }
   }
-  .el-button{
+  .btn-success{
     border-radius: 20px;
   }
   .el-loading-mask{

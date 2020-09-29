@@ -1,7 +1,7 @@
 <template>
   <div class="main index-main">
     <div class="main-content">
-      <mus-header></mus-header>
+      <mus-header :select-nav="'home'"></mus-header>
       <!-- banner轮播图 -->
       <div class="banner">
         <el-row>

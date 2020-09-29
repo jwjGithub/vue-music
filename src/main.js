@@ -11,12 +11,21 @@ import MusHeader from '@/components/page/MusHeader'
 import MusFooter from '@/components/page/MusFooter'
 
 // 全局方法引入
-import { goLocation } from '@/utils/index'
+import { goLocation, parseTime, resetForm } from '@/utils/index'
 Vue.prototype.baseURL = process.env.VUE_APP_BASE_API
 Vue.config.productionTip = false
 
 // 全局方法挂载
 Vue.prototype.goLocation = goLocation
+Vue.prototype.parseTime = parseTime
+Vue.prototype.resetForm = resetForm
+// 路由跳转
+Vue.prototype.Go = function(url, query) {
+  router.push({
+    path: url,
+    query
+  })
+}
 // 全局组件挂载
 Vue.component('MusHeader', MusHeader)
 Vue.component('MusFooter', MusFooter)

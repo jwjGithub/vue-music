@@ -7,7 +7,7 @@
         </div>
       </div>
       <div class="center">
-        <el-button class="text-btn active" type="text">首页</el-button>
+        <el-button class="text-btn" :class="{'active': selectNav == 'home'}" type="text" @click="Go('/')">首页</el-button>
         <el-button class="text-btn" type="text">词曲库</el-button>
         <el-button class="text-btn" type="text">Beat/BGM</el-button>
         <el-button class="text-btn" type="text">合作</el-button>
@@ -25,6 +25,7 @@
               <span>音乐人</span>
             </div> -->
         <el-popover
+          v-if="$store.getters.userInfo.userId"
           placement="bottom"
           width="116"
           trigger="hover"
@@ -50,9 +51,28 @@
             <i class="icon icon-upload"></i>
           </div>
         </el-popover>
-        <i class="icon icon-user pointer"></i>
-        <div class="register-login">
-          <span class="login-btn pointer" @click="openLogin">登录</span>
+        <template v-if="$store.getters.userInfo.userId">
+          <i class="icon icon-user pointer mr12"></i>
+          <span v-if="$store.getters.loginType == 'musician'" class="login-btn pointer">个人空间</span>
+          <span v-if="$store.getters.loginType == 'company'" class="login-btn pointer">办公空间</span>
+        </template>
+        <div v-if="!$store.getters.userInfo.userId" class="register-login">
+          <el-popover
+            placement="bottom"
+            width="116"
+            trigger="hover"
+          >
+            <div class="popover-list">
+              <div class="list">
+                <el-button class="text-btn" type="text" @click="openLogin('musician')">音乐人登录</el-button>
+              </div>
+              <div class="list">
+                <el-button class="text-btn" type="text" @click="openLogin('company')">公司登录</el-button>
+              </div>
+            </div>
+            <span slot="reference" class="login-btn pointer">登录</span>
+          </el-popover>
+
           <span>/</span>
           <el-popover
             placement="bottom"
@@ -79,10 +99,10 @@
     >
       <div slot="title" class="dialog-title">
         <div>登录曲库</div>
-        <i class="icon qr-code"></i>
+        <!-- <i class="icon qr-code"></i> -->
       </div>
       <div class="">
-        <el-form ref="form" :model="form" :rules="rules" class="text-center">
+        <el-form ref="form" :model="form" :rules="rules" class="text-center" :inline="true">
           <el-form-item prop="username">
             <el-input v-model="form.username" class="w28" placeholder="请输入通行证、手机号或邮箱"></el-input>
           </el-form-item>
@@ -124,6 +144,12 @@
 <script>
 export default {
   name: 'MusHeader',
+  props: {
+    selectNav: {
+      type: String,
+      default: ''
+    }
+  },
   data() {
     return {
       dialogOption: {
@@ -131,24 +157,53 @@ export default {
         loading: false,
         show: false
       },
+      loginType: '', // 登录类型 musician:音乐人登录 company:公司登录
       form: {
-
+        username: '',
+        password: ''
       },
       rules: {
-
+        username: [
+          { required: true, message: '请输入用户名', trigger: 'blur' }
+        ],
+        password: [
+          { required: true, message: '请输入密码', trigger: 'blur' }
+        ]
       }
     }
   },
   created() {
-
+    console.log(this.$store.getters.userInfo.userId)
   },
   methods: {
-    openLogin() {
+    openLogin(loginType) {
+      this.loginType = loginType
       this.dialogOption.show = true
+      this.resetForm('form')
     },
     // 登录提交
     handleConfirm() {
-      this.dialogOption.show = false
+      this.$refs['form'].validate((valid) => {
+        if (valid) {
+          this.dialogOption.loading = true
+          if (this.loginType === 'musician') {
+            this.$store.dispatch('MusicianLogin', this.form).then(() => {
+              this.dialogOption.loading = false
+              this.dialogOption.show = false
+            }).catch(() => {
+              this.dialogOption.loading = false
+            })
+          }
+          if (this.loginType === 'company') {
+            this.$store.dispatch('CompanyLogin', this.form).then(() => {
+              this.dialogOption.loading = false
+              this.dialogOption.show = false
+            }).catch(() => {
+              this.dialogOption.loading = false
+            })
+          }
+        }
+      })
     },
     // 跳转注册
     goRegister(type) {
@@ -253,10 +308,11 @@ export default {
       }
       .register-login{
         font-size:14px;
-        .login-btn{
-          &:hover{
-            color:#ffae00;
-          }
+      }
+      .login-btn{
+        font-size:14px;
+        &:hover{
+          color:#ffae00;
         }
       }
     }

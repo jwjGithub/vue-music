@@ -114,7 +114,7 @@
           <span class="btn">隐私政策</span>
         </div>
         <div class="right">
-          <span class="btn mr34">注册</span>
+          <!-- <span class="btn mr34">注册</span> -->
           <span class="btn">忘记密码</span>
         </div>
       </div>

@@ -32,6 +32,12 @@ const routes = [
     ]
   },
   {
+    path: '/feedback',
+    name: 'Feedback',
+    meta: { title: '问题反馈' },
+    component: () => import('@/views/feedback/index')
+  },
+  {
     path: '/startPlay',
     name: 'StartPlay',
     component: () => import('@/views/startPlay')

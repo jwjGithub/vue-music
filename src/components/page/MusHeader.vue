@@ -122,7 +122,7 @@
               ></i>
             </el-input>
           </el-form-item>
-          <el-form-item label=" ">
+          <el-form-item>
             <el-button v-loading="dialogOption.loading" plain type="warning" class="w28" @click="handleConfirm">登录</el-button>
           </el-form-item>
         </el-form>

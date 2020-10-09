@@ -1,0 +1,145 @@
+<template>
+  <div class="main feedback-main">
+    <div class="main-content">
+      <mus-header></mus-header>
+      <div class="feedback-content">
+        <div class="content">
+          <div class="left"></div>
+          <div class="right">
+            <el-form ref="form" :model="form" :rules="rules" label-width="120px">
+              <el-form-item label="标题" prop="title">
+                <el-input v-model="form.title" class="w28"></el-input>
+              </el-form-item>
+              <el-form-item label="反馈内容" prop="content">
+                <el-input v-model="form.content" type="textarea" rows="4" class="w46"></el-input>
+              </el-form-item>
+              <el-form-item v-if="!$store.getters.userInfo.userId" label="姓名" prop="proposer">
+                <el-input v-model="form.proposer" class="w28"></el-input>
+              </el-form-item>
+              <el-form-item v-if="!$store.getters.userInfo.userId" label="手机号" prop="mobile">
+                <el-input v-model="form.mobile" class="w28"></el-input>
+              </el-form-item>
+              <el-form-item label=" ">
+                <el-button v-loading="loading" plain type="warning" class="btn-success w28 mt24" @click="handleSubmit">提交</el-button>
+              </el-form-item>
+            </el-form>
+          </div>
+        </div>
+      </div>
+      <mus-footer></mus-footer>
+    </div>
+  </div>
+</template>
+<script>
+import { saveQuestion } from '@/api/feedback'
+export default {
+  name: 'Feedback',
+  components: {
+  },
+  data() {
+    let validatePhone = (rule, value, callback) => {
+      let reg = /^1[0-9]{10}$/
+      if (value === '') {
+        callback(new Error('请输入手机号'))
+      } else if (!reg.test(value)) {
+        callback(new Error('请输入正确的手机号'))
+      } else {
+        callback()
+      }
+    }
+    return {
+      loading: false,
+      form: {
+        title: '', // 问题标题
+        content: '', // 问题内容
+        proposer: '', // 当未登录时必填	string	提交人姓名
+        mobile: '' // 当未登录时必填	string	提交人手机
+      },
+      rules: {
+        title: [
+          { required: true, message: '请输入标题', trigger: 'blur' }
+        ],
+        content: [
+          { required: true, message: '请输入具体意见', trigger: 'blur' }
+        ],
+        proposer: [
+          { required: true, message: '请输入姓名', trigger: 'blur' }
+        ],
+        mobile: [
+          { required: true, validator: validatePhone, trigger: 'blur' }
+        ]
+      }
+    }
+  },
+  created() {
+  },
+  methods: {
+    handleSubmit() {
+      this.$refs['form'].validate((valid) => {
+        if (valid) {
+          this.loading = true
+          saveQuestion(this.form).then(res => {
+            this.$message.success('提交成功')
+            this.loading = false
+            this.resetForm('form')
+          }).catch(() => {
+            this.loading = false
+          })
+        } else {
+          return false
+        }
+      })
+    }
+  }
+}
+</script>
+<style lang="scss" scoped>
+.main{
+  height:100%;
+  .main-content{
+    height:100%;
+    display:flex;
+    justify-content: space-between;
+    flex-direction:column;
+    .feedback-content{
+      flex:1;
+      >.content{
+        width:1100px;
+				margin:0 auto;
+				display:flex;
+				padding:60px;
+				>.left{
+					width:320px;
+					height:560px;
+					margin-right:60px;
+					background-repeat: no-repeat;
+					background-size:cover;
+					background-position: center center;
+					background-image:url('~@/assets/images/feedback/feedback-bg.png');
+				}
+				>.right{
+					padding-top:40px;
+				}
+      }
+    }
+  }
+}
+</style>
+<style lang="scss">
+.feedback-main{
+  .el-input{
+    .el-input__inner{
+      border-radius: 20px;
+    }
+  }
+  .btn-success{
+    border-radius: 20px;
+  }
+  .el-button--warning{
+    border-radius: 20px;
+  }
+  .el-loading-mask{
+    border-radius: 20px;
+  }
+}
+</style>

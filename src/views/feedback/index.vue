@@ -10,14 +10,21 @@
               <el-form-item label="标题" prop="title">
                 <el-input v-model="form.title" class="w28"></el-input>
               </el-form-item>
+              <el-form-item label="类型" prop="type">
+                <el-radio-group v-model="form.type">
+                  <el-radio :label="0">问题反馈</el-radio>
+                  <el-radio :label="1">举报投诉</el-radio>
+                  <el-radio :label="2">优化建议</el-radio>
+                </el-radio-group>
+              </el-form-item>
               <el-form-item label="反馈内容" prop="content">
                 <el-input v-model="form.content" type="textarea" rows="4" class="w46"></el-input>
               </el-form-item>
               <el-form-item v-if="!$store.getters.userInfo.userId" label="姓名" prop="proposer">
                 <el-input v-model="form.proposer" class="w28"></el-input>
               </el-form-item>
-              <el-form-item v-if="!$store.getters.userInfo.userId" label="手机号" prop="mobile">
-                <el-input v-model="form.mobile" class="w28"></el-input>
+              <el-form-item v-if="!$store.getters.userInfo.userId" label="邮箱" prop="email">
+                <el-input v-model="form.email" class="w28"></el-input>
               </el-form-item>
               <el-form-item label=" ">
                 <el-button v-loading="loading" plain type="warning" class="btn-success w28 mt24" @click="handleSubmit">提交</el-button>
@@ -47,17 +54,31 @@ export default {
         callback()
       }
     }
+    let validateEmail = (rule, value, callback) => {
+      let reg = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/
+      if (value === '') {
+        callback(new Error('请输入邮箱'))
+      } else if (!reg.test(value)) {
+        callback(new Error('请输入正确的邮箱格式'))
+      } else {
+        callback()
+      }
+    }
     return {
       loading: false,
       form: {
         title: '', // 问题标题
         content: '', // 问题内容
+        type: 0,
         proposer: '', // 当未登录时必填	string	提交人姓名
-        mobile: '' // 当未登录时必填	string	提交人手机
+        email: '' // 当未登录时必填	string	提交人邮箱
       },
       rules: {
         title: [
           { required: true, message: '请输入标题', trigger: 'blur' }
+        ],
+        type: [
+          { required: true, message: '请选择类型', trigger: 'blur' }
         ],
         content: [
           { required: true, message: '请输入具体意见', trigger: 'blur' }
@@ -65,8 +86,8 @@ export default {
         proposer: [
           { required: true, message: '请输入姓名', trigger: 'blur' }
         ],
-        mobile: [
-          { required: true, validator: validatePhone, trigger: 'blur' }
+        email: [
+          { required: true, validator: validateEmail, trigger: 'blur' }
         ]
       }
     }

@@ -8,7 +8,7 @@
           <div class="link-btn">公司需求</div>
           <div class="link-btn">主流榜单</div>
         </div>
-        <div class="w16">
+        <div class="w12">
           <div class="link-title">实用功能</div>
           <div class="link-btn">商务合作</div>
           <div class="link-btn" @click="Go('/feedback')">举报投诉</div>
@@ -39,7 +39,14 @@
             <i slot="reference" class="icon icon-phone"></i>
           </el-popover>
           <!-- <span class="phone mr31">186-2450-0357</span> -->
-          <i class="icon icon-wechat ml24"></i>
+          <el-popover
+            popper-class="footer-bottom-popover"
+            placement="top"
+            trigger="hover"
+          >
+            <img width="200px" height="200px" src="@/assets/images/index/QR-code.jpg">
+            <i slot="reference" class="icon icon-wechat ml24"></i>
+          </el-popover>
           <el-popover
             popper-class="footer-bottom-popover"
             placement="top"

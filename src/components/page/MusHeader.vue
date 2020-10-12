@@ -52,9 +52,14 @@
           </div>
         </el-popover>
         <template v-if="$store.getters.userInfo.userId">
-          <i class="icon icon-user pointer mr12"></i>
-          <span v-if="$store.getters.loginType == 'musician'" class="login-btn pointer">个人空间</span>
-          <span v-if="$store.getters.loginType == 'company'" class="login-btn pointer">办公空间</span>
+          <div v-if="$store.getters.loginType !== 'company'" class="personal-link">
+            <i class="icon icon-login-company"></i>
+            <span>办公空间</span>
+          </div>
+          <div v-if="$store.getters.loginType !== 'musician'" class="personal-link">
+            <i class="icon icon-login-user"></i>
+            <span>个人空间</span>
+          </div>
         </template>
         <div v-if="!$store.getters.userInfo.userId" class="register-login">
           <el-popover
@@ -313,6 +318,17 @@ export default {
         font-size:14px;
         &:hover{
           color:#ffae00;
+        }
+      }
+      .personal-link{
+        display:flex;
+        flex-direction: column;
+        align-items:center;
+        cursor: pointer;
+        >span{
+          margin-top:8px;
+          color:#333;
+          font-size:12px;
         }
       }
     }

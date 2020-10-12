@@ -11,7 +11,7 @@
         <div class="w12">
           <div class="link-title">实用功能</div>
           <div class="link-btn">商务合作</div>
-          <div class="link-btn" @click="Go('/feedback')">举报投诉</div>
+          <div class="link-btn" @click="Go('/feedback?type=1')">举报投诉</div>
           <div class="link-btn">诚聘英才</div>
         </div>
         <div class="w14">
@@ -23,8 +23,8 @@
         <div class="w14">
           <div class="link-title">帮助中心</div>
           <div class="link-btn">常见问题</div>
-          <div class="link-btn" @click="Go('/feedback')">问题反馈</div>
-          <div class="link-btn" @click="Go('/feedback')">优化建议</div>
+          <div class="link-btn" @click="Go('/feedback?type=0')">问题反馈</div>
+          <div class="link-btn" @click="Go('/feedback?type=2')">优化建议</div>
         </div>
       </div>
       <div class="contacts">

@@ -92,7 +92,19 @@ export default {
       }
     }
   },
+  watch: {
+    $route(route) {
+      let type = route.query.type
+      if (type) {
+        this.$set(this.form, 'type', Number(type))
+      }
+    }
+  },
   created() {
+    let type = this.$route.query.type
+    if (type) {
+      this.$set(this.form, 'type', Number(type))
+    }
   },
   methods: {
     handleSubmit() {

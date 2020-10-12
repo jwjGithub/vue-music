@@ -24,6 +24,8 @@ Vue.prototype.Go = function(url, query) {
   router.push({
     path: url,
     query
+  }).catch(() => {
+
   })
 }
 // 全局组件挂载

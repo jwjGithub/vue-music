@@ -15,8 +15,8 @@ const service = axios.create({
 // request拦截器
 service.interceptors.request.use(
   config => {
-    config.headers['token'] = '1b253bb6e8efcbf8cdfc3404c3f8562a' // 让每个请求携带自定义token 请根据实际情况自行修改
-    // config.headers['token'] = getToken() // 让每个请求携带自定义token 请根据实际情况自行修改
+    // config.headers['token'] = '1b253bb6e8efcbf8cdfc3404c3f8562a' // 让每个请求携带自定义token 请根据实际情况自行修改
+    config.headers['token'] = getToken() // 让每个请求携带自定义token 请根据实际情况自行修改
     return config
     // if (getToken()) {
     //   config.headers['token'] = getToken() // 让每个请求携带自定义token 请根据实际情况自行修改

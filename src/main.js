@@ -5,13 +5,14 @@ import store from './store'
 import Element from 'element-ui'
 import './assets/styles/element-variables.scss'
 import './assets/styles/index.scss' // global css
-
+import './permission' // permission control
 // 全局组件引入
 import MusHeader from '@/components/page/MusHeader'
 import MusFooter from '@/components/page/MusFooter'
 
 // 全局方法引入
 import { goLocation, parseTime, resetForm } from '@/utils/index'
+import { getToken } from '@/utils/auth'
 Vue.prototype.baseURL = process.env.VUE_APP_BASE_API
 Vue.config.productionTip = false
 
@@ -19,6 +20,7 @@ Vue.config.productionTip = false
 Vue.prototype.goLocation = goLocation
 Vue.prototype.parseTime = parseTime
 Vue.prototype.resetForm = resetForm
+Vue.prototype.getToken = getToken
 // 路由跳转
 Vue.prototype.Go = function(url, query) {
   router.push({
@@ -27,6 +29,9 @@ Vue.prototype.Go = function(url, query) {
   }).catch(() => {
 
   })
+}
+Vue.prototype.GoWindow = function(url) {
+  window.open(url)
 }
 // 全局组件挂载
 Vue.component('MusHeader', MusHeader)

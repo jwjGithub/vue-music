@@ -52,11 +52,11 @@
           </div>
         </el-popover>
         <template v-if="$store.getters.userInfo.userId">
-          <div v-if="$store.getters.loginType !== 'company'" class="personal-link">
+          <div v-if="$store.getters.loginType !== 'company'" class="personal-link" @click="GoWindow('http://47.94.21.246:9082/#/?token=' + getToken())">
             <i class="icon icon-login-company"></i>
             <span>办公空间</span>
           </div>
-          <div v-if="$store.getters.loginType !== 'musician'" class="personal-link">
+          <div v-if="$store.getters.loginType !== 'musician'" class="personal-link" @click="GoWindow('http://47.94.21.246:9082/#/?token=' + getToken())">
             <i class="icon icon-login-user"></i>
             <span>个人空间</span>
           </div>
@@ -193,11 +193,14 @@ export default {
           this.dialogOption.loading = true
           if (this.loginType === 'musician') {
             this.$store.dispatch('MusicianLogin', this.form).then(() => {
+              console.log('-登录成功')
               this.dialogOption.loading = false
               this.dialogOption.show = false
-            }).catch(() => {
-              this.dialogOption.loading = false
             })
+            // .catch(() => {
+            //   console.log('登录失败')
+            //   this.dialogOption.loading = false
+            // })
           }
           if (this.loginType === 'company') {
             this.$store.dispatch('CompanyLogin', this.form).then(() => {

@@ -26,7 +26,7 @@ const user = {
     CompanyLogin({ commit }, userInfo) {
       return new Promise((resolve, reject) => {
         companyLogin(userInfo).then(res => {
-          const data = res.data
+          const data = res
           setToken(data.token)
           commit('SET_USERINFO', data.employeeInfo || {})
           commit('SET_TOKEN', data.token)
@@ -41,7 +41,7 @@ const user = {
     MusicianLogin({ commit }, userInfo) {
       return new Promise((resolve, reject) => {
         musicianLogin(userInfo).then(res => {
-          const data = res.data
+          const data = res
           setToken(data.token)
           commit('SET_USERINFO', data.musicianInfo || {})
           commit('SET_TOKEN', data.token)

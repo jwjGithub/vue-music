@@ -215,9 +215,7 @@ export default {
     },
     // 跳转注册
     goRegister(type) {
-      this.$router.push({
-        path: '/register/' + type
-      })
+      this.Go('/register/' + type)
     }
   }
 }

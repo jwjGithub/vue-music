@@ -26,7 +26,7 @@
           </div>
           <div class="register-form">
             <el-form ref="form" :model="form" :rules="rules" label-width="260px">
-              <el-form-item v-if="addActive == 0" label="姓名：" prop="username">
+              <el-form-item v-if="addActive == 0" label="用户名：" prop="username">
                 <el-input v-model="form.username" class="w24"></el-input>
               </el-form-item>
               <el-form-item v-if="addActive == 0" label="手机号：" prop="mobile">
@@ -126,6 +126,7 @@ import {
   sendHtmlMail
 } from '@/api/common'
 import Editor from '@/components/Editor'
+import { strlen } from '@/utils/index'
 export default {
   name: 'RegisterCompany',
   components: {
@@ -133,13 +134,20 @@ export default {
   },
   data() {
     let validateUserName = (rule, value, callback) => {
+      let reg = /^[a-zA-Z0-9_\u4e00-\u9fa5]+$/
+      let regNum = /^[0-9]+$/
       if (value === '') {
         callback(new Error('请输入用户名'))
+      } else if (!reg.test(value)) {
+        callback(new Error('用户名仅支持中英文、数字和下划线,且不能为纯数字'))
+      } else if (regNum.test(value)) {
+        callback(new Error('用户名仅支持中英文、数字和下划线,且不能为纯数字'))
+      } else if (strlen(value) > 14) {
+        callback(new Error('用户名不能超过7个汉字或14个字符'))
       } else {
         verifyUserName({ username: value }).then(res => {
           callback()
-        }).catch((err) => {
-          console.log(err, '-err')
+        }).catch(() => {
           callback(new Error('用户已注册'))
         })
       }

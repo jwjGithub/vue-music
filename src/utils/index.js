@@ -98,3 +98,18 @@ export function resetForm(refName) {
     this.$refs[refName].resetFields()
   }
 }
+
+// 计算字符串长度 中文+2 英文+1
+export function strlen(str) {
+  var len = 0
+  for (var i = 0; i < str.length; i++) {
+    var c = str.charCodeAt(i)
+    // 单字节加1
+    if ((c >= 0x0001 && c <= 0x007e) || (c >= 0xff60 && c <= 0xff9f)) {
+      len++
+    } else {
+      len += 2
+    }
+  }
+  return len
+}

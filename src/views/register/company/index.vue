@@ -110,12 +110,28 @@ import {
   saveCompanyRegister
 } from '@/api/register/company'
 import Editor from '@/components/Editor'
+import { strlen } from '@/utils/index'
 export default {
   name: 'RegisterCompany',
   components: {
     Editor
   },
   data() {
+    let validateUserName = (rule, value, callback) => {
+      let reg = /^[a-zA-Z0-9_\u4e00-\u9fa5]+$/
+      let regNum = /^[0-9]+$/
+      if (value === '') {
+        callback(new Error('请输入用户名'))
+      } else if (!reg.test(value)) {
+        callback(new Error('用户名仅支持中英文、数字和下划线,且不能为纯数字'))
+      } else if (regNum.test(value)) {
+        callback(new Error('用户名仅支持中英文、数字和下划线,且不能为纯数字'))
+      } else if (strlen(value) > 14) {
+        callback(new Error('用户名不能超过7个汉字或14个字符'))
+      } else {
+        callback()
+      }
+    }
     let validatePhone = (rule, value, callback) => {
       let reg = /^1[0-9]{10}$/
       if (value === '') {
@@ -168,7 +184,7 @@ export default {
       },
       rules: {
         username: [
-          { required: true, message: '请输入用户名', trigger: 'blur' }
+          { required: true, validator: validateUserName, trigger: 'blur' }
         ],
         mobile: [
           { required: true, validator: validatePhone, trigger: 'blur' }

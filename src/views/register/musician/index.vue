@@ -35,7 +35,7 @@
               <el-form-item v-if="addActive == 0" label="手机验证码：" prop="phoneCode">
                 <div class="w24 text-left">
                   <el-input v-model="form.phoneCode" class="w10"></el-input>
-                  <el-button v-loading="loading" type="success" class="btn-success w13 ml10" :disabled="phoneSendCodeType" @click="getPhoneSendCode">{{ phoneSendCodeCount }}</el-button>
+                  <el-button v-loading="phoneLoading" type="success" class="btn-success w13 ml10" :disabled="phoneSendCodeType" @click="getPhoneSendCode">{{ phoneSendCodeCount }}</el-button>
                 </div>
               </el-form-item>
               <el-form-item v-if="addActive == 0" label="邮箱：" prop="email">
@@ -43,7 +43,7 @@
               </el-form-item>
               <el-form-item v-if="addActive == 0" label="邮箱验证码：" prop="emailCode">
                 <el-input v-model="form.emailCode" class="w10"></el-input>
-                <el-button v-loading="loading" type="success" class="btn-success w13 ml10" :disabled="emailSendCodeType" @click="getEmailSendCode">{{ emailSendCodeCount }}</el-button>
+                <el-button v-loading="emailLoading" type="success" class="btn-success w13 ml10" :disabled="emailSendCodeType" @click="getEmailSendCode">{{ emailSendCodeCount }}</el-button>
               </el-form-item>
               <el-form-item v-if="addActive == 1" label="真实姓名：" prop="realname">
                 <el-input v-model="form.realname" class="w50"></el-input>
@@ -102,7 +102,7 @@
             <div v-if="addActive == 2" class="register-ok">
               <div class="register-ok-row">
                 <div class="register-ok-bg"></div>
-                <el-button v-if="addActive == 2" v-loading="loading" plain type="warning" class="btn-success w24 mt24">前往个人中心</el-button>
+                <el-button v-if="addActive == 2" v-loading="loading" plain type="warning" class="btn-success w24 mt24">返回主页</el-button>
               </div>
             </div>
           </div>
@@ -210,6 +210,8 @@ export default {
       emailSendCodeType: false, // 获取邮箱验证码状态 false 可以获取 true 不可获取
       emailSendCodeCount: '获取验证码',
       loading: false,
+      emailLoading: false,
+      phoneLoading: false,
       dataList: [],
       professionList: [], // 工种列表
       queryForm: {
@@ -343,14 +345,14 @@ export default {
         mobile: this.form.mobile,
         username: this.form.username
       }
-      this.loading = true
+      this.phoneLoading = true
       sendShortMess(json).then(res => {
         let _this = this
         this.phoneSendCodeType = true
         this.phoneSendCodeCount = '60秒后重新获取'
         let count = 60
         let indexS = ''
-        this.loading = false
+        this.phoneLoading = false
         function countTimeout() {
           indexS = setTimeout(() => {
             if (count <= 1) {
@@ -365,7 +367,7 @@ export default {
         }
         countTimeout()
       }).catch(() => {
-        this.loading = false
+        this.phoneLoading = false
       })
     },
     // 获取邮箱验证码
@@ -384,14 +386,14 @@ export default {
         name: this.form.username || ' ',
         prefix: 'Mail_Send_Musician_Ver'
       }
-      this.loading = true
+      this.emailLoading = true
       sendHtmlMail(json).then(res => {
         let _this = this
         this.emailSendCodeType = true
         this.emailSendCodeCount = '60秒后重新获取'
         let count = 60
         let indexS = ''
-        this.loading = false
+        this.emailLoading = false
         function countTimeout() {
           indexS = setTimeout(() => {
             if (count <= 1) {
@@ -406,7 +408,7 @@ export default {
         }
         countTimeout()
       }).catch(() => {
-        this.loading = false
+        this.emailLoading = false
       })
     },
     // 选择文件回调

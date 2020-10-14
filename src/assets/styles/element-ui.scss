@@ -13,3 +13,23 @@
     }
   }
 }
+
+// 按钮
+.el-button--success{
+  &.el-loading-parent--relative{
+    .el-loading-spinner{
+      .path{
+        stroke: #13ce66;
+      }
+    }
+  }
+}
+.el-button--warning{
+  &.el-loading-parent--relative{
+    .el-loading-spinner{
+      .path{
+        stroke: #ffae00;
+      }
+    }
+  }
+}

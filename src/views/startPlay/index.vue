@@ -436,7 +436,7 @@ export default {
                   background-image:url('~@/assets/images/icon/collect_b.png');
                 }
                 &.active,&:hover{
-                  background-color: #f3f3f3;
+                  background-color: #FFAE00;
                 }
               }
             }

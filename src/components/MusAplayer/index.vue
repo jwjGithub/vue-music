@@ -216,16 +216,16 @@ export default {
 			align-items:center;
 			justify-content: center;
 			.prev{
-				width:16px;
-				height:14px;
+				width:17px;
+				height:18px;
 				cursor: pointer;
 				background-repeat: no-repeat;
 				background-size:cover;
 				background-image:url('~@/assets/images/aplayer/prev.png');
 			}
 			.play{
-				width:42px;
-				height:42px;
+				width:50px;
+				height:50px;
 				margin:0 40px;
 				cursor: pointer;
 				background-repeat: no-repeat;
@@ -233,8 +233,8 @@ export default {
 				background-image:url('~@/assets/images/aplayer/play.png');
 			}
 			.pause{
-				width:42px;
-				height:42px;
+				width:50px;
+				height:50px;
 				margin:0 40px;
 				cursor: pointer;
 				background-repeat: no-repeat;
@@ -242,8 +242,8 @@ export default {
 				background-image:url('~@/assets/images/aplayer/pause.png');
 			}
 			.r_switch{
-				width:16px;
-				height:14px;
+				width:17px;
+				height:18px;
 				cursor: pointer;
 				background-repeat: no-repeat;
 				background-size:cover;
@@ -303,8 +303,8 @@ export default {
 			align-items:center;
 			justify-content: center;
 			>.random{
-				width:26px;
-				height:22px;
+				width:24px;
+				height:20px;
 				cursor: pointer;
 				background-repeat: no-repeat;
 				background-size:cover;
@@ -312,7 +312,7 @@ export default {
 			}
 			>.volume{
 				margin:0 8px 0 30px;
-				width:20px;
+				width:22px;
 				height:20px;
 				cursor: pointer;
 				background-repeat: no-repeat;

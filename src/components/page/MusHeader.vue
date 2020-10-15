@@ -204,11 +204,9 @@ export default {
               console.log('-登录成功')
               this.dialogOption.loading = false
               this.dialogOption.show = false
+            }).catch(() => {
+              this.dialogOption.loading = false
             })
-            // .catch(() => {
-            //   console.log('登录失败')
-            //   this.dialogOption.loading = false
-            // })
           }
           if (this.loginType === 'company') {
             this.$store.dispatch('CompanyLogin', this.form).then(() => {

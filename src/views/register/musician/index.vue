@@ -102,7 +102,7 @@
             <div v-if="addActive == 2" class="register-ok">
               <div class="register-ok-row">
                 <div class="register-ok-bg"></div>
-                <el-button v-if="addActive == 2" v-loading="loading" plain type="warning" class="btn-success w24 mt24">返回主页</el-button>
+                <el-button v-if="addActive == 2" v-loading="loginLoading" plain type="warning" class="btn-success w24 mt24" @click="goHomeAndLogin">返回主页</el-button>
               </div>
             </div>
           </div>
@@ -212,6 +212,7 @@ export default {
       loading: false,
       emailLoading: false,
       phoneLoading: false,
+      loginLoading: false,
       dataList: [],
       professionList: [], // 工种列表
       queryForm: {
@@ -426,9 +427,22 @@ export default {
     },
     // 上传成功回调
     handleSuccess(res, file, fileList) {
-      console.log(res, '---')
       this.imgUrl = res.data.url
       this.form.lisenceAtt = res.data.id
+    },
+    // 返回主页
+    goHomeAndLogin() {
+      let json = {
+        username: this.form.username,
+        password: this.form.password
+      }
+      this.loginLoading = true
+      this.$store.dispatch('MusicianLogin', json).then(() => {
+        this.loginLoading = false
+        this.Go('/')
+      }).catch(() => {
+        this.loginLoading = false
+      })
     }
   }
 }

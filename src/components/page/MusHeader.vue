@@ -46,17 +46,20 @@
             <div class="list">
               <el-button class="text-btn" type="text">歌曲管理</el-button>
             </div>
+            <div class="list">
+              <el-button class="text-btn" type="text" @click="logOut">退出登录</el-button>
+            </div>
           </div>
           <div slot="reference" class="upload">
             <i class="icon icon-upload"></i>
           </div>
         </el-popover>
         <template v-if="$store.getters.userInfo.userId">
-          <div v-if="$store.getters.loginType !== 'company'" class="personal-link" @click="GoWindow('http://47.94.21.246:9082/#/?token=' + getToken())">
+          <div v-if="$store.getters.loginType == 'company'" class="personal-link" @click="GoWindow('http://47.94.21.246:9082/#/?token=' + getToken())">
             <i class="icon icon-login-company"></i>
             <span>办公空间</span>
           </div>
-          <div v-if="$store.getters.loginType !== 'musician'" class="personal-link" @click="GoWindow('http://47.94.21.246:9082/#/?token=' + getToken())">
+          <div v-if="$store.getters.loginType == 'musician'" class="personal-link" @click="GoWindow('http://47.94.21.246:9082/#/?token=' + getToken())">
             <i class="icon icon-login-user"></i>
             <span>个人空间</span>
           </div>
@@ -186,6 +189,11 @@ export default {
       this.dialogOption.show = true
       this.resetForm('form')
     },
+    logOut() {
+      this.$store.dispatch('FedLogOut').then(() => {
+        location.reload()
+      })
+    },
     // 登录提交
     handleConfirm() {
       this.$refs['form'].validate((valid) => {
@@ -260,7 +268,7 @@ export default {
     .right{
       display:flex;
       align-items:center;
-      padding-right:20px;
+      padding-right:40px;
       .search-input-row{
         display:flex;
         align-items:center;

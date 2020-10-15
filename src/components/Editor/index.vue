@@ -40,8 +40,8 @@ const toolbarOptions = [
   [{ color: [] }, { background: [] }], // 字体颜色、字体背景颜色
   [{ align: [] }], // 对齐方式
   ['clean'], // 清除文本格式
-  ['link', 'video'] // 链接、图片、视频
-  // ['link', 'image', 'video'] // 链接、图片、视频
+  // ['link', 'video'], // 链接、图片、视频
+  ['link', 'image', 'video'] // 链接、图片、视频
 ]
 
 import { quillEditor } from 'vue-quill-editor'
@@ -120,15 +120,17 @@ export default {
     },
 
     quillImgSuccess(res, file) {
+      console.log(res, '---')
       // res为图片服务器返回的数据
       // 获取富文本组件实例
       let quill = this.$refs.quillEditor.quill
+      let data = res.data || {}
       // 如果上传成功
       if (res.code === 0) {
         // 获取光标所在位置
         let length = quill.getSelection().index
         // 插入图片  res.url为服务器返回的图片地址
-        quill.insertEmbed(length, 'image', res.url)
+        quill.insertEmbed(length, 'image', data.url)
         // 调整光标到最后
         quill.setSelection(length + 1)
       } else {

@@ -84,6 +84,7 @@ const user = {
       return new Promise(resolve => {
         commit('SET_USERINFO', {})
         commit('SET_TOKEN', [])
+        commit('SET_LOGINTYPE', '')
         removeToken()
         resolve()
       })

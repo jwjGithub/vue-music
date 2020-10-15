@@ -177,7 +177,10 @@ export default {
     }
   },
   created() {
-    this.getCompanyOptionalBaseList()
+    // 判断当前是公司用户进入 才查询自选库
+    if (this.$store.getters.loginType === 'company') {
+      this.getCompanyOptionalBaseList()
+    }
     this.getUserDefaultMusicList()
   },
   methods: {

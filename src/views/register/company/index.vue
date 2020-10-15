@@ -92,7 +92,7 @@
             <div v-if="addActive == 2" class="register-ok">
               <div class="register-ok-row">
                 <div class="register-ok-bg"></div>
-                <el-button v-if="addActive == 2" v-loading="loading" plain type="warning" class="btn-success w24 mt24">返回主页</el-button>
+                <el-button v-if="addActive == 2" v-loading="loading" plain type="warning" class="btn-success w24 mt24" @click="Go('/')">返回主页</el-button>
               </div>
             </div>
           </div>

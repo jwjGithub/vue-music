@@ -46,15 +46,34 @@
             <div class="list">
               <el-button class="text-btn" type="text">歌曲管理</el-button>
             </div>
-            <div class="list">
-              <el-button class="text-btn" type="text" @click="logOut">退出登录</el-button>
-            </div>
           </div>
           <div slot="reference" class="upload">
             <i class="icon icon-upload"></i>
           </div>
         </el-popover>
-        <template v-if="$store.getters.userInfo.userId">
+        <el-popover
+          v-if="$store.getters.userInfo.userId"
+          placement="bottom"
+          width="70px"
+          trigger="hover"
+        >
+          <div class="popover-list">
+            <div v-if="$store.getters.loginType == 'company'" class="list">
+              <el-button class="text-btn" type="text" @click="GoWindow('http://47.94.21.246:9082/#/?token=' + getToken())">办公空间</el-button>
+            </div>
+            <div v-if="$store.getters.loginType == 'musician'" class="list">
+              <el-button class="text-btn" type="text" @click="GoWindow('http://47.94.21.246:9082/#/?token=' + getToken())">个人空间</el-button>
+            </div>
+            <div class="list">
+              <el-button class="text-btn" type="text" @click="logOut">退出登录</el-button>
+            </div>
+          </div>
+          <div slot="reference" class="personal-link">
+            <i class="icon icon-login-user"></i>
+            <span>{{ $store.getters.userInfo.realname }}</span>
+          </div>
+        </el-popover>
+        <!-- <template v-if="$store.getters.userInfo.userId">
           <div v-if="$store.getters.loginType == 'company'" class="personal-link" @click="GoWindow('http://47.94.21.246:9082/#/?token=' + getToken())">
             <i class="icon icon-login-company"></i>
             <span>办公空间</span>
@@ -63,7 +82,7 @@
             <i class="icon icon-login-user"></i>
             <span>个人空间</span>
           </div>
-        </template>
+        </template> -->
         <div v-if="!$store.getters.userInfo.userId" class="register-login">
           <el-popover
             placement="bottom"
@@ -266,7 +285,7 @@ export default {
     .right{
       display:flex;
       align-items:center;
-      padding-right:40px;
+      padding-right:60px;
       .search-input-row{
         display:flex;
         align-items:center;
@@ -319,6 +338,7 @@ export default {
         background-image:url('~@/assets/images/index/login-user.png');
       }
       .register-login{
+        margin-left:20px;
         font-size:14px;
       }
       .login-btn{
@@ -332,6 +352,7 @@ export default {
         flex-direction: column;
         align-items:center;
         cursor: pointer;
+        margin: 0 20px;
         >span{
           margin-top:8px;
           color:#333;

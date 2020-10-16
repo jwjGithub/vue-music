@@ -38,8 +38,15 @@ const routes = [
     component: () => import('@/views/feedback/index')
   },
   {
+    path: '/ranking',
+    name: 'Ranking',
+    meta: { title: '榜单' },
+    component: () => import('@/views/ranking/index')
+  },
+  {
     path: '/startPlay',
     name: 'StartPlay',
+    meta: { title: '播放列表' },
     component: () => import('@/views/startPlay')
   },
   {

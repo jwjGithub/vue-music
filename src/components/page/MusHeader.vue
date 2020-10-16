@@ -11,7 +11,7 @@
         <el-button class="text-btn" type="text">词曲库</el-button>
         <el-button class="text-btn" type="text">Beat/BGM</el-button>
         <el-button class="text-btn" type="text">合作</el-button>
-        <el-button class="text-btn" type="text">榜单</el-button>
+        <el-button class="text-btn" type="text" @click="Go('/ranking')">榜单</el-button>
       </div>
       <div class="right">
         <div class="search-input-row mr11">
@@ -44,7 +44,7 @@
               <el-button class="text-btn" type="text">上传视频</el-button>
             </div>
             <div class="list">
-              <el-button class="text-btn" type="text">歌曲管理</el-button>
+              <el-button class="text-btn" type="text" @click="Go('/startPlay')">歌曲管理</el-button>
             </div>
           </div>
           <div slot="reference" class="upload">

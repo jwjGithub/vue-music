@@ -47,7 +47,7 @@
 </template>
 <script>
 import musicUrl from '@/assets/audio/test1.mp3'
-import defaultPic from '@/assets/images/aplayer/cover.jpg' // 默认歌曲头像
+import defaultPic from '@/assets/images/aplayer/cover.png' // 默认歌曲头像
 export default {
   name: 'MusAplayer',
   props: {
@@ -330,7 +330,7 @@ export default {
 		.aplayer-slider{
 			.el-slider__bar{
 				height:2px;
-				background-color:#333;
+				background-color:#FFAE00;
 			}
 			.el-slider__runway{
 				margin:16px 0 16px 10px;

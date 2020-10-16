@@ -421,22 +421,32 @@ export default {
                 transition: color,border,background-color .3s linear 0s;
                 cursor: pointer;
                 .icon-playlist{
-                  width: 22px;
-                  height: 22px;
+                  width: 20px;
+                  height: 16px;
                   background-image:url('~@/assets/images/icon/playlist.png');
                 }
                 .icon-history{
-                  width: 22px;
-                  height: 22px;
+                  width: 20px;
+                  height: 20px;
                   background-image:url('~@/assets/images/icon/history.png');
                 }
                 .icon-collect_b{
-                  width: 22px;
-                  height: 22px;
+                  width: 20px;
+                  height: 18px;
                   background-image:url('~@/assets/images/icon/collect_b.png');
                 }
                 &.active,&:hover{
+                  color:#FFF;
                   background-color: #FFAE00;
+                  .icon-playlist{
+                    background-image:url('~@/assets/images/icon/playlist-active.png');
+                  }
+                  .icon-history{
+                    background-image:url('~@/assets/images/icon/history-active.png');
+                  }
+                  .icon-collect_b{
+                    background-image:url('~@/assets/images/icon/collect_b-active.png');
+                  }
                 }
               }
             }

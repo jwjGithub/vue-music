@@ -44,7 +44,7 @@
             placement="top"
             trigger="hover"
           >
-            <img width="200px" height="200px" src="@/assets/images/index/QR-code.jpg">
+            <img width="100px" height="100px" src="@/assets/images/index/QR-code.jpg">
             <i slot="reference" class="icon icon-wechat ml24"></i>
           </el-popover>
           <el-popover

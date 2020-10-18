@@ -4,29 +4,31 @@
       <mus-header></mus-header>
       <div class="ranking-content">
         <div class="content">
-          <el-scrollbar class="custom-scrollbar">
-            <div class="ranking-list">
-              <div v-for="(item,index) in 4" :key="index" class="list">
-                <div class="title">酷狗Top500</div>
-                <div class="table-head">
-                  <div class="w15">歌名</div>
-                  <div class="w7">歌手</div>
-                  <div class="w7">作词</div>
-                  <div class="w7">作曲</div>
+          <!-- <el-scrollbar class="custom-scrollbar"> -->
+          <div class="ranking-list">
+            <div v-for="(item,index) in 4" :key="index" class="list">
+              <div class="title">酷狗Top500</div>
+              <div class="table-head">
+                <div class="w5 c-999"></div>
+                <div class="w13 c-999">歌名</div>
+                <div class="w6 c-999">歌手</div>
+                <div class="w6 c-999">作词</div>
+                <div class="w6 c-999">作曲</div>
+              </div>
+              <div v-loading="loading" class="table-body">
+                <!-- <el-scrollbar class="custom-scrollbar"> -->
+                <div v-for="(itemChildren,indexChildren) in 20" :key="indexChildren" class="table-row" :class="indexChildren == 2 ? 'active' : ''">
+                  <div class="table-col w5 c-999">{{ (indexChildren + 1) }}</div>
+                  <div class="table-col w13 ellipsis music-name">天数有个月亮</div>
+                  <div class="table-col w6 ellipsis c-999">周杰伦</div>
+                  <div class="table-col w6 ellipsis c-999">轮轮</div>
+                  <div class="table-col w6 ellipsis c-999">周转</div>
                 </div>
-                <div v-loading="loading" class="table-body">
-                  <el-scrollbar class="custom-scrollbar">
-                    <div v-for="(itemChildren,indexChildren) in 20" :key="indexChildren" class="table-row">
-                      <div class="table-col w15 ellipsis">天数有个月亮</div>
-                      <div class="table-col w7 ellipsis">周杰伦</div>
-                      <div class="table-col w7 ellipsis">轮轮</div>
-                      <div class="table-col w7 ellipsis">周转</div>
-                    </div>
-                  </el-scrollbar>
-                </div>
+                <!-- </el-scrollbar> -->
               </div>
             </div>
-          </el-scrollbar>
+          </div>
+          <!-- </el-scrollbar> -->
         </div>
       </div>
       <mus-footer></mus-footer>
@@ -65,11 +67,13 @@ export default {
     flex-direction:column;
     .ranking-content{
       flex:1;
-      overflow-y:auto;
-      display:flex;
-      justify-content: center;
+      // overflow-y:auto;
+      margin:0 auto;
+      // display:flex;
+      // justify-content: center;
       >.content{
         .ranking-list{
+          display:flex;
           .list{
             padding:80px 10px;
             width:360px;
@@ -91,6 +95,7 @@ export default {
             }
             .table-body{
               .table-row{
+                cursor: pointer;
                 display:flex;
                 font-size:12px;
                 color:#333;
@@ -101,7 +106,10 @@ export default {
                   text-align: center;
                 }
                 &:hover,&.active{
-                  background-color:#f9f9f9;
+                  background-color:#fff1d2;
+                  .music-name{
+                    color:#FF9000;
+                  }
                 }
               }
             }

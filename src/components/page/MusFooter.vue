@@ -28,7 +28,7 @@
         </div>
       </div>
       <div class="contacts">
-        <div class="contacts-list mb28">
+        <div class="contacts-list mb22">
           <el-popover
             popper-class="footer-bottom-popover"
             placement="top"
@@ -82,18 +82,18 @@
   background-color: #777777;
   .footer-content{
     width:1080px;
-    min-height:212px;
+    // min-height:180px;
     margin: 0 auto;
     display:flex;
     justify-content: space-between;
     .links{
-      padding-top:40px;
+      padding-top:20px;
       display:flex;
       .link-title{
         font-family: PingFangSC-Regular;
         font-size: 18px;
         color: #ffffff;
-        margin-bottom:30px;
+        margin-bottom:10px;
       }
       .link-btn{
         font-family: PingFangSC-Regular;
@@ -107,7 +107,7 @@
       }
     }
     .contacts{
-      padding-top:40px;
+      padding-top:20px;
       .c-ccc{
         color:#CCC;
       }

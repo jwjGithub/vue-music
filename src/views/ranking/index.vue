@@ -6,25 +6,25 @@
         <div class="content">
           <!-- <el-scrollbar class="custom-scrollbar"> -->
           <div class="ranking-list">
-            <div v-for="(item,index) in 4" :key="index" class="list">
-              <div class="title">酷狗Top500</div>
+            <div v-for="(item,index) in typeList" :key="index" class="list">
+              <div class="title">{{ item.name }}</div>
               <div class="table-head">
-                <div class="w5 c-999"></div>
-                <div class="w13 c-999">歌名</div>
-                <div class="w6 c-999">歌手</div>
-                <div class="w6 c-999">作词</div>
-                <div class="w6 c-999">作曲</div>
+                <div class="w3 c-999"></div>
+                <div class="w12 c-999">歌名</div>
+                <div class="w7 c-999">歌手</div>
+                <div class="w7 c-999">作词</div>
+                <div class="w7 c-999">作曲</div>
               </div>
               <div v-loading="loading" class="table-body">
-                <!-- <el-scrollbar class="custom-scrollbar"> -->
-                <div v-for="(itemChildren,indexChildren) in 20" :key="indexChildren" class="table-row" :class="indexChildren == 2 ? 'active' : ''">
-                  <div class="table-col w5 c-999">{{ (indexChildren + 1) }}</div>
-                  <div class="table-col w13 ellipsis music-name">天数有个月亮</div>
-                  <div class="table-col w6 ellipsis c-999">周杰伦</div>
-                  <div class="table-col w6 ellipsis c-999">轮轮</div>
-                  <div class="table-col w6 ellipsis c-999">周转</div>
-                </div>
-                <!-- </el-scrollbar> -->
+                <el-scrollbar class="custom-scrollbar">
+                  <div v-for="(itemChildren,indexChildren) in item.num" :key="indexChildren" class="table-row" :class="indexChildren == 2 ? 'active' : ''">
+                    <div class="table-col w3 c-999">{{ (indexChildren + 1) }}</div>
+                    <div class="table-col w12 ellipsis music-name">天数有个月亮、地下有个婆娘</div>
+                    <div class="table-col w7 ellipsis c-999">周杰伦轮轮</div>
+                    <div class="table-col w7 ellipsis c-999">李昌杰杰杰</div>
+                    <div class="table-col w7 ellipsis c-999">兜兜又转转</div>
+                  </div>
+                </el-scrollbar>
               </div>
             </div>
           </div>
@@ -46,6 +46,12 @@ export default {
       loading: false,
       form: {
       },
+      typeList: [
+        { name: '抖音热歌榜', num: 50 },
+        { name: '酷狗top500', num: 500 },
+        { name: 'QQ音乐热歌榜', num: 300 },
+        { name: '网易云飙升榜', num: 100 }
+      ],
       dataList: []
     }
   },
@@ -67,15 +73,21 @@ export default {
     flex-direction:column;
     .ranking-content{
       flex:1;
-      // overflow-y:auto;
+      overflow:hidden;
       margin:0 auto;
       // display:flex;
       // justify-content: center;
       >.content{
+        width:100%;
+        height:100%;
         .ranking-list{
           display:flex;
+          width:100%;
+          height:100%;
           .list{
-            padding:80px 10px;
+            display:flex;
+            flex-direction: column;
+            padding:30px 10px 20px 10px;
             width:360px;
             >.title{
               text-align: center;
@@ -87,6 +99,7 @@ export default {
               align-items:center;
               background-color:#F8F8F8;
               border-bottom: 4px solid #FFAE00;
+              padding-right:10px;
               >div{
                 font-size:14px;
                 color:#999;
@@ -94,7 +107,10 @@ export default {
               }
             }
             .table-body{
+              flex:1;
+              overflow: hidden;
               .table-row{
+                padding-right:10px;
                 cursor: pointer;
                 display:flex;
                 font-size:12px;

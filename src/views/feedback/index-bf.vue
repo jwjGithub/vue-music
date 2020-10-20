@@ -4,34 +4,33 @@
       <mus-header></mus-header>
       <div class="feedback-content">
         <div class="content">
-          <div class="content-title mt28 mb40">
-            <img src="@/assets/images/feedback/icon-title.png" />
+          <div class="left"></div>
+          <div class="right">
+            <el-form ref="form" :model="form" :rules="rules" label-width="120px">
+              <el-form-item label="标题" prop="title">
+                <el-input v-model="form.title" class="w28"></el-input>
+              </el-form-item>
+              <el-form-item label="类型" prop="type">
+                <el-radio-group v-model="form.type">
+                  <el-radio :label="0">问题反馈</el-radio>
+                  <el-radio :label="1">举报投诉</el-radio>
+                  <el-radio :label="2">优化建议</el-radio>
+                </el-radio-group>
+              </el-form-item>
+              <el-form-item label="反馈内容" prop="content">
+                <el-input v-model="form.content" type="textarea" rows="4" class="w46"></el-input>
+              </el-form-item>
+              <el-form-item v-if="!$store.getters.userInfo.userId" label="姓名" prop="proposer">
+                <el-input v-model="form.proposer" class="w28"></el-input>
+              </el-form-item>
+              <el-form-item v-if="!$store.getters.userInfo.userId" label="邮箱" prop="email">
+                <el-input v-model="form.email" class="w28"></el-input>
+              </el-form-item>
+              <el-form-item label=" ">
+                <el-button v-loading="loading" plain type="warning" class="btn-success w28 mt24" @click="handleSubmit">提交</el-button>
+              </el-form-item>
+            </el-form>
           </div>
-          <el-form ref="form" :model="form" :rules="rules" label-width="120px">
-            <el-form-item label="标题" prop="title">
-              <el-input v-model="form.title" class="w28"></el-input>
-            </el-form-item>
-            <el-form-item label="类型" prop="type">
-              <el-radio-group v-model="form.type">
-                <el-radio :label="0">问题反馈</el-radio>
-                <el-radio :label="1">举报投诉</el-radio>
-                <el-radio :label="2">优化建议</el-radio>
-              </el-radio-group>
-            </el-form-item>
-            <el-form-item label="反馈内容" prop="content">
-              <el-input v-model="form.content" type="textarea" resize="none" rows="4" class="w46"></el-input>
-            </el-form-item>
-            <el-form-item v-if="!$store.getters.userInfo.userId" label="姓名" prop="proposer">
-              <el-input v-model="form.proposer" class="w28"></el-input>
-            </el-form-item>
-            <el-form-item v-if="!$store.getters.userInfo.userId" label="邮箱" prop="email">
-              <el-input v-model="form.email" class="w28"></el-input>
-            </el-form-item>
-            <el-form-item label=" ">
-              <el-button v-loading="loading" plain type="warning" class="btn-success w28 mt24" @click="handleSubmit">提交</el-button>
-            </el-form-item>
-          </el-form>
-          <div class="position-icon"></div>
         </div>
       </div>
       <mus-footer></mus-footer>
@@ -137,29 +136,23 @@ export default {
     flex-direction:column;
     .feedback-content{
       flex:1;
-      overflow-y: auto;
-      padding-top:20px;
-      padding-bottom: 56px;
       >.content{
-        width: 1120px;
-        min-height:100%;
+        width:1100px;
 				margin:0 auto;
-        display:flex;
-        flex-direction: column;
-        align-items:center;
-        position: relative;
-        background-color: #f6f6f6;
-        >.position-icon{
-          position:absolute;
-          right:0;
-          bottom:50px;
-          width:225px;
-          height:288px;
-          background-repeat: no-repeat;
+				display:flex;
+				padding:60px;
+				>.left{
+					width:320px;
+					height:560px;
+					margin-right:60px;
+					background-repeat: no-repeat;
 					background-size:cover;
 					background-position: center center;
-					background-image:url('~@/assets/images/feedback/icon-bg.png');
-        }
+					background-image:url('~@/assets/images/feedback/feedback-bg.png');
+				}
+				>.right{
+					padding-top:40px;
+				}
       }
     }
   }

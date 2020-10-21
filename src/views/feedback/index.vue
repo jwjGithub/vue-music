@@ -147,6 +147,7 @@ export default {
         display:flex;
         flex-direction: column;
         align-items:center;
+        justify-content: center;
         position: relative;
         background-color: #f6f6f6;
         >.position-icon{

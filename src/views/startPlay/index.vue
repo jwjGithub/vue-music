@@ -1,7 +1,7 @@
 <template>
   <div class="main start-play">
     <div class="main-contnet">
-      <mus-header></mus-header>
+      <mus-header class="start-play-head"></mus-header>
       <div class="content">
         <div class="content-main">
           <div class="left">
@@ -621,6 +621,13 @@ export default {
 </style>
 <style lang="scss">
 .start-play{
+  .start-play-head{
+    .head-main{
+      >.center{
+        flex:1;
+      }
+    }
+  }
   .search-input{
     width:270px;
     >.el-input__inner{

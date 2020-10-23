@@ -489,7 +489,7 @@ export default {
                       margin:0 5px;
                       display: none;
                       &.icon-audition{
-                        height:14px;
+                        // height:14px;
                         background-image:url('~@/assets/images/icon/audition.png');
                       }
                       &.icon-pause_s{

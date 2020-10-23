@@ -11,7 +11,7 @@
         <el-button class="text-btn" type="text">词曲库</el-button>
         <el-button class="text-btn" type="text">Beat/BGM</el-button>
         <el-button class="text-btn" type="text">合作</el-button>
-        <el-button class="text-btn" type="text" @click="Go('/ranking')">榜单</el-button>
+        <el-button class="text-btn" :class="{'active': selectNav == 'ranking'}" type="text" @click="Go('/ranking')">榜单</el-button>
       </div>
       <div class="right">
         <div class="search-input-row mr11">
@@ -352,7 +352,7 @@ export default {
         flex-direction: column;
         align-items:center;
         cursor: pointer;
-        margin: 0 20px;
+        margin-right:20px;
         >span{
           margin-top:8px;
           color:#333;

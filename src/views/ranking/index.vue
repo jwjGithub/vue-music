@@ -1,7 +1,7 @@
 <template>
   <div class="main ranking-main">
     <div class="main-content">
-      <mus-header></mus-header>
+      <mus-header :select-nav="'ranking'"></mus-header>
       <div class="ranking-content">
         <div class="content">
           <!-- <el-scrollbar class="custom-scrollbar"> -->
@@ -31,7 +31,7 @@
           <!-- </el-scrollbar> -->
         </div>
       </div>
-      <mus-footer></mus-footer>
+      <!-- <mus-footer></mus-footer> -->
     </div>
   </div>
 </template>
@@ -87,7 +87,7 @@ export default {
           .list{
             display:flex;
             flex-direction: column;
-            padding:30px 10px 20px 10px;
+            padding:30px 10px 8px 10px;
             width:360px;
             >.title{
               text-align: center;

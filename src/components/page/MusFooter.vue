@@ -28,7 +28,7 @@
         </div>
       </div>
       <div class="contacts">
-        <div class="contacts-list mb22">
+        <div class="contacts-list mb10">
           <el-popover
             popper-class="footer-bottom-popover"
             placement="top"
@@ -99,7 +99,7 @@
         font-family: PingFangSC-Regular;
         font-size: 14px;
         color: #ffffff;
-        margin-bottom:16px;
+        margin-bottom:8px;
         &:hover{
           cursor: pointer;
           text-decoration: underline;
@@ -107,7 +107,7 @@
       }
     }
     .contacts{
-      padding-top:20px;
+      padding-top:14px;
       .c-ccc{
         color:#CCC;
       }

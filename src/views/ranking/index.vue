@@ -87,8 +87,10 @@ export default {
           .list{
             display:flex;
             flex-direction: column;
-            padding:30px 10px 8px 10px;
+            padding:30px 0 0 0;
+            margin:0 10px 40px 10px;
             width:360px;
+            border-bottom:1px solid #eee;
             >.title{
               text-align: center;
               margin-bottom:20px;
@@ -127,6 +129,9 @@ export default {
                     color:#FF9000;
                   }
                 }
+              }
+              & .table-row:last-child{
+                border-bottom:none;
               }
             }
           }

@@ -11,6 +11,12 @@ const routes = [
     component: () => import('@/views/index')
   },
   {
+    path: '/demand',
+    name: 'Demand',
+    meta: { title: '需求列表' },
+    component: () => import('@/views/demand/index')
+  },
+  {
     path: '/register',
     name: 'Register',
     meta: { title: '注册' },

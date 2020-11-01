@@ -26,4 +26,11 @@
     height: 30px;
     background-image:url('~@/assets/images/index/icon-login-user.png');
   }
+  // 需求-公司
+  &.icon-company{
+    width: 16px;
+    height: 16px;
+    background-image:url('~@/assets/images/icon/icon-company.png');
+  }
+
 }

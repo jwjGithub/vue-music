@@ -25,7 +25,7 @@
               <i class="icon icon-gsxq"></i>
             </div>
             <div class="right">
-              <span class="more">查看更多 ></span>
+              <span class="more" @click="Go('/demand')">查看更多 ></span>
             </div>
           </div>
           <div class="demand-list">

@@ -3,7 +3,7 @@
     <div class="main-content">
       <mus-header></mus-header>
       <div class="demand-list">
-        <template v-if="dataList.length > 0">
+        <template>
           <div v-for="(item,index) in 10" :key="index" class="list">
             <div class="left">
               <img src="@/assets/images/test.jpg" />

@@ -38,6 +38,12 @@ const routes = [
     ]
   },
   {
+    path: '/resetPass',
+    name: 'FesetPass',
+    meta: { title: '找回密码' },
+    component: () => import('@/views/resetPass/index')
+  },
+  {
     path: '/feedback',
     name: 'Feedback',
     meta: { title: '问题反馈' },

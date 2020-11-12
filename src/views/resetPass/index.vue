@@ -7,33 +7,33 @@
           <div class="content-title mt28 mb40">
             <img src="@/assets/images/resetPass/icon-title.png" />
           </div>
-          <el-form ref="form" :model="form" :rules="rules" label-width="120px">
+          <el-form ref="form" :model="form" :rules="rules" label-width="130px">
             <el-form-item label="身份证号：" prop="idCard">
               <el-input v-model="form.idCard" class="w28" @change="idCardChange"></el-input>
             </el-form-item>
-            <el-form-item :disabled="!isIdCard" label="选择验证方式：" prop="updateType">
-              <el-select v-model="form.updateType" placeholder="请选择" class="w28">
+            <el-form-item label="选择验证方式：" prop="updateType">
+              <el-select v-model="form.updateType" :disabled="!isIdCard" placeholder="请选择" class="w28">
                 <el-option :disabled="!cardInfo.mobile" label="手机号验证" value="mobile" />
                 <el-option :disabled="!cardInfo.email" label="邮箱验证" value="email" />
               </el-select>
             </el-form-item>
-            <el-form-item :disabled="!form.updateType" label="手机验证码：" prop="phoneCode">
+            <el-form-item label="手机验证码：" prop="vercode">
               <div class="w28 text-left">
-                <el-input v-model="form.phoneCode" class="w14"></el-input>
+                <el-input v-model="form.vercode" :disabled="!form.updateType" class="w14"></el-input>
                 <el-button v-loading="phoneLoading" type="success" class="btn-success w13 ml10" :disabled="phoneSendCodeType" @click="getPhoneSendCode">{{ phoneSendCodeCount }}</el-button>
               </div>
             </el-form-item>
-            <el-form-item :disabled="!form.updateType" label="新密码：" prop="newPassword">
-              <el-input v-model="form.newPassword" type="password" class="w28"></el-input>
+            <el-form-item label="新密码：" prop="newPassword">
+              <el-input v-model="form.newPassword" :disabled="!form.updateType" type="password" class="w28"></el-input>
             </el-form-item>
-            <el-form-item :disabled="!form.updateType" label="确认密码：" prop="qrPassword">
-              <el-input v-model="form.qrPassword" type="password" class="w28"></el-input>
+            <el-form-item label="确认密码：" prop="qrPassword">
+              <el-input v-model="form.qrPassword" :disabled="!form.updateType" type="password" class="w28"></el-input>
             </el-form-item>
             <el-form-item label=" ">
               <el-button v-loading="loading" plain type="warning" class="btn-success w28 mt24" @click="handleSubmit">提交</el-button>
             </el-form-item>
           </el-form>
-          <div class="position-icon"></div>
+          <!-- <div class="position-icon"></div> -->
         </div>
       </div>
       <mus-footer></mus-footer>
@@ -82,7 +82,7 @@ export default {
     var validatePass2 = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('请再次输入密码'))
-      } else if (value !== this.form.password) {
+      } else if (value !== this.form.newPassword) {
         callback(new Error('两次输入密码不一致!'))
       } else {
         callback()

@@ -78,7 +78,7 @@ export default {
     },
     // 歌曲列表点击事件
     dataClick(row) {
-      if (row === this.clickData) {
+      if (this.clickData.name === row.name && this.clickData.singer === row.singer) {
         this.clickData = {}
       } else {
         this.clickData = row

@@ -4,31 +4,33 @@
       <mus-header :select-nav="'ranking'"></mus-header>
       <div class="ranking-content">
         <div class="content">
-          <!-- <el-scrollbar class="custom-scrollbar"> -->
           <div class="ranking-list">
             <div v-for="(item,index) in typeList" :key="index" class="list">
               <div class="title">{{ item.name }}</div>
               <div class="table-head">
                 <div class="w3 c-999"></div>
-                <div class="w12 c-999">歌名</div>
-                <div class="w7 c-999">歌手</div>
-                <div class="w7 c-999">作词</div>
-                <div class="w7 c-999">作曲</div>
+                <div class="w17 c-999">歌名</div>
+                <div class="w9 c-999">歌手</div>
+                <div class="w9 c-999">专辑</div>
               </div>
-              <div v-loading="loading" class="table-body">
+              <div v-loading="item.loading" class="table-body">
                 <el-scrollbar class="custom-scrollbar">
-                  <div v-for="(itemChildren,indexChildren) in item.num" :key="indexChildren" class="table-row" :class="indexChildren == 2 ? 'active' : ''">
+                  <div
+                    v-for="(itemChildren,indexChildren) in item.list"
+                    :key="indexChildren"
+                    class="table-row"
+                    :class="clickData.name == itemChildren.name && clickData.singer == itemChildren.singer ? 'active' : ''"
+                    @click="dataClick(itemChildren)"
+                  >
                     <div class="table-col w3 c-999">{{ (indexChildren + 1) }}</div>
-                    <div class="table-col w12 ellipsis music-name">天数有个月亮、地下有个婆娘</div>
-                    <div class="table-col w7 ellipsis c-999">周杰伦轮轮</div>
-                    <div class="table-col w7 ellipsis c-999">李昌杰杰杰</div>
-                    <div class="table-col w7 ellipsis c-999">兜兜又转转</div>
+                    <div class="table-col w17 ellipsis music-name">{{ itemChildren.name }}</div>
+                    <div class="table-col w9 ellipsis c-999">{{ itemChildren.singer }}</div>
+                    <div class="table-col w9 ellipsis c-999">{{ itemChildren.album }}</div>
                   </div>
                 </el-scrollbar>
               </div>
             </div>
           </div>
-          <!-- </el-scrollbar> -->
         </div>
       </div>
       <!-- <mus-footer></mus-footer> -->
@@ -36,7 +38,7 @@
   </div>
 </template>
 <script>
-import { saveQuestion } from '@/api/feedback'
+import { getList } from '@/api/ranking'
 export default {
   name: 'Ranking',
   components: {
@@ -46,11 +48,12 @@ export default {
       loading: false,
       form: {
       },
+      clickData: {}, // 点击歌曲
       typeList: [
-        { name: '抖音热歌榜', num: 50 },
-        { name: '酷狗top500', num: 500 },
-        { name: 'QQ音乐热歌榜', num: 300 },
-        { name: '网易云飙升榜', num: 100 }
+        { name: '抖音热歌榜', type: 4, loading: false, list: [] },
+        { name: '酷狗top500', type: 3, loading: false, list: [] },
+        { name: 'QQ音乐热歌榜', type: 1, loading: false, list: [] },
+        { name: '网易云飙升榜', type: 2, loading: false, list: [] }
       ],
       dataList: []
     }
@@ -58,8 +61,29 @@ export default {
   watch: {
   },
   created() {
+    this.getList()
   },
   methods: {
+    // 查询列表
+    getList() {
+      this.typeList.forEach(item => {
+        this.$set(item, 'loading', true)
+        getList(item.type).then(res => {
+          this.$set(item, 'list', res.data || [])
+          this.$set(item, 'loading', false)
+        }).catch(() => {
+          this.$set(item, 'loading', false)
+        })
+      })
+    },
+    // 歌曲列表点击事件
+    dataClick(row) {
+      if (row === this.clickData) {
+        this.clickData = {}
+      } else {
+        this.clickData = row
+      }
+    }
   }
 }
 </script>
@@ -123,7 +147,8 @@ export default {
                   line-height:40px;
                   text-align: center;
                 }
-                &:hover,&.active{
+                // &:hover,
+                &.active{
                   background-color:#fff1d2;
                   .music-name{
                     color:#FF9000;

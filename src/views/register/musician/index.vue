@@ -176,6 +176,7 @@ export default {
         callback(new Error('请输入正确的邮箱格式'))
       } else {
         verifyEmail({ email: value }).then(res => {
+          console.log('验证完成')
           callback()
         }).catch((err) => {
           console.log(err, '-err')
@@ -333,83 +334,75 @@ export default {
     },
     // 获取手机验证码
     getPhoneSendCode() {
-      let bl = true
       this.$refs['form'].validateField(['mobile', 'username'], valid => { // 验证手机号码是否正确
-        if (valid) {
-          bl = false
-          console.log('手机号正确')
+        if (!valid) {
+          let json = {
+            mobile: this.form.mobile,
+            username: this.form.username
+          }
+          this.phoneLoading = true
+          sendShortMess(json).then(res => {
+            let _this = this
+            this.phoneSendCodeType = true
+            this.phoneSendCodeCount = '60秒后重新获取'
+            let count = 60
+            let indexS = ''
+            this.phoneLoading = false
+            function countTimeout() {
+              indexS = setTimeout(() => {
+                if (count <= 1) {
+                  _this.phoneSendCodeType = false
+                  _this.phoneSendCodeCount = '获取验证码'
+                } else {
+                  count -= 1
+                  _this.phoneSendCodeCount = count + '秒后重新获取'
+                  countTimeout()
+                }
+              }, 1000)
+            }
+            countTimeout()
+          }).catch(() => {
+            this.phoneLoading = false
+          })
           return false
         }
-      })
-      if (!bl) return false
-      let json = {
-        mobile: this.form.mobile,
-        username: this.form.username
-      }
-      this.phoneLoading = true
-      sendShortMess(json).then(res => {
-        let _this = this
-        this.phoneSendCodeType = true
-        this.phoneSendCodeCount = '60秒后重新获取'
-        let count = 60
-        let indexS = ''
-        this.phoneLoading = false
-        function countTimeout() {
-          indexS = setTimeout(() => {
-            if (count <= 1) {
-              _this.phoneSendCodeType = false
-              _this.phoneSendCodeCount = '获取验证码'
-            } else {
-              count -= 1
-              _this.phoneSendCodeCount = count + '秒后重新获取'
-              countTimeout()
-            }
-          }, 1000)
-        }
-        countTimeout()
-      }).catch(() => {
-        this.phoneLoading = false
       })
     },
     // 获取邮箱验证码
     getEmailSendCode() {
-      let bl = true
       this.$refs['form'].validateField(['email'], valid => { // 验证手机号码是否正确
-        if (valid) {
-          bl = false
-          console.log('邮箱正确')
+        if (!valid) {
+          let json = {
+            email: this.form.email,
+            name: this.form.username || ' ',
+            prefix: 'Mail_Send_Musician_Ver'
+          }
+          this.emailLoading = true
+          sendHtmlMail(json).then(res => {
+            let _this = this
+            this.emailSendCodeType = true
+            this.emailSendCodeCount = '60秒后重新获取'
+            let count = 60
+            let indexS = ''
+            this.emailLoading = false
+            function countTimeout() {
+              indexS = setTimeout(() => {
+                if (count <= 1) {
+                  _this.emailSendCodeType = false
+                  _this.emailSendCodeCount = '获取验证码'
+                } else {
+                  count -= 1
+                  _this.emailSendCodeCount = count + '秒后重新获取'
+                  countTimeout()
+                }
+              }, 1000)
+            }
+            countTimeout()
+          }).catch(() => {
+            this.emailLoading = false
+          })
           return false
         }
-      })
-      if (!bl) return false
-      let json = {
-        email: this.form.email,
-        name: this.form.username || ' ',
-        prefix: 'Mail_Send_Musician_Ver'
-      }
-      this.emailLoading = true
-      sendHtmlMail(json).then(res => {
-        let _this = this
-        this.emailSendCodeType = true
-        this.emailSendCodeCount = '60秒后重新获取'
-        let count = 60
-        let indexS = ''
-        this.emailLoading = false
-        function countTimeout() {
-          indexS = setTimeout(() => {
-            if (count <= 1) {
-              _this.emailSendCodeType = false
-              _this.emailSendCodeCount = '获取验证码'
-            } else {
-              count -= 1
-              _this.emailSendCodeCount = count + '秒后重新获取'
-              countTimeout()
-            }
-          }, 1000)
-        }
-        countTimeout()
-      }).catch(() => {
-        this.emailLoading = false
       })
     },
     // 选择文件回调

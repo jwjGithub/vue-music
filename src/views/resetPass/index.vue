@@ -54,7 +54,7 @@ export default {
     let validateIdCard = (rule, value, callback) => {
       let reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/
       if (value === '') {
-        callback(new Error('请输入手机号'))
+        callback(new Error('请输入身份证号'))
       } else if (!reg.test(value)) {
         callback(new Error('请输入正确的身份证号'))
       } else {

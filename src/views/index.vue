@@ -161,8 +161,49 @@
   </div>
 </template>
 <script>
+import { getList } from '@/api/ranking'
+import {
+  getBoutiqueMusicListPage,
+  getUploadMusicListPage
+} from '@/api/index'
 export default {
-
+  name: 'Index',
+  components: {
+  },
+  data() {
+    return {
+      loading: false,
+      form: {
+      },
+      clickData: {}, // 点击歌曲
+      typeList: [
+        { name: '抖音热歌榜', type: 4, loading: false, list: [] },
+        { name: '酷狗top500', type: 3, loading: false, list: [] },
+        { name: 'QQ音乐热歌榜', type: 1, loading: false, list: [] },
+        { name: '网易云飙升榜', type: 2, loading: false, list: [] }
+      ],
+      dataList: [],
+      JPTJList: [], // 精品推荐列表
+      ZXSCList: [] // 最新上传列表
+    }
+  },
+  watch: {
+  },
+  created() {
+    this.getBoutiqueMusicListPage()
+  },
+  methods: {
+    // 查询精品推荐列表
+    getBoutiqueMusicListPage() {
+      let json = {
+        page: 1,
+        limit: 10
+      }
+      getBoutiqueMusicListPage().then(res => {
+        this.JPTJList = res.data || []
+      })
+    }
+  }
 }
 </script>
 <style lang="scss" scoped>

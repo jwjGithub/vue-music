@@ -191,6 +191,7 @@ export default {
   },
   created() {
     this.getBoutiqueMusicListPage()
+    this.getUploadMusicListPage()
   },
   methods: {
     // 查询精品推荐列表
@@ -201,6 +202,17 @@ export default {
       }
       getBoutiqueMusicListPage().then(res => {
         this.JPTJList = res.data || []
+      })
+    },
+    // 最新上传接口
+    getUploadMusicListPage() {
+      let json = {
+        type: '',
+        page: 1,
+        limit: 10
+      }
+      getUploadMusicListPage().then(res => {
+        this.ZXSCList = res.data || []
       })
     }
   }

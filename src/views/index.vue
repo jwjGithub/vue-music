@@ -85,12 +85,12 @@
             </div>
           </div>
           <div class="recommend-list">
-            <div v-for="(item,index) in 8" :key="index" class="list">
+            <div v-for="(item,index) in JPTJList" :key="index" class="list">
               <div class="img">
                 <img src="@/assets/images/test.jpg" />
               </div>
               <div class="content">
-                <div class="name">歌曲名称歌曲名称</div>
+                <div class="name">{{ item.title }}</div>
                 <div class="author">
                   <div class="w15">
                     <span class="title">词作者：</span>
@@ -198,9 +198,9 @@ export default {
     getBoutiqueMusicListPage() {
       let json = {
         page: 1,
-        limit: 10
+        limit: 8
       }
-      getBoutiqueMusicListPage().then(res => {
+      getBoutiqueMusicListPage(json).then(res => {
         this.JPTJList = res.data || []
       })
     },
@@ -211,7 +211,7 @@ export default {
         page: 1,
         limit: 10
       }
-      getUploadMusicListPage().then(res => {
+      getUploadMusicListPage(json).then(res => {
         this.ZXSCList = res.data || []
       })
     }

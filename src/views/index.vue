@@ -94,16 +94,15 @@
                 <div class="author">
                   <div class="w15">
                     <span class="title">词作者：</span>
-                    <span class="text">李珍珍</span>
+                    <span class="text">{{ setAuthorName(item.lyricAuthorArray) }}</span>
                   </div>
                   <div class="flex-1">
                     <span class="title">曲作者：</span>
-                    <span class="text">Lydia</span>
+                    <span class="text">{{ setAuthorName(item.authorArray) }}</span>
                   </div>
                 </div>
                 <div class="style">
-                  <div class="style-list">风格1</div>
-                  <div class="style-list">风格2</div>
+                  <div v-for="(st,stIndex) in setStyleList(item.stypeTagsDesc,item.emotionTagsDesc)" :key="stIndex" class="style-list">{{ st }}</div>
                 </div>
               </div>
             </div>
@@ -136,11 +135,11 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="(item,index) in 9" :key="index">
+                <tr v-for="(item,index) in ZXSCList" :key="index">
                   <td class="text-center">{{ index + 1 }}</td>
-                  <td class="text-left">稻香《原声》</td>
-                  <td class="text-left">周杰伦</td>
-                  <td class="text-left">周杰伦</td>
+                  <td class="text-left">{{ item.title }}</td>
+                  <td class="text-left">{{ setAuthorName(item.lyricAuthorArray) }}</td>
+                  <td class="text-left">{{ setAuthorName(item.authorArray) }}</td>
                   <td class="text-center">
                     <i class="icon icon-hear"></i>
                   </td>
@@ -214,6 +213,20 @@ export default {
       getUploadMusicListPage(json).then(res => {
         this.ZXSCList = res.data || []
       })
+    },
+    // 作者转换
+    setAuthorName(list) {
+      let arr = []
+      list && list.forEach(item => {
+        arr.push(item.authorName)
+      })
+      return arr.join(',')
+    },
+    // 转换风格数据
+    setStyleList(val, val2) {
+      let arr = val && val.split(',') || []
+      let arr2 = val2 && val2.split(',') || []
+      return arr.concat(arr2)
     }
   }
 }

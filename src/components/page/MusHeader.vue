@@ -232,7 +232,8 @@ export default {
     },
     logOut() {
       this.$store.dispatch('FedLogOut').then(() => {
-        location.reload()
+        console.log('退出')
+        location.reload('/')
       })
     },
     // 登录提交

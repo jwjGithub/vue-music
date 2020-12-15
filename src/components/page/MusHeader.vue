@@ -59,6 +59,7 @@
         >
           <div class="popover-list">
             <div v-if="$store.getters.loginType == 'company'" class="list">
+              <!-- <el-button class="text-btn" type="text" @click="GoWindow('http://192.168.3.18:9528/#/?token=' + getToken())">办公空间</el-button> -->
               <el-button class="text-btn" type="text" @click="GoWindow('http://47.94.21.246:9082/#/?token=' + getToken())">办公空间</el-button>
             </div>
             <div v-if="$store.getters.loginType == 'musician'" class="list">

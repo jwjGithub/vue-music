@@ -160,11 +160,9 @@ export default {
       } else if (!reg.test(value)) {
         callback(new Error('请输入正确的手机号'))
       } else {
-        console.log('value', value)
         verifyMobile({ mobile: value }).then(res => {
           callback()
-        }).catch((err) => {
-          console.log(err, '-err')
+        }).catch(() => {
           callback(new Error('手机号已注册'))
         })
       }
@@ -179,8 +177,7 @@ export default {
         verifyEmail({ email: value }).then(res => {
           console.log('验证完成')
           callback()
-        }).catch((err) => {
-          console.log(err, '-err')
+        }).catch(() => {
           callback(new Error('邮箱已注册'))
         })
       }
@@ -206,7 +203,7 @@ export default {
     }
     return {
       imgUrl: '', // 图片地址
-      addActive: 1, // 添加步骤
+      addActive: 0, // 添加步骤
       phoneSendCodeType: false, // 获取手机验证码状态 false 可以获取 true 不可获取
       phoneSendCodeCount: '获取验证码',
       emailSendCodeType: false, // 获取邮箱验证码状态 false 可以获取 true 不可获取
@@ -335,7 +332,7 @@ export default {
     },
     // 获取手机验证码
     getPhoneSendCode() {
-      this.$refs['form'].validateField(['mobile', 'username'], valid => { // 验证手机号码是否正确
+      this.$refs['form'].validateField(['mobile'], valid => { // 验证手机号码是否正确
         if (!valid) {
           let json = {
             mobile: this.form.mobile,

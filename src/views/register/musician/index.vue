@@ -13,7 +13,7 @@
               <i class="icon icon-sjx"></i>
             </div>
             <div class="step" :class="addActive != 0 ? 'active' : ''">
-              <i class="icon" :class="addActive != 0 ? 'steps-3-active' : 'steps-2'"></i>
+              <i class="icon" :class="addActive != 0 ? 'steps-2-active' : 'steps-2'"></i>
               <span class="ml30">详细信息</span>
             </div>
             <div>
@@ -73,7 +73,8 @@
                 <el-input v-model="form.feat" type="textarea" class="w50"></el-input>
               </el-form-item>
               <el-form-item v-if="addActive == 1" label="简介：" style="padding-bottom:66px;" prop="introduction">
-                <Editor v-model="form.introduction" class="w50" />
+                <el-input v-model="form.introduction" type="textarea" resize="none" rows="4" maxlength="500" show-word-limit class="w50"></el-input>
+                <!-- <Editor v-model="form.introduction" class="w50" /> -->
               </el-form-item>
               <el-form-item v-if="addActive == 1" label="密码：" prop="password">
                 <el-input v-model="form.password" type="password" class="w50"></el-input>
@@ -125,12 +126,12 @@ import {
   sendShortMess,
   sendHtmlMail
 } from '@/api/common'
-import Editor from '@/components/Editor'
+// import Editor from '@/components/Editor'
 import { strlen } from '@/utils/index'
 export default {
   name: 'RegisterCompany',
   components: {
-    Editor
+    // Editor
   },
   data() {
     let validateUserName = (rule, value, callback) => {
@@ -205,7 +206,7 @@ export default {
     }
     return {
       imgUrl: '', // 图片地址
-      addActive: 0, // 添加步骤
+      addActive: 1, // 添加步骤
       phoneSendCodeType: false, // 获取手机验证码状态 false 可以获取 true 不可获取
       phoneSendCodeCount: '获取验证码',
       emailSendCodeType: false, // 获取邮箱验证码状态 false 可以获取 true 不可获取

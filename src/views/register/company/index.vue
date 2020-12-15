@@ -13,7 +13,7 @@
               <i class="icon icon-sjx"></i>
             </div>
             <div class="step" :class="addActive != 0 ? 'active' : ''">
-              <i class="icon" :class="addActive != 0 ? 'steps-3-active' : 'steps-2'"></i>
+              <i class="icon" :class="addActive != 0 ? 'steps-2-active' : 'steps-2'"></i>
               <span class="ml30">详细信息</span>
             </div>
             <div>

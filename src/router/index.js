@@ -1,3 +1,10 @@
+/*
+ * @Date: 2020-09-07 17:36:09
+ * @Description:
+ * @LastEditors: JWJ
+ * @LastEditTime: 2020-12-16 21:31:06
+ * @FilePath: \vue-music\src\router\index.js
+ */
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
@@ -48,6 +55,12 @@ const routes = [
     name: 'Feedback',
     meta: { title: '问题反馈' },
     component: () => import('@/views/feedback/index')
+  },
+  {
+    path: '/library',
+    name: 'Library',
+    meta: { title: '词曲库' },
+    component: () => import('@/views/library/index')
   },
   {
     path: '/ranking',

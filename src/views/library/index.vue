@@ -4,6 +4,46 @@
       <mus-header :select-nav="'library'"></mus-header>
       <div class="library-content">
         <div class="content">
+          <div class="text-center mt48 mb30">
+            <el-input placeholder="歌曲/歌单/音乐人等" class="w40 input-with-select">
+              <el-button slot="append" icon="el-icon-search"></el-button>
+            </el-input>
+          </div>
+          <div class="library-row mb1">
+            <div class="left">风格</div>
+            <div class="right">
+              <div class="label-list">
+                <div v-for="(item,index) in 40" :key="index" class="label">流行{{ index }}</div>
+              </div>
+            </div>
+          </div>
+          <div class="library-row mb1">
+            <div class="left">情感</div>
+            <div class="right">
+              <div class="label-list">
+                <div v-for="(item,index) in 5" :key="index" class="label">流行{{ index }}</div>
+              </div>
+            </div>
+          </div>
+          <div class="library-row mb1">
+            <div class="left">速度</div>
+            <div class="right">
+              <div class="label-list">
+                <div v-for="(item,index) in 5" :key="index" class="label">流行{{ index }}</div>
+              </div>
+            </div>
+          </div>
+          <div class="library-row mb1">
+            <div class="left">价格</div>
+            <div class="right">
+              <div class="pt15">
+                <el-input type="number" size="mini" class="w8"></el-input>
+                <span class="ml5 mr5">-</span>
+                <el-input type="number" size="mini" class="w8"></el-input>
+                <el-button size="mini" class="ml20">确定</el-button>
+              </div>
+            </div>
+          </div>
           <div class="library-list">
             <div v-for="(item,index) in typeList" :key="index" class="list">
               <div class="title">{{ item.name }}</div>
@@ -33,7 +73,7 @@
           </div>
         </div>
       </div>
-      <!-- <mus-footer></mus-footer> -->
+      <mus-footer></mus-footer>
     </div>
   </div>
 </template>
@@ -94,12 +134,36 @@ export default {
     flex-direction:column;
     .library-content{
       flex:1;
-      overflow:hidden;
-      display:flex;
-      flex-direction: column;
       >.content{
-        flex:1;
-        overflow:hidden;
+        width: 1080px;
+        margin: 0 auto;
+        height: auto;
+        .library-row{
+          display:flex;
+
+          background-color:#f8f8f8;
+          >.left{
+            width:130px;
+            text-align: center;
+            min-height:54px;
+            line-height:54px;
+          }
+          >.right{
+            flex:1;
+            >.label-list{
+              padding-top:15px;
+              display:flex;
+              flex-wrap: wrap;
+              line-height:24px;
+              >.label{
+                padding:0 6px;
+                margin-right:20px;
+                margin-bottom:10px;
+                background-color:#ffae00;
+              }
+            }
+          }
+        }
         .library-list{
           display:flex;
           width:100%;
@@ -109,7 +173,7 @@ export default {
             flex-direction: column;
             padding:30px 0 0 0;
             margin:0 10px 40px 10px;
-            width:360px;
+            width:100%;
             border-bottom:1px solid #eee;
             >.title{
               text-align: center;
@@ -166,7 +230,7 @@ export default {
 .library-main{
   .el-input{
     .el-input__inner{
-      border-radius: 20px;
+      // border-radius: 20px;
     }
   }
   .btn-success{

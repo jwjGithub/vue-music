@@ -29,7 +29,19 @@
             </div>
           </div>
           <div class="demand-list">
-            <div class="list-head">
+            <template v-if="GSXQList && GSXQList.length > 2">
+              <div v-for="item in GSXQList.slice(0,2)" :key="item.id" class="list-head">
+                <div class="left"></div>
+                <div class="right">
+                  <div class="list-title">
+                    {{ item.title }}
+                  </div>
+                  <div class="list-text ellipsis2" v-html="item.content">
+                  </div>
+                </div>
+              </div>
+            </template>
+            <!-- <div class="list-head">
               <div class="left"></div>
               <div class="right">
                 <div class="list-title">
@@ -43,32 +55,15 @@
                   十字内容预览开头四十字内容预览四十
                 </div>
               </div>
-            </div>
-            <div class="list-head">
-              <div class="left"></div>
-              <div class="right">
-                <div class="list-title">
-                  帖子标题帖子标题帖子标题帖子标题帖子标题
-                  帖子标题帖子标题帖子标题
-                </div>
-                <div class="list-text ellipsis2">
-                  开头四十字内容预览开头四十字内容预览四十开头四
-                  十字内容预览开头四十字内容预览四十
-                  开头四十字内容预览开头四十字内容预览四十开头四
-                  十字内容预览开头四十字内容预览四十
+            </div> -->
+            <template v-if="GSXQChildrenList && GSXQChildrenList.length > 0">
+              <div v-for="(GSLBitem,GSLBindex) in GSXQChildrenList" :key="GSLBindex" class="lists">
+                <div v-for="(childItem,childindex) in GSLBitem" :key="childindex" class="list">
+                  <i class="icon list-icon"></i>
+                  <span class="text ellipsis1">{{ childItem.title }}</span>
                 </div>
               </div>
-            </div>
-            <div v-for="item in 4" :key="item" class="lists">
-              <div class="list">
-                <i class="icon list-icon"></i>
-                <span class="text ellipsis1">帖子标题帖子标题帖子标题帖子标题帖子</span>
-              </div>
-              <div class="list">
-                <i class="icon list-icon"></i>
-                <span class="text ellipsis1">帖子标题帖子标题帖子标题帖子标题帖子</span>
-              </div>
-            </div>
+            </template>
           </div>
         </div>
       </div>
@@ -163,7 +158,8 @@
 import { getList } from '@/api/ranking'
 import {
   getBoutiqueMusicListPage,
-  getUploadMusicListPage
+  getUploadMusicListPage,
+  getQueryNeedsAnon
 } from '@/api/index'
 export default {
   name: 'Index',
@@ -182,6 +178,8 @@ export default {
         { name: '网易云飙升榜', type: 2, loading: false, list: [] }
       ],
       dataList: [],
+      GSXQList: [], // 公司需求列表
+      GSXQChildrenList: [], // 公司需求列表
       JPTJList: [], // 精品推荐列表
       ZXSCList: [] // 最新上传列表
     }
@@ -191,6 +189,7 @@ export default {
   created() {
     this.getBoutiqueMusicListPage()
     this.getUploadMusicListPage()
+    this.getQueryNeedsAnon()
   },
   methods: {
     // 查询精品推荐列表
@@ -213,6 +212,38 @@ export default {
       getUploadMusicListPage(json).then(res => {
         this.ZXSCList = res.data || []
       })
+    },
+    // 查询公司需求
+    getQueryNeedsAnon() {
+      let json = {
+        limit: 10
+      }
+      getQueryNeedsAnon(json).then(res => {
+        this.GSXQList = res.data || []
+        this.setGSXQList()
+      })
+    },
+    // 设置公司需求列表
+    setGSXQList() {
+      let arr = []
+      if (this.GSXQList.length > 2) {
+        let list = this.GSXQList.slice(2)
+        let arr2 = []
+        list.forEach((item, index) => {
+          let item2 = JSON.parse(JSON.stringify(item))
+          if ((index + 1) % 2 === 1) {
+            arr2[0] = item2
+          } else {
+            arr2[1] = item2
+            arr.push(JSON.parse(JSON.stringify(arr2)))
+          }
+          if ((index + 1) === list.length && (index + 1) % 2 === 1) {
+            arr.push(item)
+          }
+        })
+      }
+      console.log(arr, 'arr')
+      this.GSXQChildrenList = arr
     },
     // 作者转换
     setAuthorName(list) {

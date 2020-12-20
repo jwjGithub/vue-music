@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-11-16 09:39:05
  * @Description: 首页接口
- * @LastEditors: JWJ
- * @LastEditTime: 2020-12-08 15:10:38
+ * @LastEditors: jwj
+ * @LastEditTime: 2020-12-20 20:51:47
  * @FilePath: \vue-music\src\api\index.js
  */
 import request from '@/utils/request'
@@ -19,6 +19,14 @@ export function getBoutiqueMusicListPage(data) {
 export function getUploadMusicListPage(data) {
   return request({
     url: `/music/base/getUploadMusicListPage`,
+    method: 'post',
+    data: data
+  })
+}
+// 查询公司需求
+export function getQueryNeedsAnon(data) {
+  return request({
+    url: `/company/homePage/queryNeedsAnon`,
     method: 'post',
     data: data
   })

@@ -13,7 +13,16 @@
             <div class="left">风格</div>
             <div class="right">
               <div class="label-list">
-                <div v-for="(item,index) in 40" :key="index" class="label">流行{{ index }}</div>
+                <el-tag
+                  v-for="item in tagListFG"
+                  :key="item.code"
+                  type=""
+                  :effect="queryForm.styleTags.indexOf(item) !== -1 ? 'dark' : 'plain'"
+                  @click="tagSelect(queryForm.styleTags,item)"
+                >
+                  {{ item.des }}
+                </el-tag>
+                <!-- <div v-for="(item,index) in 40" :key="index" class="label">流行{{ index }}</div> -->
               </div>
             </div>
           </div>
@@ -21,7 +30,16 @@
             <div class="left">情感</div>
             <div class="right">
               <div class="label-list">
-                <div v-for="(item,index) in 5" :key="index" class="label">流行{{ index }}</div>
+                <el-tag
+                  v-for="item in tagListQG"
+                  :key="item.code"
+                  type=""
+                  :effect="queryForm.emotionTags.indexOf(item) !== -1 ? 'dark' : 'plain'"
+                  @click="tagSelect(queryForm.emotionTags,item)"
+                >
+                  {{ item.des }}
+                </el-tag>
+                <!-- <div v-for="(item,index) in 5" :key="index" class="label">流行{{ index }}</div> -->
               </div>
             </div>
           </div>
@@ -29,7 +47,16 @@
             <div class="left">速度</div>
             <div class="right">
               <div class="label-list">
-                <div v-for="(item,index) in 5" :key="index" class="label">流行{{ index }}</div>
+                <el-tag
+                  v-for="item in tagListSD"
+                  :key="item.code"
+                  type=""
+                  :effect="queryForm.speed == item.code ? 'dark' : 'plain'"
+                  @click="queryForm.speed = item.code"
+                >
+                  {{ item.des }}
+                </el-tag>
+                <!-- <div v-for="(item,index) in 5" :key="index" class="label">流行{{ index }}</div> -->
               </div>
             </div>
           </div>
@@ -44,14 +71,25 @@
               </div>
             </div>
           </div>
+          <div class="nav-tabs mt20">
+            <div class="left-tabs">
+              <div class="tab active">词曲</div>
+              <div class="tab">作曲</div>
+              <div class="tab">作词</div>
+              <div class="tab">Beat/BGM</div>
+            </div>
+            <div class="right-btn"></div>
+          </div>
           <div class="library-list">
             <div v-for="(item,index) in typeList" :key="index" class="list">
-              <div class="title">{{ item.name }}</div>
               <div class="table-head">
                 <div class="w3 c-999"></div>
-                <div class="w17 c-999">歌名</div>
-                <div class="w9 c-999">歌手</div>
-                <div class="w9 c-999">专辑</div>
+                <div class="w17 c-999">作品名</div>
+                <div class="w9 c-999">词作者</div>
+                <div class="w9 c-999">曲作者</div>
+                <div class="w9 c-999">标签</div>
+                <div class="w9 c-999">用户</div>
+                <div class="w9 c-999">上传时间</div>
               </div>
               <div v-loading="item.loading" class="table-body">
                 <el-scrollbar class="custom-scrollbar">
@@ -66,6 +104,10 @@
                     <div class="table-col w17 ellipsis music-name">{{ itemChildren.name }}</div>
                     <div class="table-col w9 ellipsis c-999">{{ itemChildren.singer }}</div>
                     <div class="table-col w9 ellipsis c-999">{{ itemChildren.album }}</div>
+                    <div class="table-col w9 ellipsis c-999">{{ itemChildren.album }}</div>
+                    <div class="table-col w9 ellipsis c-999">{{ itemChildren.album }}</div>
+                    <div class="table-col w9 ellipsis c-999">{{ itemChildren.album }}</div>
+                    <div class="table-col w9 ellipsis c-999">{{ itemChildren.album }}</div>
                   </div>
                 </el-scrollbar>
               </div>
@@ -79,6 +121,7 @@
 </template>
 <script>
 import { getList } from '@/api/ranking'
+import { getTagsByType, getMusicList } from '@/api/library'
 export default {
   name: 'Ranking',
   components: {
@@ -86,6 +129,22 @@ export default {
   data() {
     return {
       loading: false,
+      tagListFG: [], // 风格标签列表
+      tagListQG: [], // 情感标签列表
+      tagListSD: [], // 速度标签列表
+      queryForm: {
+        searchStr: '', // 检索文本
+        styleTags: [], // 风格标签
+        emotionTags: [], // 情感标签
+        speed: '', // 速度
+        type: '', // 作品类型(1：词曲，2：BEATBGM，3：作曲，4：作词)
+        priceMax: '', // 价格上限
+        priceMin: '', // 价格下限
+        sortBy: '', // 排序(默认排序为空，price 价格,createTime 上传时间)
+        sortType: '', // 排序类型(desc,asc)
+        page: 1, // 当前页码
+        limit: 10 // 每页条数
+      },
       form: {
       },
       clickData: {}, // 点击歌曲
@@ -99,6 +158,9 @@ export default {
   },
   created() {
     // this.getList()
+    this.getTagListFG()
+    this.getTagListQG()
+    this.getTagListSD()
   },
   methods: {
     // 查询列表
@@ -112,6 +174,42 @@ export default {
           this.$set(item, 'loading', false)
         })
       })
+    },
+    // 获取风格标签列表
+    getTagListFG() {
+      getTagsByType({ type: 1 }).then(res => {
+        let list = res.data || []
+        list.forEach(item => {
+          item.type = 1
+        })
+        this.tagListFG = list
+      })
+    },
+    // 获取情感标签列表
+    getTagListQG() {
+      getTagsByType({ type: 2 }).then(res => {
+        let list = res.data || []
+        list.forEach(item => {
+          item.type = 2
+        })
+        this.tagListQG = list
+      })
+    },
+    // 获取速度标签列表
+    getTagListSD() {
+      getTagsByType({ type: 3 }).then(res => {
+        this.tagListSD = res.data || []
+      })
+    },
+    // 标签选择
+    tagSelect(row, item) {
+      // 添加
+      if (row.indexOf(item) === -1) {
+        row.push(item)
+      } else { // 删除
+        row.splice(row.indexOf(item), 1)
+      }
+      this.$forceUpdate()
     },
     // 歌曲列表点击事件
     dataClick(row) {
@@ -140,7 +238,6 @@ export default {
         height: auto;
         .library-row{
           display:flex;
-
           background-color:#f8f8f8;
           >.left{
             width:130px;
@@ -155,6 +252,11 @@ export default {
               display:flex;
               flex-wrap: wrap;
               line-height:24px;
+              .el-tag{
+                cursor: pointer;
+                margin-right:10px;
+                margin-bottom:10px;
+              }
               >.label{
                 padding:0 6px;
                 margin-right:20px;
@@ -162,6 +264,33 @@ export default {
                 background-color:#ffae00;
               }
             }
+          }
+        }
+        .nav-tabs{
+          width:100%;
+          height:46px;
+          background-color: #f8f8f8;
+          border-top: 4px solid #ffae00;
+          display:flex;
+          justify-content:space-between;
+          >.left-tabs{
+            padding:0 24px;
+            display:flex;
+            >.tab{
+              width:100px;
+              display:flex;
+              font-size: 18px;
+              align-items:center;
+              justify-content: center;
+              cursor: pointer;
+              &.active{
+                background-color:#ffae00;
+                color:#FFF;
+              }
+            }
+          }
+          >.right-btn{
+            flex:1;
           }
         }
         .library-list{
@@ -172,7 +301,7 @@ export default {
             display:flex;
             flex-direction: column;
             padding:30px 0 0 0;
-            margin:0 10px 40px 10px;
+            margin-top:10px;
             width:100%;
             border-bottom:1px solid #eee;
             >.title{
@@ -180,12 +309,10 @@ export default {
               margin-bottom:20px;
             }
             .table-head{
-              height:36px;
+              height:40px;
               display:flex;
               align-items:center;
               background-color:#F8F8F8;
-              border-bottom: 4px solid #FFAE00;
-              padding-right:10px;
               >div{
                 font-size:14px;
                 color:#999;

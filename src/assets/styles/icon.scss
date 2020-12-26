@@ -32,5 +32,53 @@
     height: 16px;
     background-image:url('~@/assets/images/icon/icon-company.png');
   }
+  // 播放-默认
+  &.icon-play{
+    width: 26px;
+    height: 26px;
+    background-image:url('~@/assets/images/icon/icon-play.png');
+  }
+  // 播放-选中
+  &.icon-play-active{
+    width: 26px;
+    height: 26px;
+    background-image:url('~@/assets/images/icon/icon-play-active.png');
+  }
+  // 消息-默认
+  &.icon-message{
+    width: 16px;
+    height: 15px;
+    background-image:url('~@/assets/images/icon/icon-message.png');
+  }
+  // 消息-选中
+  &.icon-message-active{
+    width: 16px;
+    height: 15px;
+    background-image:url('~@/assets/images/icon/icon-message-active.png');
+  }
+  // 升序-默认
+  &.icon-up{
+    width: 8px;
+    height: 8px;
+    background-image:url('~@/assets/images/icon/icon-up.png');
+  }
+  // 升序-选中
+  &.icon-up-active{
+    width: 8px;
+    height: 8px;
+    background-image:url('~@/assets/images/icon/icon-up-active.png');
+  }
+  // 降序-默认
+  &.icon-down{
+    width: 8px;
+    height: 8px;
+    background-image:url('~@/assets/images/icon/icon-down.png');
+  }
+  // 降序-选中
+  &.icon-down-active{
+    width: 8px;
+    height: 8px;
+    background-image:url('~@/assets/images/icon/icon-down-active.png');
+  }
 
 }

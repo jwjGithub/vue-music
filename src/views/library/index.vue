@@ -82,8 +82,8 @@
               <div class="search-sort-btn">
                 <div>上传时间</div>
                 <div class="up-down">
-                  <i class="el-icon-arrow-up ft10"></i>
-                  <i class="el-icon-arrow-down ft10"></i>
+                  <i class="icon icon-up"></i>
+                  <i class="icon icon-down"></i>
                 </div>
               </div>
             </div>
@@ -310,7 +310,10 @@ export default {
             .search-sort-btn{
               display:flex;
               align-items:center;
+              color:#777777;
+              cursor: pointer;
               .up-down{
+                margin-left:3px;
                 display:flex;
                 flex-direction: column;
               }

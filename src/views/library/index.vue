@@ -73,12 +73,20 @@
           </div>
           <div class="nav-tabs mt20">
             <div class="left-tabs">
-              <div class="tab active">词曲</div>
-              <div class="tab">作曲</div>
-              <div class="tab">作词</div>
-              <div class="tab">Beat/BGM</div>
+              <div class="tab" :class="queryForm.type === 1 ? 'active' : ''" @click="typeSelect(1)">词曲</div>
+              <div class="tab" :class="queryForm.type === 3 ? 'active' : ''" @click="typeSelect(3)">作曲</div>
+              <div class="tab" :class="queryForm.type === 4 ? 'active' : ''" @click="typeSelect(4)">作词</div>
+              <div class="tab" :class="queryForm.type === 2 ? 'active' : ''" @click="typeSelect(2)">Beat/BGM</div>
             </div>
-            <div class="right-btn"></div>
+            <div class="right-btn">
+              <div class="search-sort-btn">
+                <div>上传时间</div>
+                <div class="up-down">
+                  <i class="el-icon-arrow-up ft10"></i>
+                  <i class="el-icon-arrow-down ft10"></i>
+                </div>
+              </div>
+            </div>
           </div>
           <div class="library-list">
             <div v-for="(item,index) in typeList" :key="index" class="list">
@@ -129,6 +137,7 @@ export default {
   data() {
     return {
       loading: false,
+      tabActive: 1,
       tagListFG: [], // 风格标签列表
       tagListQG: [], // 情感标签列表
       tagListSD: [], // 速度标签列表
@@ -137,7 +146,7 @@ export default {
         styleTags: [], // 风格标签
         emotionTags: [], // 情感标签
         speed: '', // 速度
-        type: '', // 作品类型(1：词曲，2：BEATBGM，3：作曲，4：作词)
+        type: 1, // 作品类型(1：词曲，2：BEATBGM，3：作曲，4：作词)
         priceMax: '', // 价格上限
         priceMin: '', // 价格下限
         sortBy: '', // 排序(默认排序为空，price 价格,createTime 上传时间)
@@ -174,6 +183,11 @@ export default {
           this.$set(item, 'loading', false)
         })
       })
+    },
+    // 歌曲类型切换事件
+    typeSelect(type) {
+      this.$set(this.queryForm, 'type', type)
+      // this.getList()
     },
     // 获取风格标签列表
     getTagListFG() {
@@ -291,6 +305,16 @@ export default {
           }
           >.right-btn{
             flex:1;
+            display:flex;
+            align-items:center;
+            .search-sort-btn{
+              display:flex;
+              align-items:center;
+              .up-down{
+                display:flex;
+                flex-direction: column;
+              }
+            }
           }
         }
         .library-list{

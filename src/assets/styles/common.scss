@@ -29,7 +29,7 @@
   @if $n >= 6 and $n <= 20{
     .form-label-w#{$n} .el-form-item .el-form-item__label{width:(10px * $n) !important;}
   }
-  @if $n >= 12 and $n <= 48{
+  @if $n >= 10 and $n <= 48{
     .ft#{$n}{font-size:(1px * $n) !important;}
   }
   @if $n > 1 and $n < 6{

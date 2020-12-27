@@ -5,8 +5,8 @@
       <div class="library-content">
         <div class="content">
           <div class="text-center mt48 mb30">
-            <el-input placeholder="歌曲/歌单/音乐人等" class="w40 input-with-select">
-              <el-button slot="append" icon="el-icon-search"></el-button>
+            <el-input v-model="queryForm.searchStr" placeholder="歌曲/歌单/音乐人等" class="w40 input-with-select" @keyup.enter.native="getList">
+              <el-button slot="append" icon="el-icon-search" @click="getList"></el-button>
             </el-input>
           </div>
           <div class="library-row mb1">
@@ -52,7 +52,7 @@
                   :key="item.code"
                   type=""
                   :effect="queryForm.speed == item.code ? 'dark' : 'plain'"
-                  @click="queryForm.speed = item.code"
+                  @click="queryForm.speed = queryForm.speed === item.code ? '' : item.code;getList()"
                 >
                   {{ item.des }}
                 </el-tag>
@@ -64,10 +64,10 @@
             <div class="left">价格</div>
             <div class="right">
               <div class="pt15">
-                <el-input type="number" size="mini" class="w8"></el-input>
+                <el-input v-model="queryForm.priceMin" type="number" size="mini" maxlength="8" class="w8"></el-input>
                 <span class="ml5 mr5">-</span>
-                <el-input type="number" size="mini" class="w8"></el-input>
-                <el-button size="mini" class="ml20">确定</el-button>
+                <el-input v-model="queryForm.priceMax" type="number" size="mini" maxlength="8" class="w8"></el-input>
+                <el-button size="mini" class="ml20" @click="getList">确定</el-button>
               </div>
             </div>
           </div>
@@ -125,18 +125,34 @@
                       <i class="icon icon-play mr10 ml10"></i>
                     </div>
                   </div>
-                  <div class="table-col w12 ellipsis c-333">{{ setAutorName(item.lyricists) }}</div>
-                  <div class="table-col w12 ellipsis c-333">{{ setAutorName(item.composers) }}</div>
+                  <div class="table-col w12 ellipsis c-333">
+                    <div class="align-center hover-icon">
+                      <span class="flex-1 ellipsis">{{ setAutorName(item.lyricists) }}</span>
+                      <i class="icon icon-message mr10 ml10"></i>
+                    </div>
+                  </div>
+                  <div class="table-col w12 ellipsis c-333">
+                    <div class="align-center hover-icon">
+                      <span class="flex-1 ellipsis">{{ setAutorName(item.composers) }}</span>
+                      <i class="icon icon-message mr10 ml10"></i>
+                    </div>
+                  </div>
                   <div class="table-col w14 ellipsis c-999">
                     <span v-if="item.styleTagsDes">{{ item.styleTagsDes }},</span>
                     <span>{{ item.emotionTagsDes }}</span>
                   </div>
-                  <div class="table-col w12 ellipsis c-333">{{ setAutorName(item.producers) }}</div>
+                  <div class="table-col w12 ellipsis c-333">
+                    <div class="align-center hover-icon">
+                      <span class="flex-1 ellipsis">{{ setAutorName(item.producers) }}</span>
+                      <i class="icon icon-message mr10 ml10"></i>
+                    </div>
+                  </div>
                   <div class="table-col w14 ellipsis c-333">{{ item.createdTime }}</div>
                 </div>
               </div>
             </div>
           </div>
+          <div v-if="queryForm.page * queryForm.limit < total" class="page-num" :loading="loading" @click="getMoreData">点击查看更多</div>
           <!-- <el-table
             :data="trList"
             style="width: 100%"
@@ -167,6 +183,7 @@ export default {
   },
   data() {
     return {
+      total: 0,
       loading: false,
       tabActive: 1,
       tagListFG: [], // 风格标签列表
@@ -271,8 +288,13 @@ export default {
     // 查询列表
     getList() {
       this.loading = true
-      getMusicList(this.queryForm).then((res) => {
+      this.$set(this.queryForm, 'page', 1)
+      let json = JSON.parse(JSON.stringify(this.queryForm))
+      json.styleTags = this.getSelectTag(json.styleTags)
+      json.emotionTags = this.getSelectTag(json.emotionTags)
+      getMusicList(json).then((res) => {
         this.dataList = res.data
+        this.total = res.count || 0
         this.loading = false
       }).catch(() => {
         this.loading = false
@@ -286,6 +308,21 @@ export default {
       //     this.$set(item, 'loading', false)
       //   })
       // })
+    },
+    // 查询更多
+    getMoreData() {
+      this.loading = true
+      this.$set(this.queryForm, 'page', this.queryForm.page + 1)
+      let json = JSON.parse(JSON.stringify(this.queryForm))
+      json.styleTags = this.getSelectTag(json.styleTags)
+      json.emotionTags = this.getSelectTag(json.emotionTags)
+      getMusicList(json).then((res) => {
+        this.dataList = this.dataList.concat(res.data)
+        this.total = res.count || 0
+        this.loading = false
+      }).catch(() => {
+        this.loading = false
+      })
     },
     // 歌曲类型切换事件
     typeSelect(type) {
@@ -337,6 +374,15 @@ export default {
         row.splice(row.indexOf(item), 1)
       }
       this.$forceUpdate()
+      this.getList()
+    },
+    // 获取选中的标签
+    getSelectTag(list, code = 'code') {
+      let arr = []
+      list.forEach(item => {
+        arr.push(item[code])
+      })
+      return arr
     },
     // 设置作者名称
     setAutorName(list) {
@@ -507,10 +553,19 @@ export default {
                   align-items:center;
                   padding: 0 10px;
                   text-align: center;
-
+                  .hover-icon{
+                    >i{
+                      display:none;
+                    }
+                  }
                 }
                 &:hover{
                   box-shadow: 0px 0px 8px 0px rgba(0,0,0,0.20);
+                  .hover-icon{
+                    >i{
+                      display:block;
+                    }
+                  }
                 }
               }
               & .table-row:last-child{
@@ -537,6 +592,18 @@ export default {
               }
             }
           }
+        }
+        .page-num{
+          width:100%;
+          height:40px;
+          display:flex;
+          justify-content: center;
+          align-items: center;
+          background-color:#f8f8f8;
+          font-size: 14px;
+          color: #999999;
+          cursor: pointer;
+          margin-bottom:20px;
         }
       }
     }

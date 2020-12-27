@@ -1,36 +1,29 @@
 <template>
-  <div class="main index-main">
+  <div class="main demand-main">
     <div class="main-content">
       <mus-header></mus-header>
       <div class="demand-list">
         <template>
-          <div v-for="(item,index) in 10" :key="index" class="list">
+          <div v-for="(item,index) in dataList" :key="index" class="list">
             <div class="left">
               <img src="@/assets/images/test.jpg" />
             </div>
             <div class="center">
-              <div class="title">
-                标题需求标题需求标题需求标题需求
-              </div>
-              <div class="text ellipsis2">
-                这句话一共有十个汉字这句话一共有十个汉字这句话一共有十个汉字这句话一共有十个汉字
-                这句话一共有十个汉字这句话一
-                这句话一共有十个汉字这句话一共有十个汉字这句话一共有十个汉字这句话一共有十个汉字
-                这句话一共有十个汉字这句话一
-              </div>
+              <div class="title">{{ item.title }}</div>
+              <div class="text content-html" v-html="item.content"></div>
             </div>
             <div class="right">
               <div class="right-row">
                 <i class="icon icon-company mr6"></i>
-                <p class="ellipsis flex-1">公司名称</p>
+                <p class="ellipsis flex-1">{{ item.companyName }}</p>
               </div>
               <div class="right-row">
                 <i class="icon icon-company mr6"></i>
-                <p class="ellipsis flex-1">2020-10-10 20:20:20</p>
+                <p class="ellipsis flex-1">{{ item.createdTime }}</p>
               </div>
               <div class="right-row">
                 <i class="icon icon-company mr6"></i>
-                <p class="ellipsis flex-1">21</p>
+                <p class="ellipsis flex-1">{{ item.contributionNum }}</p>
               </div>
             </div>
           </div>
@@ -62,7 +55,7 @@ export default {
       dataList: [],
       queryForm: {
         page: 1,
-        limit: 10
+        limit: 999
       }
     }
   },
@@ -90,6 +83,7 @@ export default {
         width:1000px;
         margin:0 auto;
         padding:26px;
+        flex:1;
         >.list{
           padding:20px;
           border-bottom:1px solid #EEE;
@@ -109,6 +103,7 @@ export default {
             flex:1;
             overflow: hidden;
             padding-right:40px;
+            border-right:1px solid #eee;
             >.title{
               font-size: 18px;
               color: #333333;
@@ -118,6 +113,7 @@ export default {
               font-size: 14px;
               color: #666666;
               line-height:28px;
+
             }
           }
           >.right{
@@ -125,7 +121,6 @@ export default {
             margin-top:17px;
             height:80px;
             padding-left:20px;
-            border-left:1px solid #eee;
             display:flex;
             flex-direction: column;
             justify-content: space-between;
@@ -142,3 +137,12 @@ export default {
   }
 </style>
 
+<style lang="scss">
+.demand-main{
+  .content-html{
+    img{
+      max-width:100%;
+    }
+  }
+}
+</style>

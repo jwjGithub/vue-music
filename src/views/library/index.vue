@@ -79,48 +79,79 @@
               <div class="tab" :class="queryForm.type === 2 ? 'active' : ''" @click="typeSelect(2)">Beat/BGM</div>
             </div>
             <div class="right-btn">
-              <div class="search-sort-btn">
+              <el-button type="warning" class="mr30" size="small">添加到在线播放列表</el-button>
+              <div class="search-sort-btn" @click="sortChange('price',queryForm.sortType)">
+                <div>默认</div>
+                <div class="up-down">
+                  <i class="icon" :class="queryForm.sortBy == 'price' && queryForm.sortType == 'asc' ? 'icon-up-active' : 'icon-up'"></i>
+                  <i class="icon" :class="queryForm.sortBy == 'price' && queryForm.sortType == 'desc' ? 'icon-down-active' : 'icon-down'"></i>
+                </div>
+              </div>
+              <div class="search-sort-btn" @click="sortChange('createTime',queryForm.sortType)">
                 <div>上传时间</div>
                 <div class="up-down">
-                  <i class="icon icon-up"></i>
-                  <i class="icon icon-down"></i>
+                  <i class="icon" :class="queryForm.sortBy == 'createTime' && queryForm.sortType == 'asc' ? 'icon-up-active' : 'icon-up'"></i>
+                  <i class="icon" :class="queryForm.sortBy == 'createTime' && queryForm.sortType == 'desc' ? 'icon-down-active' : 'icon-down'"></i>
                 </div>
               </div>
             </div>
           </div>
           <div class="library-list">
-            <div v-for="(item,index) in typeList" :key="index" class="list">
+            <div class="list">
               <div class="table-head">
-                <div class="w3 c-999"></div>
-                <div class="w17 c-999">作品名</div>
-                <div class="w9 c-999">词作者</div>
-                <div class="w9 c-999">曲作者</div>
-                <div class="w9 c-999">标签</div>
-                <div class="w9 c-999">用户</div>
-                <div class="w9 c-999">上传时间</div>
+                <div class="w3 c-999">
+                  <div class="checkbox-label" :class="checkArr ? 'active' : ''" @click="checkSelectAll"><div></div></div>
+                </div>
+                <div class="flex-1 c-999">作品名</div>
+                <div class="w12 c-999">词作者</div>
+                <div class="w12 c-999">曲作者</div>
+                <div class="w14 c-999">标签</div>
+                <div class="w12 c-999">制作者</div>
+                <div class="w14 c-999">上传时间</div>
               </div>
-              <div v-loading="item.loading" class="table-body">
-                <el-scrollbar class="custom-scrollbar">
-                  <div
-                    v-for="(itemChildren,indexChildren) in item.list"
-                    :key="indexChildren"
-                    class="table-row"
-                    :class="clickData.name == itemChildren.name && clickData.singer == itemChildren.singer ? 'active' : ''"
-                    @click="dataClick(itemChildren)"
-                  >
-                    <div class="table-col w3 c-999">{{ (indexChildren + 1) }}</div>
-                    <div class="table-col w17 ellipsis music-name">{{ itemChildren.name }}</div>
-                    <div class="table-col w9 ellipsis c-999">{{ itemChildren.singer }}</div>
-                    <div class="table-col w9 ellipsis c-999">{{ itemChildren.album }}</div>
-                    <div class="table-col w9 ellipsis c-999">{{ itemChildren.album }}</div>
-                    <div class="table-col w9 ellipsis c-999">{{ itemChildren.album }}</div>
-                    <div class="table-col w9 ellipsis c-999">{{ itemChildren.album }}</div>
-                    <div class="table-col w9 ellipsis c-999">{{ itemChildren.album }}</div>
+              <div v-loading="loading" class="table-body">
+                <div
+                  v-for="(item,index) in dataList"
+                  :key="index"
+                  class="table-row"
+                  @click="dataClick(item)"
+                >
+                  <div class="table-col w3 c-999">
+                    <div class="checkbox-label" :class="item.checked === true ? 'active' : ''" @click="checkSelectAllOne(item)"><div></div></div>
                   </div>
-                </el-scrollbar>
+                  <div class="table-col flex-1">
+                    <div class="align-center hover-icon">
+                      <span class="flex-1 ellipsis">{{ item.title }}</span>
+                      <i class="icon icon-play mr10 ml10"></i>
+                    </div>
+                  </div>
+                  <div class="table-col w12 ellipsis c-333">{{ setAutorName(item.lyricists) }}</div>
+                  <div class="table-col w12 ellipsis c-333">{{ setAutorName(item.composers) }}</div>
+                  <div class="table-col w14 ellipsis c-999">
+                    <span v-if="item.styleTagsDes">{{ item.styleTagsDes }},</span>
+                    <span>{{ item.emotionTagsDes }}</span>
+                  </div>
+                  <div class="table-col w12 ellipsis c-333">{{ setAutorName(item.producers) }}</div>
+                  <div class="table-col w14 ellipsis c-333">{{ item.createdTime }}</div>
+                </div>
               </div>
             </div>
           </div>
+          <!-- <el-table
+            :data="trList"
+            style="width: 100%"
+          >
+            <el-table-column prop="name" label="标题" width="180"></el-table-column>
+            <el-table-column v-for="(item,index) in thList" :key="index" :label="item" width="180">
+              <template slot-scope="scope">
+                <span v-for="(data,dataIndex) in tableList" :key="dataIndex">
+                  <template v-if="scope.row.name === data.colour && item === data.size">
+                    {{ data.stock }}
+                  </template>
+                </span>
+              </template>
+            </el-table-column>
+          </el-table> -->
         </div>
       </div>
       <mus-footer></mus-footer>
@@ -160,34 +191,116 @@ export default {
       typeList: [
         { name: '抖音热歌榜', type: 4, loading: false, list: [] }
       ],
-      dataList: []
+      dataList: [],
+      thList: [],
+      trList: [],
+      tableList: []
+    }
+  },
+  computed: {
+    checkArr() {
+      let bl = this.dataList.length > 0
+      for (let i = 0, len = this.dataList.length; i < len; i++) {
+        let item = this.dataList[i]
+        if (item.checked !== true) {
+          bl = false
+          break
+        }
+      }
+      return bl
     }
   },
   watch: {
   },
   created() {
-    // this.getList()
+    this.getList()
     this.getTagListFG()
     this.getTagListQG()
     this.getTagListSD()
+
+    let arr = [
+      {
+        'skuId': '587530c3-eb5a-4a72-a81f-6fa6708b8b83',
+        'productCode': 'D6460768501600',
+        'colour': '米白',
+        'size': 'M',
+        'stock': 13
+      },
+      {
+        'skuId': 'e3f5859b-f778-49cd-bdba-7c2284c8a2a3',
+        'productCode': 'D6460768501090',
+        'colour': '米白',
+        'size': '均码',
+        'stock': 3
+      },
+      {
+        'skuId': 'e5490570-23a1-4efa-b332-b0b4df2a8ddf',
+        'productCode': 'D6460768202479',
+        'colour': '兰花',
+        'size': 'M',
+        'stock': 2
+      },
+      {
+        'skuId': '793760d8-2575-403f-ac4d-6cdffb0e368c',
+        'productCode': 'D6460768201059',
+        'colour': '兰花',
+        'size': '均码',
+        'stock': 1
+      }
+    ]
+    let th = []
+    let tr = []
+    // 解析原始数据 获取X,Y轴列表长度
+    arr.forEach(item => {
+      if (th.indexOf(item.size) === -1) {
+        th.push(item.size)
+      }
+      if (tr.indexOf(item.colour) === -1) {
+        tr.push(item.colour)
+      }
+    })
+    tr.forEach(item => {
+      this.trList.push({
+        name: item
+      })
+    })
+    this.thList = th
+    this.tableList = arr
   },
   methods: {
     // 查询列表
     getList() {
-      this.typeList.forEach(item => {
-        this.$set(item, 'loading', true)
-        getList(item.type).then(res => {
-          this.$set(item, 'list', res.data || [])
-          this.$set(item, 'loading', false)
-        }).catch(() => {
-          this.$set(item, 'loading', false)
-        })
+      this.loading = true
+      getMusicList(this.queryForm).then((res) => {
+        this.dataList = res.data
+        this.loading = false
+      }).catch(() => {
+        this.loading = false
       })
+      // this.typeList.forEach(item => {
+      //   this.$set(item, 'loading', true)
+      //   getList(item.type).then(res => {
+      //     this.$set(item, 'list', res.data || [])
+      //     this.$set(item, 'loading', false)
+      //   }).catch(() => {
+      //     this.$set(item, 'loading', false)
+      //   })
+      // })
     },
     // 歌曲类型切换事件
     typeSelect(type) {
       this.$set(this.queryForm, 'type', type)
-      // this.getList()
+      this.getList()
+    },
+    // 排序change事件
+    sortChange(type, sort) {
+      this.$set(this.queryForm, 'sortBy', type)
+      if (sort === 'desc') {
+        this.$set(this.queryForm, 'sortType', 'asc')
+      } else {
+        this.$set(this.queryForm, 'sortType', 'desc')
+      }
+      this.getList()
     },
     // 获取风格标签列表
     getTagListFG() {
@@ -224,6 +337,25 @@ export default {
         row.splice(row.indexOf(item), 1)
       }
       this.$forceUpdate()
+    },
+    // 设置作者名称
+    setAutorName(list) {
+      let arr = list.map(item => {
+        return item.authorName
+      })
+      return arr.join(',')
+    },
+    // 全选
+    checkSelectAll() {
+      if (this.dataList.length <= 0) return
+      let bl = this.checkArr
+      this.dataList.forEach(item => {
+        this.$set(item, 'checked', !bl)
+      })
+    },
+    // 选中/取消
+    checkSelectAllOne(row) {
+      this.$set(row, 'checked', !row.checked)
     },
     // 歌曲列表点击事件
     dataClick(row) {
@@ -307,15 +439,25 @@ export default {
             flex:1;
             display:flex;
             align-items:center;
+            justify-content: flex-end;
             .search-sort-btn{
               display:flex;
               align-items:center;
               color:#777777;
+              font-size:14px;
               cursor: pointer;
+              margin:0 30px;
               .up-down{
                 margin-left:3px;
                 display:flex;
                 flex-direction: column;
+                justify-content: center;
+                >i:nth-child(1){
+                  margin-top:2px;
+                }
+                >i:nth-child(2){
+                  margin-top:-4px;
+                }
               }
             }
           }
@@ -329,6 +471,7 @@ export default {
             flex-direction: column;
             padding:30px 0 0 0;
             margin-top:10px;
+            margin-bottom:20px;
             width:100%;
             border-bottom:1px solid #eee;
             >.title{
@@ -341,6 +484,9 @@ export default {
               align-items:center;
               background-color:#F8F8F8;
               >div{
+                display:flex;
+                align-items:center;
+                padding: 0 10px;
                 font-size:14px;
                 color:#999;
                 text-align: center;
@@ -350,7 +496,6 @@ export default {
               flex:1;
               overflow: hidden;
               .table-row{
-                padding-right:10px;
                 cursor: pointer;
                 display:flex;
                 font-size:12px;
@@ -358,19 +503,37 @@ export default {
                 border-bottom:1px solid #EEE;
                 .table-col{
                   height:40px;
-                  line-height:40px;
+                  display:flex;
+                  align-items:center;
+                  padding: 0 10px;
                   text-align: center;
+
                 }
-                // &:hover,
-                &.active{
-                  background-color:#fff1d2;
-                  .music-name{
-                    color:#FF9000;
-                  }
+                &:hover{
+                  box-shadow: 0px 0px 8px 0px rgba(0,0,0,0.20);
                 }
               }
               & .table-row:last-child{
                 border-bottom:none;
+              }
+            }
+            .checkbox-label{
+              cursor: pointer;
+              width:10px;
+              height:10px;
+              padding:7px;
+              border-radius: 4px;
+              border:1px solid #eee;
+              >div{
+                width:100%;
+                height:100%;
+                background-color:#F8F8F8;
+              }
+              &.active{
+                border:1px solid #FFAE00;
+                >div{
+                  background-color:#FFAE00;
+                }
               }
             }
           }
@@ -386,15 +549,6 @@ export default {
     .el-input__inner{
       // border-radius: 20px;
     }
-  }
-  .btn-success{
-    border-radius: 20px;
-  }
-  .el-button--warning{
-    border-radius: 20px;
-  }
-  .el-loading-mask{
-    border-radius: 20px;
   }
 }
 </style>

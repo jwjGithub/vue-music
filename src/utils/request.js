@@ -1,9 +1,16 @@
+/*
+ * @Date: 2020-09-22 10:48:18
+ * @Description:
+ * @LastEditors: JWJ
+ * @LastEditTime: 2020-12-27 17:02:01
+ * @FilePath: \vue-music\src\utils\request.js
+ */
 import axios from 'axios'
 import router from '@/router'
 import { Notification, MessageBox, Message } from 'element-ui'
 import store from '@/store'
 import { getToken, removeToken } from '@/utils/auth'
-
+let messageObj
 axios.defaults.headers['Content-Type'] = 'application/json;charset=utf-8'
 // 创建axios实例
 const service = axios.create({
@@ -52,24 +59,32 @@ service.interceptors.response.use(res => {
   const code = res.data.code
   if (code === 401 || code === 9104) {
     removeToken() // 删除token
-    MessageBox.confirm(
-      (code === 401 ? '登录状态已过期' : '没有权限访问') + '，您可以继续留在该页面，或者返回主页',
-      '系统提示',
-      {
-        confirmButtonText: '返回主页',
-        cancelButtonText: '取消',
-        type: 'warning'
+    if (messageObj === undefined) {
+      if (code === 401) {
+        store.dispatch('FedLogOut')
       }
-    ).then(() => {
-      router.push({
-        path: '/'
-      }).catch(() => {
+      messageObj = MessageBox.confirm(
+        (code === 401 ? '登录状态已过期' : '没有权限访问') + '，您可以继续留在该页面，或者返回主页',
+        '系统提示',
+        {
+          confirmButtonText: '返回主页',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }
+      ).then(() => {
+        router.push({
+          path: '/'
+        }).catch(() => {
 
+        })
+        messageObj = undefined
+        // store.dispatch('user/resetToken').then(() => {
+        //   location.reload() // 为了重新实例化vue-router对象 避免bug
+        // })
+      }).catch(() => {
+        messageObj = undefined
       })
-      // store.dispatch('user/resetToken').then(() => {
-      //   location.reload() // 为了重新实例化vue-router对象 避免bug
-      // })
-    })
+    }
     return Promise.reject('error')
   } else if (code !== 0) {
     Notification.error({

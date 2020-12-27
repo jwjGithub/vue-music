@@ -37,6 +37,9 @@
     width: 26px;
     height: 26px;
     background-image:url('~@/assets/images/icon/icon-play.png');
+    &:hover{
+      background-image:url('~@/assets/images/icon/icon-play-active.png');
+    }
   }
   // 播放-选中
   &.icon-play-active{
@@ -49,6 +52,9 @@
     width: 16px;
     height: 15px;
     background-image:url('~@/assets/images/icon/icon-message.png');
+    &:hover{
+      background-image:url('~@/assets/images/icon/icon-message-active.png');
+    }
   }
   // 消息-选中
   &.icon-message-active{

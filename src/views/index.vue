@@ -87,14 +87,12 @@
               <div class="content">
                 <div class="name">{{ item.title }}</div>
                 <div class="author">
-                  <div class="w15">
-                    <span class="title">词作者：</span>
-                    <span class="text">{{ setAuthorName(item.lyricAuthorArray) }}</span>
-                  </div>
-                  <div class="flex-1">
-                    <span class="title">曲作者：</span>
-                    <span class="text">{{ setAuthorName(item.authorArray) }}</span>
-                  </div>
+                  <span class="title">词作者：</span>
+                  <span class="text">{{ setAuthorName(item.lyricAuthorArray) }}</span>
+                </div>
+                <div class="author">
+                  <span class="title">曲作者：</span>
+                  <span class="text">{{ setAuthorName(item.authorArray) }}</span>
                 </div>
                 <div class="style">
                   <div v-for="(st,stIndex) in setStyleList(item.stypeTagsDesc,item.emotionTagsDesc)" :key="stIndex" class="style-list">{{ st }}</div>
@@ -200,6 +198,10 @@ export default {
       }
       getBoutiqueMusicListPage(json).then(res => {
         this.JPTJList = res.data || []
+        // let json = JSON.parse(JSON.stringify(res.data[0]))
+        // for (let i = 0; i < 14; i++) {
+        //   this.JPTJList.push(json)
+        // }
       })
     },
     // 最新上传接口
@@ -457,18 +459,18 @@ export default {
             flex-wrap:wrap;
             justify-content: space-between;
             .list{
-              width:500px;
-              height: 136px;
+              width:360px;
+              height: 130px;
               // box-shadow: 0px 5px 15px 0px  rgba(255, 174, 0, 0.6);
               border-radius: 10px;
               display:flex;
               // background-color: #FFF;
               align-items:center;
               >.img{
-                margin-left:26px;
-                margin-right:30px;
-                width: 100px;
-                height: 100px;
+                margin-left:20px;
+                margin-right:20px;
+                width: 80px;
+                height: 80px;
                 background-color: #eeeeee;
                 border-radius: 6px;
                 >img{
@@ -489,6 +491,7 @@ export default {
                 }
                 >.author{
                   display:flex;
+                  align-items:center;
                   .title{
                     font-size: 12px;
                     color: #999999;
@@ -501,10 +504,10 @@ export default {
                 >.style{
                   display:flex;
                   .style-list{
-                    padding:7px 16px;
+                    padding:1px 11px;
                     margin-right:10px;
                     border: solid 1px #cccccc;
-                    border-radius: 26px;
+                    border-radius: 20px;
                     font-size: 12px;
                     color: #999999;
                   }

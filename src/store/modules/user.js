@@ -1,5 +1,12 @@
+/*
+ * @Date: 2020-09-30 17:29:46
+ * @Description:
+ * @LastEditors: JWJ
+ * @LastEditTime: 2020-12-28 19:46:10
+ * @FilePath: \vue-music\src\store\modules\user.js
+ */
 // import { login, logout, getInfo } from '@/api/login'
-import { musicianLogin, companyLogin } from '@/api/login'
+import { musicianLogin, companyLogin, getUserInfo } from '@/api/login'
 import { getToken, removeToken, setToken } from '@/utils/auth'
 
 const user = {
@@ -53,7 +60,7 @@ const user = {
       })
     },
 
-    // 获取用户信息
+    // // 获取用户信息
     // GetInfo({ commit, state }) {
     //   return new Promise((resolve, reject) => {
     //     resolve()

@@ -285,6 +285,54 @@ export default {
     this.tableList = arr
   },
   methods: {
+    // 获取tr th
+    getThAndTrList(list) {
+      let th = []
+      let tr = []
+      let trList = []
+      // 解析原始数据 获取X,Y轴列表长度
+      list.forEach(item => {
+        if (th.indexOf(item.size) === -1) {
+          th.push(item.size)
+        }
+        if (tr.indexOf(item.colour) === -1) {
+          tr.push(item.colour)
+        }
+      })
+      tr.forEach(item => {
+        trList.push({
+          name: item
+        })
+      })
+      return { thList: th, tr: trList }
+    },
+    // /** 货品列表选中详情 **/
+    // getGoodsInfo(id) {
+    //   this.loading = true
+    //   choseGoodsInfo(id).then(res => {
+    //     let list = res.data
+    //     this.loading = false
+    //     let { trList, thList } = this.getThAndTrList(list)
+    //     let json = {
+    //       id: id,
+    //       th: thList,
+    //       tr: trList,
+    //       list: list
+    //     }
+    //     this.rightList.push(json)
+    //   })
+    // },
+    /** 选中商品 **/
+    // handle(row, column, event) {
+    //   let index = this.rightList.findIndex(item => {
+    //     return item.id === row.itemId
+    //   })
+    //   if (index >= 0) {
+    //     this.rightList.splice(index, 1)
+    //   } else {
+    //     this.getGoodsInfo(row.itemId)
+    //   }
+    // },
     // 查询列表
     getList() {
       this.loading = true

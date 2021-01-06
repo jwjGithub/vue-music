@@ -29,7 +29,7 @@
             </div>
           </div>
           <div class="demand-list">
-            <template v-if="GSXQList && GSXQList.length > 2">
+            <template v-if="GSXQList && GSXQList.length >= 1">
               <div v-for="item in GSXQList.slice(0,2)" :key="item.id" class="list-head">
                 <div class="left"></div>
                 <div class="right">
@@ -88,14 +88,14 @@
                 <div class="name">{{ item.title }}</div>
                 <div class="author">
                   <span class="title">词作者：</span>
-                  <span class="text">{{ setAuthorName(item.lyricAuthorArray) }}</span>
+                  <span class="text">{{ setAuthorName(item.lyricists) }}</span>
                 </div>
                 <div class="author">
                   <span class="title">曲作者：</span>
-                  <span class="text">{{ setAuthorName(item.authorArray) }}</span>
+                  <span class="text">{{ setAuthorName(item.producers) }}</span>
                 </div>
                 <div class="style">
-                  <div v-for="(st,stIndex) in setStyleList(item.stypeTagsDesc,item.emotionTagsDesc)" :key="stIndex" class="style-list">{{ st }}</div>
+                  <div v-for="(st,stIndex) in setStyleList(item.styleTagsDescArray,item.emotionTagsDescArray)" :key="stIndex" class="style-list">{{ st }}</div>
                 </div>
               </div>
             </div>
@@ -193,8 +193,8 @@ export default {
     // 查询精品推荐列表
     getBoutiqueMusicListPage() {
       let json = {
-        page: 1,
-        limit: 8
+        fineNum: 9,
+        autoNum: 6
       }
       getBoutiqueMusicListPage(json).then(res => {
         this.JPTJList = res.data || []
@@ -251,14 +251,17 @@ export default {
     setAuthorName(list) {
       let arr = []
       list && list.forEach(item => {
-        arr.push(item.authorName)
+        arr.push(item.authorName || item.name)
       })
       return arr.join(',')
     },
     // 转换风格数据
     setStyleList(val, val2) {
-      let arr = val && val.split(',') || []
-      let arr2 = val2 && val2.split(',') || []
+      // let arr = val && val.split(',') || []
+      // let arr2 = val2 && val2.split(',') || []
+      // return arr.concat(arr2)
+      let arr = val || []
+      let arr2 = val2 || []
       return arr.concat(arr2)
     }
   }
@@ -482,6 +485,8 @@ export default {
               >.content{
                 padding:18px 0;
                 height:calc(100% - 36px);
+                flex:1;
+                overflow: hidden;
                 display:flex;
                 flex-direction:column;
                 justify-content: space-between;
@@ -503,6 +508,7 @@ export default {
                 }
                 >.style{
                   display:flex;
+                  flex-wrap: wrap;
                   .style-list{
                     padding:1px 11px;
                     margin-right:10px;
@@ -510,6 +516,7 @@ export default {
                     border-radius: 20px;
                     font-size: 12px;
                     color: #999999;
+                    margin-bottom:2px;
                   }
                 }
               }

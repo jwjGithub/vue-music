@@ -2,7 +2,7 @@
  * @Date: 2020-11-16 09:39:05
  * @Description: 首页接口
  * @LastEditors: jwj
- * @LastEditTime: 2020-12-20 20:51:47
+ * @LastEditTime: 2021-01-06 20:12:48
  * @FilePath: \vue-music\src\api\index.js
  */
 import request from '@/utils/request'
@@ -10,7 +10,7 @@ import request from '@/utils/request'
 // 精品推荐查询接口
 export function getBoutiqueMusicListPage(data) {
   return request({
-    url: `/music/base/getBoutiqueMusicListPage`,
+    url: `/company/fineworkRecommend/queryFineWorksList`,
     method: 'post',
     data: data
   })

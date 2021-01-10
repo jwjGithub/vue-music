@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-09-07 17:36:09
  * @Description:
- * @LastEditors: JWJ
- * @LastEditTime: 2020-12-16 21:31:06
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2021-01-10 11:02:09
  * @FilePath: \vue-music\src\router\index.js
  */
 import Vue from 'vue'
@@ -67,6 +67,12 @@ const routes = [
     name: 'Ranking',
     meta: { title: '榜单' },
     component: () => import('@/views/ranking/index')
+  },
+  {
+    path: '/musicDetails',
+    name: 'MusicDetails',
+    meta: { title: '音乐详情' },
+    component: () => import('@/views/musicDetails/index')
   },
   {
     path: '/startPlay',

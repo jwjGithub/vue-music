@@ -186,6 +186,7 @@ export default {
       total: 0,
       loading: false,
       tabActive: 1,
+      searchValue: '',
       tagListFG: [], // 风格标签列表
       tagListQG: [], // 情感标签列表
       tagListSD: [], // 速度标签列表
@@ -228,8 +229,18 @@ export default {
     }
   },
   watch: {
+    $route(route) {
+      let searchValue = route.query.searchValue
+      if (searchValue) {
+        this.$set(this.queryForm, 'searchStr', searchValue)
+        this.getList()
+      }
+    }
   },
   created() {
+    if (this.$route.query.searchValue) {
+      this.$set(this.queryForm, 'searchStr', this.$route.query.searchValue)
+    }
     this.getList()
     this.getTagListFG()
     this.getTagListQG()

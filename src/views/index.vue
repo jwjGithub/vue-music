@@ -80,7 +80,7 @@
             </div>
           </div>
           <div class="recommend-list">
-            <div v-for="(item,index) in JPTJList" :key="index" class="list">
+            <div v-for="(item,index) in JPTJList" :key="index" class="list" @click="goMusicDetails(item)">
               <div class="img">
                 <img src="@/assets/images/test.jpg" />
               </div>
@@ -263,6 +263,10 @@ export default {
       let arr = val || []
       let arr2 = val2 || []
       return arr.concat(arr2)
+    },
+    // 跳转音乐详情
+    goMusicDetails(row) {
+      this.Go('/musicDetails', { id: row.id })
     }
   }
 }

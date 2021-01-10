@@ -1,3 +1,8 @@
+/*
+ * @Descripttion:
+ * @Author: jwj
+ * @Date: 2020-10-13 19:29:04
+ */
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
@@ -14,6 +19,8 @@ import MusFooter from '@/components/page/MusFooter'
 import { goLocation, parseTime, resetForm } from '@/utils/index'
 import { getToken } from '@/utils/auth'
 Vue.prototype.baseURL = process.env.VUE_APP_BASE_API
+Vue.prototype.musicianURL = 'http://47.94.21.246:9083/#'
+
 Vue.config.productionTip = false
 
 // 全局方法挂载

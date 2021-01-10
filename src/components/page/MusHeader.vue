@@ -9,15 +9,15 @@
       <div class="center">
         <el-button class="text-btn" :class="{'active': selectNav == 'home'}" type="text" @click="Go('/')">首页</el-button>
         <el-button class="text-btn" :class="{'active': selectNav == 'library'}" type="text" @click="Go('/library')">词曲库</el-button>
-        <el-button class="text-btn" type="text">Beat/BGM</el-button>
+        <!-- <el-button class="text-btn" type="text">Beat/BGM</el-button> -->
         <el-button class="text-btn" type="text">合作</el-button>
         <el-button class="text-btn" :class="{'active': selectNav == 'ranking'}" type="text" @click="Go('/ranking')">榜单</el-button>
       </div>
       <div class="right">
         <div class="search-input-row mr11">
-          <el-input class="search-input" placeholder="歌曲/歌单/音乐人"></el-input>
+          <el-input v-model="searchInput" class="search-input" placeholder="歌曲/歌单/音乐人"></el-input>
           <div class="search-icon">
-            <i class="icon icon-search"></i>
+            <i class="icon icon-search" @click="goSearch"></i>
           </div>
         </div>
         <!-- <div class="musician">
@@ -25,27 +25,27 @@
               <span>音乐人</span>
             </div> -->
         <el-popover
-          v-if="$store.getters.userInfo.userId"
+          v-if="$store.getters.userInfo.userId && $store.getters.loginType == 'musician'"
           placement="bottom"
           width="116"
           trigger="hover"
         >
           <div class="popover-list">
             <div class="list">
-              <el-button class="text-btn" type="text">上传原创</el-button>
+              <el-button class="text-btn" type="text" @click="goUploadMusic(1)">上传词曲</el-button>
             </div>
             <div class="list">
-              <el-button class="text-btn" type="text">上传翻唱</el-button>
+              <el-button class="text-btn" type="text" @click="goUploadMusic(2)">上传Beat/BGM</el-button>
             </div>
             <div class="list">
-              <el-button class="text-btn" type="text">上传伴奏</el-button>
+              <el-button class="text-btn" type="text" @click="goUploadMusic(3)">上传作曲</el-button>
             </div>
             <div class="list">
-              <el-button class="text-btn" type="text">上传视频</el-button>
+              <el-button class="text-btn" type="text" @click="goUploadMusic(4)">上传作词</el-button>
             </div>
-            <div class="list">
+            <!-- <div class="list">
               <el-button class="text-btn" type="text" @click="Go('/startPlay')">歌曲管理</el-button>
-            </div>
+            </div> -->
           </div>
           <div slot="reference" class="upload">
             <i class="icon icon-upload"></i>
@@ -179,10 +179,16 @@ export default {
     selectNav: {
       type: String,
       default: ''
+    },
+    searchValue: {
+      type: String,
+      default: ''
     }
+
   },
   data() {
     return {
+      searchInput: '',
       dialogOption: {
         showPass: false, // 是否显示密码
         loading: false,
@@ -205,6 +211,7 @@ export default {
     }
   },
   created() {
+    this.searchInput = this.searchValue
     console.log(this.$store.getters.userInfo.userId)
   },
   methods: {
@@ -276,6 +283,15 @@ export default {
     // 跳转注册
     goRegister(type) {
       this.Go('/register/' + type)
+    },
+    // 跳转搜索
+    goSearch() {
+      this.Go('/library', { searchValue: this.searchInput })
+    },
+    // 跳转上传词曲
+    goUploadMusic(type) {
+      let url = `${this.musicianURL}/uploadWorks?type=${type}&token=${this.getToken()}`
+      window.location = url
     }
   }
 }

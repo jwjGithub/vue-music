@@ -48,13 +48,45 @@
               <el-form-item v-if="addActive == 1" label="真实姓名：" prop="realname">
                 <el-input v-model="form.realname" class="w50"></el-input>
               </el-form-item>
-              <el-form-item v-if="addActive == 1" label="性别：" prop="gender">
+              <el-form-item v-if="addActive == 1" label="身份证正面：" prop="front">
+                <el-upload
+                  class="avatar-uploader w24"
+                  action="#"
+                  accept="image/*"
+                  :before-upload="handleBeforeUpload"
+                  :show-file-list="false"
+                  :auto-upload="false"
+                  :limit="1"
+                  :on-exceed="(res)=>{handleExceed(res,'front')}"
+                  :on-change="(res)=>{handleUpdate(res,'front')}"
+                >
+                  <img v-if="frontImg" :src="frontImg" class="avatar">
+                  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                </el-upload>
+              </el-form-item>
+              <el-form-item v-if="addActive == 1" label="身份证反面：" prop="back">
+                <el-upload
+                  class="avatar-uploader w24"
+                  action="#"
+                  accept="image/*"
+                  :before-upload="handleBeforeUpload"
+                  :show-file-list="false"
+                  :auto-upload="false"
+                  :limit="1"
+                  :on-exceed="(res)=>{handleExceed(res,'back')}"
+                  :on-change="(res)=>{handleUpdate(res,'back')}"
+                >
+                  <img v-if="backImg" :src="backImg" class="avatar">
+                  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                </el-upload>
+              </el-form-item>
+              <!-- <el-form-item v-if="addActive == 1" label="性别：" prop="gender">
                 <el-select v-model="form.gender" clearable placeholder="" class="w50">
                   <el-option label="男" value="male" />
                   <el-option label="女" value="female" />
                   <el-option label="未知" value="unknown" />
                 </el-select>
-              </el-form-item>
+              </el-form-item> -->
               <el-form-item v-if="addActive == 1" label="艺名：" prop="stageName">
                 <el-input v-model="form.stageName" class="w50"></el-input>
               </el-form-item>
@@ -82,19 +114,6 @@
               <el-form-item v-if="addActive == 1" label="确认密码：" prop="qrPassword">
                 <el-input v-model="form.qrPassword" type="password" class="w50"></el-input>
               </el-form-item>
-              <!-- <el-form-item v-if="addActive == 1" label="营业执照：" prop="lisenceAtt">
-                <el-upload
-                  class="avatar-uploader w24"
-                  :action="baseURL + '/company/signup/uploadLisence'"
-                  accept="image/*"
-                  :before-upload="handleBeforeUpload"
-                  :show-file-list="false"
-                  :on-success="handleSuccess"
-                >
-                  <img v-if="imgUrl" :src="imgUrl" class="avatar">
-                  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                </el-upload>
-              </el-form-item> -->
               <el-form-item label=" ">
                 <el-button v-if="addActive == 0" v-loading="loading" type="warning" class="btn-success w24 mt24" @click="handleConfirm">下一步</el-button>
                 <el-button v-if="addActive == 1" v-loading="loading" type="warning" class="btn-success w24 mt24" @click="handleSubmit">注册</el-button>
@@ -203,7 +222,7 @@ export default {
     }
     return {
       imgUrl: '', // 图片地址
-      addActive: 0, // 添加步骤
+      addActive: 1, // 添加步骤
       phoneSendCodeType: false, // 获取手机验证码状态 false 可以获取 true 不可获取
       phoneSendCodeCount: '获取验证码',
       emailSendCodeType: false, // 获取邮箱验证码状态 false 可以获取 true 不可获取
@@ -212,6 +231,8 @@ export default {
       emailLoading: false,
       phoneLoading: false,
       loginLoading: false,
+      frontImg: '', // 正面身份证照片
+      backImg: '', // 反面身份证照片
       dataList: [],
       professionList: [], // 工种列表
       queryForm: {
@@ -226,9 +247,11 @@ export default {
         email: '', // 邮箱
         mobile: '', // 手机号
         realname: '', // 真名
-        gender: '', //  性别 male 男 female 女 unknown 未知
+        // gender: '', //  性别 male 男 female 女 unknown 未知
         stageName: '', // 艺名
         profession: [], // 工种
+        front: null, // 身份证正面
+        back: null, // 身份证反面
         feat: '', // 代表作
         introduction: '', // 简介
         password: '', // 密码
@@ -253,8 +276,14 @@ export default {
         realname: [
           { required: true, message: '请输入真实姓名', trigger: 'blur' }
         ],
-        gender: [
-          { required: true, message: '请选择性别', trigger: ['blur', 'change'] }
+        // gender: [
+        //   { required: true, message: '请选择性别', trigger: ['blur', 'change'] }
+        // ],
+        front: [
+          { required: true, message: '请上传身份证正面', trigger: ['change'] }
+        ],
+        back: [
+          { required: true, message: '请上传身份证反面', trigger: ['change'] }
         ],
         stageName: [
           { required: true, message: '请输入艺名', trigger: 'blur' }
@@ -272,6 +301,7 @@ export default {
     }
   },
   created() {
+    window.registerFormData = new FormData()
     this.getMusicianProfession()
   },
   methods: {
@@ -319,7 +349,12 @@ export default {
           this.loading = true
           let json = JSON.parse(JSON.stringify(this.form))
           json.profession = json.profession.join(',')
-          musicianSignUp(json).then(res => {
+          for (const key in json) {
+            if (key !== 'front' && key !== 'back') {
+              window.registerFormData.append(key, json[key])
+            }
+          }
+          musicianSignUp(window.registerFormData).then(res => {
             this.addActive = 2 // 注册完成
             this.loading = false
           }).catch(() => {
@@ -415,6 +450,43 @@ export default {
         return false
       }
       return true
+    },
+    // 超出限制上传
+    handleExceed(res, name) {
+      let reader = new FileReader() // 实例化文件读取对象
+      reader.readAsDataURL(res[0]) // 将文件读取为 DataURL,也就是base64编码
+      reader.onload = (ev) => { // 文件读取成功完成时触发
+        if (name === 'front') {
+          this.frontImg = ev.target.result // 获得文件读取成功后的DataURL,也就是base64编码
+        } else {
+          this.backImg = ev.target.result // 获得文件读取成功后的DataURL,也就是base64编码
+        }
+      }
+      if (window.registerFormData.has(name)) {
+        window.registerFormData.delete(name)
+        window.registerFormData.append(name, res[0])
+      } else {
+        window.registerFormData.append(name, res[0])
+      }
+    },
+    // 默认上传
+    handleUpdate(res, name) {
+      let reader = new FileReader() // 实例化文件读取对象
+      reader.readAsDataURL(res.raw) // 将文件读取为 DataURL,也就是base64编码
+      reader.onload = (ev) => { // 文件读取成功完成时触发
+        if (name === 'front') {
+          this.frontImg = ev.target.result // 获得文件读取成功后的DataURL,也就是base64编码
+        } else {
+          this.backImg = ev.target.result // 获得文件读取成功后的DataURL,也就是base64编码
+        }
+      }
+      if (window.registerFormData.has(name)) {
+        window.registerFormData.delete(name)
+        window.registerFormData.append(name, res.raw)
+      } else {
+        window.registerFormData.append(name, res.raw)
+      }
+      this.form[name] = name
     },
     // 上传成功回调
     handleSuccess(res, file, fileList) {
@@ -554,6 +626,7 @@ export default {
   .avatar-uploader{
     text-align: left;
     .el-upload {
+      vertical-align: middle;
       border: 1px dashed #d9d9d9;
       cursor: pointer;
       position: relative;
@@ -564,14 +637,14 @@ export default {
       .avatar-uploader-icon {
         font-size: 28px;
         color: #8c939d;
-        width: 100px;
-        height: 100px;
-        line-height: 100px;
+        width: 190px;
+        height: 130px;
+        line-height: 130px;
         text-align: center;
       }
       .avatar {
-        width: 100px;
-        height: 100px;
+        width: 190px;
+        height: 130px;
         display: block;
       }
     }

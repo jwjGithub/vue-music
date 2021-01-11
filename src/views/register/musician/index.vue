@@ -222,7 +222,7 @@ export default {
     }
     return {
       imgUrl: '', // 图片地址
-      addActive: 1, // 添加步骤
+      addActive: 0, // 添加步骤
       phoneSendCodeType: false, // 获取手机验证码状态 false 可以获取 true 不可获取
       phoneSendCodeCount: '获取验证码',
       emailSendCodeType: false, // 获取邮箱验证码状态 false 可以获取 true 不可获取

@@ -60,8 +60,8 @@
                   :on-exceed="(res)=>{handleExceed(res,'front')}"
                   :on-change="(res)=>{handleUpdate(res,'front')}"
                 >
-                  <img v-if="frontImg" :src="frontImg" class="avatar">
-                  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                  <img v-if="frontImg" :src="frontImg" class="avatar musician">
+                  <i v-else class="el-icon-plus avatar-uploader-icon musician"></i>
                 </el-upload>
               </el-form-item>
               <el-form-item v-if="addActive == 1" label="身份证反面：" prop="back">
@@ -76,8 +76,8 @@
                   :on-exceed="(res)=>{handleExceed(res,'back')}"
                   :on-change="(res)=>{handleUpdate(res,'back')}"
                 >
-                  <img v-if="backImg" :src="backImg" class="avatar">
-                  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                  <img v-if="backImg" :src="backImg" class="avatar musician">
+                  <i v-else class="el-icon-plus avatar-uploader-icon musician"></i>
                 </el-upload>
               </el-form-item>
               <!-- <el-form-item v-if="addActive == 1" label="性别：" prop="gender">
@@ -634,7 +634,7 @@ export default {
       // &:hover {
       //   border-color: #409EFF;
       // }
-      .avatar-uploader-icon {
+      .avatar-uploader-icon.musician {
         font-size: 28px;
         color: #8c939d;
         width: 190px;
@@ -642,7 +642,7 @@ export default {
         line-height: 130px;
         text-align: center;
       }
-      .avatar {
+      .avatar.musician {
         width: 190px;
         height: 130px;
         display: block;

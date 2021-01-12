@@ -80,7 +80,7 @@
             </div>
             <div class="right-btn">
               <el-button type="warning" class="mr30" size="small">添加到在线播放列表</el-button>
-              <div class="search-sort-btn" @click="sortChange('price',queryForm.sortType)">
+              <!-- <div class="search-sort-btn" @click="sortChange('price',queryForm.sortType)">
                 <div>默认</div>
                 <div class="up-down">
                   <i class="icon" :class="queryForm.sortBy == 'price' && queryForm.sortType == 'asc' ? 'icon-up-active' : 'icon-up'"></i>
@@ -93,7 +93,7 @@
                   <i class="icon" :class="queryForm.sortBy == 'createTime' && queryForm.sortType == 'asc' ? 'icon-up-active' : 'icon-up'"></i>
                   <i class="icon" :class="queryForm.sortBy == 'createTime' && queryForm.sortType == 'desc' ? 'icon-down-active' : 'icon-down'"></i>
                 </div>
-              </div>
+              </div> -->
             </div>
           </div>
           <div class="library-list">

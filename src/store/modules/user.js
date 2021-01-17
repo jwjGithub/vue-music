@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-09-30 17:29:46
  * @Description:
- * @LastEditors: JWJ
- * @LastEditTime: 2020-12-28 19:46:10
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2021-01-17 22:46:57
  * @FilePath: \vue-music\src\store\modules\user.js
  */
 // import { login, logout, getInfo } from '@/api/login'
@@ -30,12 +30,13 @@ const user = {
 
   actions: {
     // 公司用户登录
-    CompanyLogin({ commit }, userInfo) {
+    CompanyLogin({ commit, dispatch }, userInfo) {
       return new Promise((resolve, reject) => {
         companyLogin(userInfo).then(res => {
           const data = res
           setToken(data.token)
-          commit('SET_USERINFO', data.employeeInfo || {})
+          dispatch('GetInfo')
+          // commit('SET_USERINFO', data.employeeInfo || {})
           commit('SET_TOKEN', data.token)
           commit('SET_LOGINTYPE', 'company')
           resolve()
@@ -45,12 +46,13 @@ const user = {
       })
     },
     // 音乐人登录
-    MusicianLogin({ commit }, userInfo) {
+    MusicianLogin({ commit, dispatch }, userInfo) {
       return new Promise((resolve, reject) => {
         musicianLogin(userInfo).then(res => {
           const data = res
           setToken(data.token)
-          commit('SET_USERINFO', data.musicianInfo || {})
+          dispatch('GetInfo')
+          // commit('SET_USERINFO', data.musicianInfo || {})
           commit('SET_TOKEN', data.token)
           commit('SET_LOGINTYPE', 'musician')
           resolve()
@@ -59,19 +61,19 @@ const user = {
         })
       })
     },
-
-    // // 获取用户信息
-    // GetInfo({ commit, state }) {
-    //   return new Promise((resolve, reject) => {
-    //     resolve()
-    //     getUserInfo().then(res => {
-    //       commit('SET_USERINFO', res.data || {})
-    //       resolve(res)
-    //     }).catch(error => {
-    //       reject(error)
-    //     })
-    //   })
-    // },
+    // 获取用户信息
+    GetInfo({ commit, state }) {
+      return new Promise((resolve, reject) => {
+        getUserInfo().then(res => {
+          res.data.userId = res?.data?.userId ? res?.data?.userId : res?.data?.userid
+          commit('SET_USERINFO', res.data || {})
+          commit('SET_LOGINTYPE', res.data?.userType === 2 ? 'musician' : 'company')
+          resolve(res)
+        }).catch(error => {
+          reject(error)
+        })
+      })
+    },
     // 退出系统
     // LogOut({ commit, state }) {
     //   return new Promise((resolve, reject) => {

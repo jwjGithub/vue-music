@@ -70,7 +70,8 @@
             </div>
           </div>
           <div slot="reference" class="personal-link">
-            <i class="icon icon-login-user"></i>
+            <img :src="$store.getters.userInfo.profileUrl || profileUrl" class="profileUrl">
+            <!-- <i class="icon icon-login-user"></i> -->
             <span>{{ $store.getters.userInfo.realname }}</span>
           </div>
         </el-popover>
@@ -188,6 +189,7 @@ export default {
   },
   data() {
     return {
+      profileUrl: require('@/assets/images/index/icon-login-user.png'),
       searchInput: '',
       dialogOption: {
         showPass: false, // 是否显示密码
@@ -404,6 +406,11 @@ export default {
         align-items:center;
         cursor: pointer;
         margin-right:20px;
+        .profileUrl{
+          width:30px;
+          height:30px;
+          border-radius: 50%;
+        }
         >span{
           margin-top:8px;
           color:#333;

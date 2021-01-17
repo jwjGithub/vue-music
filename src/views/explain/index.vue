@@ -1,9 +1,11 @@
 <template>
   <div class="main ranking-main">
     <div class="main-content">
-      <mus-header :select-nav="'ranking'"></mus-header>
+      <mus-header :select-nav="'explain'"></mus-header>
       <div class="about-us">
         <el-menu
+          ref="aboutMenu"
+          :default-active="defaultActive"
           class="about-us-menu"
           :background-color="menuConfig.backgroundColor"
           :text-color="menuConfig.textColor"
@@ -14,15 +16,15 @@
             <el-submenu v-if="item.children" :key="index" :index="item.id+''">
               <template slot="title">{{ item.name }}</template>
               <template v-for="(subItem,subIndex) in item.children">
-                <el-submenu v-if="subItem.children" :key="index+subIndex" :index="item.id+''">
+                <el-submenu v-if="subItem.children" :key="index+subIndex" :index="subItem.id+''">
                   <template slot="title">{{ subItem.name }}</template>
                   <template v-for="(subSubItem,subSubIndex) in subItem.children">
-                    <el-menu-item :key="index+subIndex+subSubIndex" :index="item.id+''">
+                    <el-menu-item :key="index+subIndex+subSubIndex" :index="subSubItem.id+''">
                       {{ subSubItem.name }}
                     </el-menu-item>
                   </template>
                 </el-submenu>
-                <el-menu-item v-else :key="index+subIndex" :index="item.id+''">{{ subItem.name }}</el-menu-item>
+                <el-menu-item v-else :key="index+subIndex" :index="subItem.id+''">{{ subItem.name }}</el-menu-item>
               </template>
             </el-submenu>
             <el-menu-item v-else :key="index" :index="item.id+''">{{ item.name }}</el-menu-item>
@@ -54,6 +56,7 @@ export default {
         activeTextColor: '#545c64'
       },
       menuList: [],
+      defaultActive: '',
       contentInfo: null
     }
   },
@@ -66,12 +69,23 @@ export default {
     // 查询列表
     getMenu() {
       getNotExpireList().then((res) => {
-        this.menuList = res.data
-        console.log(this.menuList)
+        if (res.data && res.data.length > 0) {
+          this.menuList = res.data
+          this.forEachSelect(res.data)
+        }
       })
     },
+    // 默认选中第一个
+    forEachSelect(data) {
+      if (data[0].children) {
+        this.forEachSelect(data[0].children)
+      } else {
+        this.selectMenu(data[0].id)
+        this.defaultActive = data[0].id + ''
+      }
+    },
     // 选中菜单
-    selectMenu(id) {
+    selectMenu(id, res) {
       getIntroductionInfo(id).then((res) => {
         this.contentInfo = res.data
       })

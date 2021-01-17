@@ -10,7 +10,7 @@
         <el-button class="text-btn" :class="{'active': selectNav == 'home'}" type="text" @click="Go('/')">首页</el-button>
         <el-button class="text-btn" :class="{'active': selectNav == 'library'}" type="text" @click="Go('/library')">词曲库</el-button>
         <!-- <el-button class="text-btn" type="text">Beat/BGM</el-button> -->
-        <el-button class="text-btn" type="text">合作</el-button>
+        <el-button class="text-btn" :class="{'active': selectNav == 'explain'}" type="text" @click="Go('/explain')">合作</el-button>
         <el-button class="text-btn" :class="{'active': selectNav == 'ranking'}" type="text" @click="Go('/ranking')">榜单</el-button>
       </div>
       <div class="right">

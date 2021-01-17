@@ -81,6 +81,12 @@ const routes = [
     component: () => import('@/views/startPlay')
   },
   {
+    path: '/explain',
+    name: 'Explain',
+    meta: { title: '说明页' },
+    component: () => import('@/views/explain/index')
+  },
+  {
     path: '/about',
     name: 'About',
     // route level code-splitting

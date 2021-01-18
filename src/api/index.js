@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-11-16 09:39:05
  * @Description: 首页接口
- * @LastEditors: jwj
- * @LastEditTime: 2021-01-06 20:12:48
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2021-01-18 21:10:51
  * @FilePath: \vue-music\src\api\index.js
  */
 import request from '@/utils/request'
@@ -27,6 +27,14 @@ export function getUploadMusicListPage(data) {
 export function getQueryNeedsAnon(data) {
   return request({
     url: `/company/homePage/queryNeedsAnon`,
+    method: 'post',
+    data: data
+  })
+}
+// 查询banner列表
+export function getBannerList(data) {
+  return request({
+    url: `/sys/banner/query`,
     method: 'post',
     data: data
   })

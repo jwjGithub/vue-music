@@ -7,10 +7,12 @@
         <el-row>
           <el-col :span="24">
             <el-carousel height="460px">
-              <el-carousel-item v-for="item in 4" :key="item">
-                <div class="carousel">
-                  {{ item }}
-                </div>
+              <el-carousel-item v-for="(item,index) in bannerList" :key="index">
+                <div
+                  class="carousel"
+                  :style="{backgroundImage:'url('+ item.url +')'}"
+                  @click="goBanner(item)"
+                ></div>
               </el-carousel-item>
             </el-carousel>
           </el-col>
@@ -157,7 +159,8 @@ import { getList } from '@/api/ranking'
 import {
   getBoutiqueMusicListPage,
   getUploadMusicListPage,
-  getQueryNeedsAnon
+  getQueryNeedsAnon,
+  getBannerList
 } from '@/api/index'
 export default {
   name: 'Index',
@@ -175,6 +178,7 @@ export default {
         { name: 'QQ音乐热歌榜', type: 1, loading: false, list: [] },
         { name: '网易云飙升榜', type: 2, loading: false, list: [] }
       ],
+      bannerList: [], // bannerList
       dataList: [],
       GSXQList: [], // 公司需求列表
       GSXQChildrenList: [], // 公司需求列表
@@ -188,8 +192,19 @@ export default {
     this.getBoutiqueMusicListPage()
     this.getUploadMusicListPage()
     this.getQueryNeedsAnon()
+    this.getBannerList()
   },
   methods: {
+    // 查询banner列表
+    getBannerList() {
+      let json = {
+        limit: 4
+      }
+      getBannerList(json).then(res => {
+        this.bannerList = res.data || []
+        console.log(this.bannerList, 'bannerList')
+      })
+    },
     // 查询精品推荐列表
     getBoutiqueMusicListPage() {
       let json = {
@@ -267,6 +282,17 @@ export default {
     // 跳转音乐详情
     goMusicDetails(row) {
       this.Go('/musicDetails', { id: row.id })
+    },
+    // banner跳转
+    goBanner(row) {
+      if (row.ref) {
+        console.log(row.ref)
+        let url = row.ref
+        if (url.substr(0, 7).toLowerCase() !== 'http://' && url.substr(0, 8).toLowerCase() !== 'https://') {
+          url = 'http://' + url
+        }
+        window.open(url)
+      }
     }
   }
 }

@@ -3,7 +3,7 @@
  * @Author: jwj
  * @Date: 2021-01-10 10:58:41
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-01-10 13:54:24
+ * @LastEditTime: 2021-01-19 21:06:46
 -->
 <template>
   <div class="main">
@@ -12,20 +12,20 @@
       <div class="music-details-content">
         <div class="content">
           <div class="left">
-            <div class="music-head mt20 mb20"></div>
+            <div class="music-head mt20 mb20" :style="{backgroundImage: 'url('+ dataInfo.imgTempUrl +')'}"></div>
             <el-button type="success" icon="el-icon-caret-right">播放</el-button>
           </div>
           <div class="center">
             <div class="music-info">
-              <div class="ft30 mt40 mb10">作品名称</div>
+              <div class="ft30 mt40 mb10">{{ dataInfo.title }}</div>
               <div class="lh32">
-                <p class="ft20">作词：张三</p>
-                <p class="ft20">作曲：李四  </p>
-                <p class="ft20">上传者：张三 </p>
-                <p class="ft20">风格：流行／R&B／抖音</p>
-                <p class="ft20">情感：欢快／甜蜜</p>
-                <p class="ft20">速度：快速</p>
-                <p class="ft20">报价：5000 </p>
+                <p class="ft20">作词：{{ setAutorName(dataInfo.lyricists) }}</p>
+                <p class="ft20">作曲：{{ setAutorName(dataInfo.composers) }}</p>
+                <p class="ft20">上传者：{{ dataInfo.createdUserName }}</p>
+                <p class="ft20">风格：{{ dataInfo.styleTagsDescArray && dataInfo.styleTagsDescArray.join('/') }}</p>
+                <p class="ft20">情感：{{ dataInfo.emotionTagsDescArray && dataInfo.emotionTagsDescArray.join('/') }}</p>
+                <p class="ft20">速度：{{ '没有字段' }}</p>
+                <p class="ft20">报价：{{ dataInfo.price }} </p>
               </div>
             </div>
             <div class="music-btns mt26 mb20">
@@ -43,11 +43,7 @@
             <div class="music-lyric">
               <div class="ft18 fw6 mb18">歌词</div>
               <div class="lyric">
-                It's a long road. When you face the world alone, no one reaches out a hand for you to hold.
-                It's a long road. When you face the world alone, no one reaches out a hand for you to hold.
-                It's a long road. When you face the world alone, no one reaches out a hand for you to hold.
-                It's a long road. When you face the world alone, no one reaches out a hand for you to hold.
-                It's a long road. When you face the world alone, no one reaches out a hand for you to hold.
+                <pre v-html="dataInfo.lrcContent"></pre>
               </div>
             </div>
           </div>
@@ -79,24 +75,46 @@
 </template>
 <script>
 import {
-  hasIdCard,
-  getVerificationCode,
-  saveUpdatePass
-} from '@/api/resetPass'
+  getWorkDetail
+} from '@/api/common'
 export default {
   name: 'ResetPass',
   components: {
   },
   data() {
     return {
-      loading: false
+      loading: false,
+      dataInfo: {}
     }
   },
   watch: {
   },
   created() {
+    let id = this.$route.query.id
+    if (id) {
+      this.getInfo(id)
+    }
   },
   methods: {
+    // 获取详情
+    getInfo(id) {
+      this.loading = true
+      getWorkDetail({ workId: id }).then(res => {
+        console.log(res, '-res')
+        this.dataInfo = res.data || {}
+        this.loading = false
+      }).catch(() => {
+        this.loading = false
+      })
+    },
+    // 设置作者名称
+    setAutorName(list, name = 'name') {
+      console.log(list, '--ll')
+      let arr = list?.map(item => {
+        return item[name]
+      }) || []
+      return arr.join(',')
+    }
   }
 }
 </script>

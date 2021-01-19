@@ -1,3 +1,8 @@
+/*
+ * @Descripttion:
+ * @Author: jwj
+ * @Date: 2020-09-28 22:21:02
+ */
 import request from '@/utils/request'
 
 // 验证邮箱和短信验证码
@@ -28,6 +33,14 @@ export function sendMailVercode(data) {
 export function sendHtmlMail(data) {
   return request({
     url: '/sys/sms/sendHtmlMail',
+    method: 'post',
+    data: data
+  })
+}
+// 歌曲基础信息查询接口 根据作品id 查询作品详情
+export function getWorkDetail(data) {
+  return request({
+    url: '/music/base/getWorkDetail',
     method: 'post',
     data: data
   })

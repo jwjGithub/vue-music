@@ -112,36 +112,58 @@
               <i class="icon zxsc mr15"></i>
               <i class="icon icon-zxsc"></i>
             </div>
+            <div class="center">
+              <div class="mlx40">
+                <el-button :type="zxscType === 1 ? 'primary' : 'info'" round class="mr30" @click="zxscTypeChange(1)">词曲</el-button>
+                <el-button :type="zxscType === 4 ? 'primary' : 'info'" round class="mr30" @click="zxscTypeChange(4)">纯词</el-button>
+                <el-button :type="zxscType === 3 ? 'primary' : 'info'" round class="mr30" @click="zxscTypeChange(3)">纯曲</el-button>
+                <el-button :type="zxscType === 2 ? 'primary' : 'info'" round @click="zxscTypeChange(2)">Beat/BGM</el-button>
+              </div>
+            </div>
             <div class="right">
               <span class="more" @click="Go('/library')">查看更多 ></span>
             </div>
           </div>
           <div class="new-upload-list">
+            <!--
+              最新上传及词曲库不同类型作品作者栏表头
+              词曲：曲作者 词作者
+              作曲：曲作者
+              作词：词作者
+              beat/BGM：制作者
+             -->
+            <!--
+               未登录状态下，首页最新上传操作部分显示内容：播放 购买
+              公司用户登录状态下：播放 购买 添加到自选库
+              音乐人用户登录状态下：播放
+              -->
             <table cellspacing="0" cellpadding="0" class="table-list">
               <thead>
                 <tr>
                   <th class="text-center w10">序号</th>
                   <th class="text-left" style="min-width:100px;">歌曲名</th>
-                  <th class="text-left" style="min-width:100px;">词作者</th>
-                  <th class="text-left" style="min-width:100px;">曲作者</th>
+                  <th v-if="zxscType === 1 || zxscType === 3" class="text-left" style="min-width:100px;">曲作者</th>
+                  <th v-if="zxscType === 1 || zxscType === 4" class="text-left" style="min-width:100px;">词作者</th>
+                  <th v-if="zxscType === 2" class="text-left" style="min-width:100px;">词作者</th>
                   <th class="text-center" style="min-width:100px;">试听</th>
                   <th class="text-center" style="min-width:100px;">购买</th>
-                  <th class="text-center" style="min-width:100px;">添加到自有库</th>
+                  <th v-if="$store.getters.userInfo.userId && $store.getters.loginType === 'company'" class="text-center" style="min-width:100px;">添加到自有库</th>
                 </tr>
               </thead>
               <tbody>
                 <tr v-for="(item,index) in ZXSCList" :key="index">
                   <td class="text-center">{{ index + 1 }}</td>
                   <td class="text-left">{{ item.title }}</td>
-                  <td class="text-left">{{ setAuthorName(item.lyricAuthorArray) }}</td>
-                  <td class="text-left">{{ setAuthorName(item.authorArray) }}</td>
+                  <td v-if="zxscType === 1 || zxscType === 3" class="text-left">{{ setAuthorName(item.composers) }}</td>
+                  <td v-if="zxscType === 1 || zxscType === 4" class="text-left">{{ setAuthorName(item.lyricists) }}</td>
+                  <td v-if="zxscType === 2" class="text-left">{{ setAuthorName(item.producers) }}</td>
                   <td class="text-center">
                     <i class="icon icon-hear"></i>
                   </td>
                   <td class="text-center">
                     <i class="icon icon-cart"></i>
                   </td>
-                  <td class="text-center">
+                  <td v-if="$store.getters.userInfo.userId && $store.getters.loginType === 'company'" class="text-center">
                     <i class="icon icon-add"></i>
                   </td>
                 </tr>
@@ -183,6 +205,7 @@ export default {
       GSXQList: [], // 公司需求列表
       GSXQChildrenList: [], // 公司需求列表
       JPTJList: [], // 精品推荐列表
+      zxscType: 1,
       ZXSCList: [] // 最新上传列表
     }
   },
@@ -222,13 +245,18 @@ export default {
     // 最新上传接口
     getUploadMusicListPage() {
       let json = {
-        type: '',
+        type: this.zxscType,
         page: 1,
         limit: 10
       }
       getUploadMusicListPage(json).then(res => {
         this.ZXSCList = res.data || []
       })
+    },
+    // 最新上传类型切换
+    zxscTypeChange(type) {
+      this.zxscType = type
+      this.getUploadMusicListPage()
     },
     // 查询公司需求
     getQueryNeedsAnon() {
@@ -602,6 +630,9 @@ export default {
                 background-position: center center;
                 background-image:url('~@/assets/images/index/icon-zxsc.png');
               }
+            }
+            .center{
+              flex:1;
             }
             .right{
               .more{

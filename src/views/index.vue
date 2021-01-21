@@ -78,7 +78,7 @@
               <i class="icon icon-jptj"></i>
             </div>
             <div class="right">
-              <span class="more">查看更多 ></span>
+              <span class="more" @click="Go('/library?boutique=Y')">查看更多 ></span>
             </div>
           </div>
           <div class="recommend-list">
@@ -144,7 +144,7 @@
                   <th class="text-left" style="min-width:100px;">歌曲名</th>
                   <th v-if="zxscType === 1 || zxscType === 3" class="text-left" style="min-width:100px;">曲作者</th>
                   <th v-if="zxscType === 1 || zxscType === 4" class="text-left" style="min-width:100px;">词作者</th>
-                  <th v-if="zxscType === 2" class="text-left" style="min-width:100px;">词作者</th>
+                  <th v-if="zxscType === 2" class="text-left" style="min-width:100px;">制作人</th>
                   <th class="text-center" style="width:100px;">试听</th>
                   <th v-if="$store.getters.loginType !== 'musician'" class="text-center" style="width:100px;">购买</th>
                   <th v-if="$store.getters.userInfo.userId && $store.getters.loginType === 'company'" class="text-center" style="width:100px;">添加到自有库</th>

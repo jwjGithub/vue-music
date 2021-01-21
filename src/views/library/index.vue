@@ -79,7 +79,7 @@
               <div class="tab" :class="queryForm.type === 2 ? 'active' : ''" @click="typeSelect(2)">Beat/BGM</div>
             </div>
             <div class="right-btn">
-              <!-- <el-button type="warning" class="mr30" size="small">只看精品</el-button> -->
+              <el-button v-if="queryForm.type === 1" :type="queryForm.boutique ? 'warning' : 'info'" class="mr30" size="small" @click="setBoutique">只看精品</el-button>
               <el-button type="warning" class="mr30" size="small">添加到在线播放列表</el-button>
               <!-- <div class="search-sort-btn" @click="sortChange('price',queryForm.sortType)">
                 <div>默认</div>
@@ -97,6 +97,13 @@
               </div> -->
             </div>
           </div>
+          <!--
+              最新上传及词曲库不同类型作品作者栏表头
+              词曲：曲作者 词作者
+              作曲：曲作者
+              作词：词作者
+              beat/BGM：制作者
+             -->
           <div class="library-list">
             <div class="list">
               <div class="table-head">
@@ -104,10 +111,10 @@
                   <div class="checkbox-label" :class="checkArr ? 'active' : ''" @click="checkSelectAll"><div></div></div>
                 </div>
                 <div class="flex-1 c-999">作品名</div>
-                <div class="w12 c-999">词作者</div>
-                <div class="w12 c-999">曲作者</div>
+                <div v-if="queryForm.type === 1 || queryForm.type === 3" class="w12 c-999">曲作者</div>
+                <div v-if="queryForm.type === 1 || queryForm.type === 4" class="w12 c-999">词作者</div>
+                <div v-if="queryForm.type === 2" class="w12 c-999">制作者</div>
                 <div class="w14 c-999">标签</div>
-                <div class="w12 c-999">制作者</div>
                 <div class="w14 c-999">上传时间</div>
               </div>
               <div v-loading="loading" class="table-body">
@@ -122,31 +129,32 @@
                   </div>
                   <div class="table-col flex-1">
                     <div class="align-center hover-icon">
+                      <i v-if="item.isBoutique === 1" class="el-icon-trophy ft14 mr5" style="color:#ffbe33;"></i>
                       <span class="flex-1 ellipsis">{{ item.title }}</span>
                       <i class="icon icon-play mr10 ml10"></i>
                     </div>
                   </div>
-                  <div class="table-col w12 ellipsis c-333">
+                  <div v-if="queryForm.type === 1 || queryForm.type === 3" class="table-col w12 ellipsis c-333">
+                    <div class="align-center hover-icon">
+                      <span class="flex-1 ellipsis">{{ setAutorName(item.composers) }}</span>
+                      <i class="icon icon-message mr10 ml10"></i>
+                    </div>
+                  </div>
+                  <div v-if="queryForm.type === 1 || queryForm.type === 4" class="table-col w12 ellipsis c-333">
                     <div class="align-center hover-icon">
                       <span class="flex-1 ellipsis">{{ setAutorName(item.lyricists) }}</span>
                       <i class="icon icon-message mr10 ml10"></i>
                     </div>
                   </div>
-                  <div class="table-col w12 ellipsis c-333">
+                  <div v-if="queryForm.type === 2" class="table-col w12 ellipsis c-333">
                     <div class="align-center hover-icon">
-                      <span class="flex-1 ellipsis">{{ setAutorName(item.composers) }}</span>
+                      <span class="flex-1 ellipsis">{{ setAutorName(item.producers) }}</span>
                       <i class="icon icon-message mr10 ml10"></i>
                     </div>
                   </div>
                   <div class="table-col w14 ellipsis c-999">
                     <span v-if="item.styleTagsDes">{{ item.styleTagsDes }},</span>
                     <span>{{ item.emotionTagsDes }}</span>
-                  </div>
-                  <div class="table-col w12 ellipsis c-333">
-                    <div class="align-center hover-icon">
-                      <span class="flex-1 ellipsis">{{ setAutorName(item.producers) }}</span>
-                      <i class="icon icon-message mr10 ml10"></i>
-                    </div>
                   </div>
                   <div class="table-col w14 ellipsis c-333">{{ item.createdTime }}</div>
                 </div>
@@ -177,6 +185,7 @@ export default {
       tagListQG: [], // 情感标签列表
       tagListSD: [], // 速度标签列表
       queryForm: {
+        boutique: false, // 是否只看精品
         searchStr: '', // 检索文本
         styleTags: [], // 风格标签
         emotionTags: [], // 情感标签
@@ -210,16 +219,23 @@ export default {
   },
   watch: {
     $route(route) {
+      console.log('路由')
       let searchValue = route.query.searchValue
       if (searchValue) {
         this.$set(this.queryForm, 'searchStr', searchValue)
-        this.getList()
       }
+      if (route.query.boutique) {
+        this.$set(this.queryForm, 'boutique', route.query.boutique === 'Y')
+      }
+      this.getList()
     }
   },
   created() {
     if (this.$route.query.searchValue) {
       this.$set(this.queryForm, 'searchStr', this.$route.query.searchValue)
+    }
+    if (this.$route.query.boutique) {
+      this.$set(this.queryForm, 'boutique', this.$route.query.boutique === 'Y')
     }
     this.getList()
     this.getTagListFG()
@@ -256,6 +272,11 @@ export default {
       }).catch(() => {
         this.loading = false
       })
+    },
+    // 是否只看精品change事件
+    setBoutique() {
+      this.$set(this.queryForm, 'boutique', !this.queryForm.boutique)
+      this.getList()
     },
     // 歌曲类型切换事件
     typeSelect(type) {
@@ -487,7 +508,7 @@ export default {
                   padding: 0 10px;
                   text-align: center;
                   .hover-icon{
-                    >i{
+                    >.icon{
                       display:none;
                     }
                   }
@@ -495,7 +516,7 @@ export default {
                 &:hover{
                   box-shadow: 0px 0px 8px 0px rgba(0,0,0,0.20);
                   .hover-icon{
-                    >i{
+                    >.icon{
                       display:block;
                     }
                   }

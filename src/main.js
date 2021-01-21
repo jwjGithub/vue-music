@@ -40,6 +40,13 @@ Vue.prototype.Go = function(url, query) {
 Vue.prototype.GoWindow = function(url) {
   window.open(url)
 }
+Vue.prototype.GoOpen = function(url, name) {
+  let curPath = window.document.location.href
+  let pathname = window.document.location.pathname
+  let pos = curPath.indexOf(pathname)
+  let localhostPath = curPath.substring(0, pos)
+  window.open(localhostPath + '/#' + url, name)
+}
 // 全局组件挂载
 Vue.component('MusHeader', MusHeader)
 Vue.component('MusFooter', MusFooter)

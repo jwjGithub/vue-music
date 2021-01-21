@@ -79,6 +79,7 @@
               <div class="tab" :class="queryForm.type === 2 ? 'active' : ''" @click="typeSelect(2)">Beat/BGM</div>
             </div>
             <div class="right-btn">
+              <!-- <el-button type="warning" class="mr30" size="small">只看精品</el-button> -->
               <el-button type="warning" class="mr30" size="small">添加到在线播放列表</el-button>
               <!-- <div class="search-sort-btn" @click="sortChange('price',queryForm.sortType)">
                 <div>默认</div>
@@ -153,21 +154,6 @@
             </div>
           </div>
           <div v-if="queryForm.page * queryForm.limit < total" class="page-num" :loading="loading" @click="getMoreData">点击查看更多</div>
-          <!-- <el-table
-            :data="trList"
-            style="width: 100%"
-          >
-            <el-table-column prop="name" label="标题" width="180"></el-table-column>
-            <el-table-column v-for="(item,index) in thList" :key="index" :label="item" width="180">
-              <template slot-scope="scope">
-                <span v-for="(data,dataIndex) in tableList" :key="dataIndex">
-                  <template v-if="scope.row.name === data.colour && item === data.size">
-                    {{ data.stock }}
-                  </template>
-                </span>
-              </template>
-            </el-table-column>
-          </el-table> -->
         </div>
       </div>
       <mus-footer></mus-footer>
@@ -206,13 +192,7 @@ export default {
       form: {
       },
       clickData: {}, // 点击歌曲
-      typeList: [
-        { name: '抖音热歌榜', type: 4, loading: false, list: [] }
-      ],
-      dataList: [],
-      thList: [],
-      trList: [],
-      tableList: []
+      dataList: []
     }
   },
   computed: {
@@ -245,105 +225,8 @@ export default {
     this.getTagListFG()
     this.getTagListQG()
     this.getTagListSD()
-
-    let arr = [
-      {
-        'skuId': '587530c3-eb5a-4a72-a81f-6fa6708b8b83',
-        'productCode': 'D6460768501600',
-        'colour': '米白',
-        'size': 'M',
-        'stock': 13
-      },
-      {
-        'skuId': 'e3f5859b-f778-49cd-bdba-7c2284c8a2a3',
-        'productCode': 'D6460768501090',
-        'colour': '米白',
-        'size': '均码',
-        'stock': 3
-      },
-      {
-        'skuId': 'e5490570-23a1-4efa-b332-b0b4df2a8ddf',
-        'productCode': 'D6460768202479',
-        'colour': '兰花',
-        'size': 'M',
-        'stock': 2
-      },
-      {
-        'skuId': '793760d8-2575-403f-ac4d-6cdffb0e368c',
-        'productCode': 'D6460768201059',
-        'colour': '兰花',
-        'size': '均码',
-        'stock': 1
-      }
-    ]
-    let th = []
-    let tr = []
-    // 解析原始数据 获取X,Y轴列表长度
-    arr.forEach(item => {
-      if (th.indexOf(item.size) === -1) {
-        th.push(item.size)
-      }
-      if (tr.indexOf(item.colour) === -1) {
-        tr.push(item.colour)
-      }
-    })
-    tr.forEach(item => {
-      this.trList.push({
-        name: item
-      })
-    })
-    this.thList = th
-    this.tableList = arr
   },
   methods: {
-    // 获取tr th
-    getThAndTrList(list) {
-      let th = []
-      let tr = []
-      let trList = []
-      // 解析原始数据 获取X,Y轴列表长度
-      list.forEach(item => {
-        if (th.indexOf(item.size) === -1) {
-          th.push(item.size)
-        }
-        if (tr.indexOf(item.colour) === -1) {
-          tr.push(item.colour)
-        }
-      })
-      tr.forEach(item => {
-        trList.push({
-          name: item
-        })
-      })
-      return { thList: th, tr: trList }
-    },
-    // /** 货品列表选中详情 **/
-    // getGoodsInfo(id) {
-    //   this.loading = true
-    //   choseGoodsInfo(id).then(res => {
-    //     let list = res.data
-    //     this.loading = false
-    //     let { trList, thList } = this.getThAndTrList(list)
-    //     let json = {
-    //       id: id,
-    //       th: thList,
-    //       tr: trList,
-    //       list: list
-    //     }
-    //     this.rightList.push(json)
-    //   })
-    // },
-    /** 选中商品 **/
-    // handle(row, column, event) {
-    //   let index = this.rightList.findIndex(item => {
-    //     return item.id === row.itemId
-    //   })
-    //   if (index >= 0) {
-    //     this.rightList.splice(index, 1)
-    //   } else {
-    //     this.getGoodsInfo(row.itemId)
-    //   }
-    // },
     // 查询列表
     getList() {
       this.loading = true
@@ -358,15 +241,6 @@ export default {
       }).catch(() => {
         this.loading = false
       })
-      // this.typeList.forEach(item => {
-      //   this.$set(item, 'loading', true)
-      //   getList(item.type).then(res => {
-      //     this.$set(item, 'list', res.data || [])
-      //     this.$set(item, 'loading', false)
-      //   }).catch(() => {
-      //     this.$set(item, 'loading', false)
-      //   })
-      // })
     },
     // 查询更多
     getMoreData() {

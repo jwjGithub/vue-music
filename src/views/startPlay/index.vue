@@ -119,7 +119,7 @@ import {
   getLrc
 } from '@/api/startPlay'
 export default {
-  name: '',
+  name: 'StartPlay',
   components: {
     // aplayer,
     // lrc,
@@ -158,6 +158,12 @@ export default {
     }
   },
   watch: {
+    $route(to, from) {
+      if (to.name === 'StartPlay') {
+        console.log(this.$route.query, '监听进入')
+        // this.router = to.query.type
+      }
+    },
     listActive(val) {
       switch (val) {
         case 'bflb':
@@ -177,6 +183,7 @@ export default {
     }
   },
   created() {
+    console.log(this.$route.query, '初始化进入')
     // 判断当前是公司用户进入 才查询自选库
     if (this.$store.getters.loginType === 'company') {
       this.getCompanyOptionalBaseList()

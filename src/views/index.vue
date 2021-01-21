@@ -145,9 +145,9 @@
                   <th v-if="zxscType === 1 || zxscType === 3" class="text-left" style="min-width:100px;">曲作者</th>
                   <th v-if="zxscType === 1 || zxscType === 4" class="text-left" style="min-width:100px;">词作者</th>
                   <th v-if="zxscType === 2" class="text-left" style="min-width:100px;">词作者</th>
-                  <th class="text-center" style="min-width:100px;">试听</th>
-                  <th class="text-center" style="min-width:100px;">购买</th>
-                  <th v-if="$store.getters.userInfo.userId && $store.getters.loginType === 'company'" class="text-center" style="min-width:100px;">添加到自有库</th>
+                  <th class="text-center" style="width:100px;">试听</th>
+                  <th v-if="$store.getters.loginType !== 'musician'" class="text-center" style="width:100px;">购买</th>
+                  <th v-if="$store.getters.userInfo.userId && $store.getters.loginType === 'company'" class="text-center" style="width:100px;">添加到自有库</th>
                 </tr>
               </thead>
               <tbody>
@@ -158,9 +158,9 @@
                   <td v-if="zxscType === 1 || zxscType === 4" class="text-left">{{ setAuthorName(item.lyricists) }}</td>
                   <td v-if="zxscType === 2" class="text-left">{{ setAuthorName(item.producers) }}</td>
                   <td class="text-center">
-                    <i class="icon icon-hear"></i>
+                    <i class="icon icon-hear pointer" @click="GoOpen('/startPlay?type=play&id=' + item.id,'startPlay')"></i>
                   </td>
-                  <td class="text-center">
+                  <td v-if="$store.getters.loginType !== 'musician'" class="text-center">
                     <i class="icon icon-cart"></i>
                   </td>
                   <td v-if="$store.getters.userInfo.userId && $store.getters.loginType === 'company'" class="text-center">

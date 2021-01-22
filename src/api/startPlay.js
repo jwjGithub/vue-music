@@ -43,7 +43,7 @@ export function getCompanyOptionalMusicList(data) {
 // 获取音乐信息
 export function getMusicInfo(data) {
   return request({
-    url: '/music/base/getMusicInfo',
+    url: '/music/base/playMusic',
     method: 'post',
     data: data
   })

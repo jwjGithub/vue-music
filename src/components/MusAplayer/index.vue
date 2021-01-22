@@ -31,9 +31,10 @@
             ></el-slider>
           </div>
           <div class="music-time">
-            <span class="start">{{ Math.floor(parseInt(music.currentTime)/60) }}:{{ parseInt(music.currentTime)%60 }}</span>
+            <span class="start">
+              {{ setAutoTime(Math.floor(parseInt(music.currentTime)/60)) }}:{{ setAutoTime(parseInt(music.currentTime)%60) }}</span>
             <span class="line">/</span>
-            <span class="end">{{ Math.floor(parseInt(music.audioLength) / 60) }}:{{ parseInt(music.audioLength) % 60 }}</span>
+            <span class="end">{{ setAutoTime(Math.floor(parseInt(music.audioLength) / 60)) }}:{{ setAutoTime(parseInt(music.audioLength) % 60) }}</span>
           </div>
         </div>
       </div>
@@ -106,6 +107,7 @@ export default {
     musicInfo: {
       handler(n, o) {
         if (this.musicInfo) {
+          console.log('播放')
           this.music = {
             title: this.musicInfo.title || '暂无歌曲', // 歌曲名称
             artist: this.musicInfo.artist || '', // 作者
@@ -194,6 +196,14 @@ export default {
           this.$emit('lrcChange', time * 1000)
         }
         this.music.lastTime = nowTime
+      }
+    },
+    // 时间自动补全
+    setAutoTime(time) {
+      if (time >= 10) {
+        return time
+      } else {
+        return '0' + time
       }
     }
   }

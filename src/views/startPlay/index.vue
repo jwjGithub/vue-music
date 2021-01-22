@@ -161,6 +161,16 @@ export default {
     $route(to, from) {
       if (to.name === 'StartPlay') {
         console.log(this.$route.query, '监听进入')
+        let query = this.$route.query
+        if (query.type === 'play' && query.id) {
+          this.getMusicInfo(query.id).then(res => {
+            this.getUserDefaultMusicList()
+          }).catch(() => {
+            this.getUserDefaultMusicList()
+          })
+        } else {
+          this.getUserDefaultMusicList()
+        }
         // this.router = to.query.type
       }
     },
@@ -188,9 +198,41 @@ export default {
     if (this.$store.getters.loginType === 'company') {
       this.getCompanyOptionalBaseList()
     }
-    this.getUserDefaultMusicList()
+    let query = this.$route.query
+    if (query.type === 'play' && query.id) {
+      this.getMusicInfo(query.id).then(res => {
+        this.getUserDefaultMusicList()
+      }).catch(() => {
+        this.getUserDefaultMusicList()
+      })
+    } else {
+      this.getUserDefaultMusicList()
+    }
   },
   methods: {
+    // 获取当前播放音乐详情
+    getMusicInfo(musicId) {
+      return new Promise((resolve, reject) => {
+        let json = {
+          musicId: musicId // 音乐id
+        }
+        getMusicInfo(json).then(res => {
+          let data = res.data || {}
+          this.musicInfo = {
+            title: data.title, // 歌曲名称
+            artist: '作者', // 作者
+            pic: data.imgTempUrl, // 歌曲头像
+            src: data.musicTempUrl // 歌曲链接
+          }
+          console.log('播放完成')
+          this.$forceUpdate()
+          this.getLrc(musicId)
+          resolve()
+        }).catch(error => {
+          reject(error)
+        })
+      })
+    },
     // 获取当前登录人所在公司自选库列表
     getCompanyOptionalBaseList() {
       getCompanyOptionalBaseList().then(res => {
@@ -247,24 +289,9 @@ export default {
     },
     // 播放
     startPlay(row) {
+      console.log('播放123', row)
       this.dataInfo = JSON.parse(JSON.stringify(row))
-      this.getMusicInfo()
-    },
-    // 获取音乐详情
-    getMusicInfo() {
-      let json = {
-        musicId: this.dataInfo.musicId, // 音乐id
-        isPlay: true // 是否播放true/false
-      }
-      getMusicInfo(json).then(res => {
-        let data = res.data || {}
-        this.musicInfo.title = data.title
-        this.musicInfo.artist = data.artist
-        this.musicInfo.pic = data.imgTempUrl
-        this.musicInfo.src = data.musicTempUrl
-        this.$forceUpdate()
-      })
-      this.getLrc(this.dataInfo.musicId)
+      // this.getMusicInfo()
     },
     // 删除播放列表
     deletePlayList(row) {

@@ -3,7 +3,7 @@
  * @Author: jwj
  * @Date: 2021-01-10 10:58:41
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-01-19 21:06:46
+ * @LastEditTime: 2021-01-24 21:18:20
 -->
 <template>
   <div class="main">
@@ -13,14 +13,15 @@
         <div class="content">
           <div class="left">
             <div class="music-head mt20 mb20" :style="{backgroundImage: 'url('+ dataInfo.imgTempUrl +')'}"></div>
-            <el-button type="success" icon="el-icon-caret-right">播放</el-button>
+            <el-button type="success" icon="el-icon-caret-right" @click="GoOpen('/startPlay?type=play&id=' + dataInfo.id,'startPlay')">播放</el-button>
           </div>
           <div class="center">
             <div class="music-info">
               <div class="ft30 mt40 mb10">{{ dataInfo.title }}</div>
               <div class="lh32">
-                <p class="ft20">作词：{{ setAutorName(dataInfo.lyricists) }}</p>
-                <p class="ft20">作曲：{{ setAutorName(dataInfo.composers) }}</p>
+                <p v-if="dataInfo.type === 1 || dataInfo.type === 3" class="ft20">作曲：{{ setAutorName(dataInfo.composers) }}</p>
+                <p v-if="dataInfo.type === 1 || dataInfo.type === 4" class="ft20">作词：{{ setAutorName(dataInfo.lyricists) }}</p>
+                <p v-if="dataInfo.type === 2" class="ft20">制作人：{{ setAutorName(dataInfo.producers) }}</p>
                 <p class="ft20">上传者：{{ dataInfo.createdUserName }}</p>
                 <p class="ft20">风格：{{ dataInfo.styleTagsDescArray && dataInfo.styleTagsDescArray.join('/') }}</p>
                 <p class="ft20">情感：{{ dataInfo.emotionTagsDescArray && dataInfo.emotionTagsDescArray.join('/') }}</p>

@@ -27,6 +27,7 @@
               v-model="music.currentTime"
               :max="music.audioLength"
               class="aplayer-slider"
+              :format-tooltip="formatTooltip"
               @change="changeMusicTime"
             ></el-slider>
           </div>
@@ -107,7 +108,6 @@ export default {
     musicInfo: {
       handler(n, o) {
         if (this.musicInfo) {
-          console.log('播放')
           this.music = {
             title: this.musicInfo.title || '暂无歌曲', // 歌曲名称
             artist: this.musicInfo.artist || '', // 作者
@@ -118,13 +118,9 @@ export default {
             currentTime: 0, // 当前播放时间
             lastTime: null// 标记时间戳
           }
-          // this.music.title = this.musicInfo.title || '暂无歌曲'
-          // this.music.artist = this.musicInfo.artist || ''
-          // this.music.pic = this.musicInfo.pic || defaultPic
-          // this.music.url = this.musicInfo.src || ''
         }
       },
-      immediate: false, // 刷新加载
+      immediate: true, // 刷新加载
       deep: true
     }
   },
@@ -139,10 +135,10 @@ export default {
 
   },
   methods: {
-    play() {
+    play(json) {
       setTimeout(() => {
-        this.current = 0
-        this.$emit('play', this.list[0])
+        this.current = json?.index || 0
+        this.$emit('play', this.list[json?.index || 0])
       }, 500)
     },
     // 上一首
@@ -178,6 +174,10 @@ export default {
       if (this.$refs.music) {
         this.$refs.music.currentTime = val
       }
+    },
+    // 播放进度格式化
+    formatTooltip(val) {
+      return this.setAutoTime(Math.floor(parseInt(val) / 60)) + ':' + this.setAutoTime(parseInt(val) % 60)
     },
     // 获取音乐长度
     getmusicLength() {

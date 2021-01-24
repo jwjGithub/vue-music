@@ -30,7 +30,9 @@
               <div class="w4"></div>
               <div class="songname">歌曲名称</div>
               <div class="btns"></div>
-              <div class="singer">歌手名</div>
+              <div class="singer">曲作者</div>
+              <div class="singer">词作者</div>
+              <div class="singer">制作人</div>
               <div class="duration">播放数</div>
             </div>
             <div v-loading="loading" class="table-body">
@@ -48,7 +50,9 @@
                     <i class="icon icon-collect" @click="addToCollect(item)"></i>
                     <i class="icon icon-delete" @click="deletePlayList(item)"></i>
                   </div>
-                  <div class="table-col singer ellipsis">{{ item.authorNames }}</div>
+                  <div class="table-col singer ellipsis">{{ setAutorName(item.composers) }}</div>
+                  <div class="table-col singer ellipsis">{{ setAutorName(item.lyricists) }}</div>
+                  <div class="table-col singer ellipsis">{{ setAutorName(item.producers) }}</div>
                   <div class="table-col duration">{{ item.auditionCounts }}</div>
                 </div>
               </el-scrollbar>
@@ -152,6 +156,10 @@ export default {
         pic: '', // 歌曲头像
         src: '' // 歌曲链接
       },
+      // 当前播放对象
+      palyOption: {
+        id: ''
+      },
       typeList: [], // 歌曲自选库列表
       dataInfo: {}, // 当前播放详情
       dataList: [] // 播放列表
@@ -160,11 +168,15 @@ export default {
   watch: {
     $route(to, from) {
       if (to.name === 'StartPlay') {
-        console.log(this.$route.query, '监听进入')
         let query = this.$route.query
         if (query.type === 'play' && query.id) {
-          this.getMusicInfo(query.id).then(res => {
-            this.getUserDefaultMusicList()
+          let id = query.id
+          let ids = id?.split(',')
+          ids = ids.map(item => {
+            return Number(item)
+          })
+          this.addToDefault(ids).then(r => {
+            this.getUserDefaultMusicList(ids[0])
           }).catch(() => {
             this.getUserDefaultMusicList()
           })
@@ -193,15 +205,19 @@ export default {
     }
   },
   created() {
-    console.log(this.$route.query, '初始化进入')
     // 判断当前是公司用户进入 才查询自选库
     if (this.$store.getters.loginType === 'company') {
       this.getCompanyOptionalBaseList()
     }
     let query = this.$route.query
     if (query.type === 'play' && query.id) {
-      this.getMusicInfo(query.id).then(res => {
-        this.getUserDefaultMusicList()
+      let id = query.id
+      let ids = id?.split(',')
+      ids = ids.map(item => {
+        return Number(item)
+      })
+      this.addToDefault(ids).then(r => {
+        this.getUserDefaultMusicList(ids[0])
       }).catch(() => {
         this.getUserDefaultMusicList()
       })
@@ -210,7 +226,24 @@ export default {
     }
   },
   methods: {
-    // 获取当前播放音乐详情
+    // 设置作者名称
+    setAutorName(list) {
+      let arr = list.map(item => {
+        return item.authorName
+      })
+      return arr.join(',')
+    },
+    // 添加到默认播放列表
+    addToDefault(ids) {
+      return new Promise((resolve, reject) => {
+        addToDefault(ids).then(res => {
+          resolve()
+        }).catch(error => {
+          reject(error)
+        })
+      })
+    },
+    // 获取当前播放音乐详情(播放音乐)
     getMusicInfo(musicId) {
       return new Promise((resolve, reject) => {
         let json = {
@@ -224,7 +257,6 @@ export default {
             pic: data.imgTempUrl, // 歌曲头像
             src: data.musicTempUrl // 歌曲链接
           }
-          console.log('播放完成')
           this.$forceUpdate()
           this.getLrc(musicId)
           resolve()
@@ -240,12 +272,27 @@ export default {
       })
     },
     // 获取当前登录人默认播放列表
-    getUserDefaultMusicList() {
+    getUserDefaultMusicList(id) {
       this.loading = true
       getUserDefaultMusicList().then(res => {
         this.dataList = res.data || []
         this.loading = false
-        this.$refs.music.play()
+        let index = 0
+        if (id) {
+          for (let i = 0, len = this.dataList.length; i < len; i++) {
+            if (id === this.dataList[i].musicId) {
+              index = i
+              break
+            }
+          }
+
+          this.$refs.music.play({
+            id: id,
+            index: index
+          })
+        } else {
+          this.$refs.music.play()
+        }
       }).catch(() => {
         this.loading = false
       })
@@ -289,9 +336,8 @@ export default {
     },
     // 播放
     startPlay(row) {
-      console.log('播放123', row)
       this.dataInfo = JSON.parse(JSON.stringify(row))
-      // this.getMusicInfo()
+      this.getMusicInfo(row.musicId)
     },
     // 删除播放列表
     deletePlayList(row) {
@@ -406,12 +452,10 @@ export default {
     // 获取当前播放时间
     lrcChange(time) {
       this.lrcTime = time || 0
-      console.log(time, 'time')
     },
     setLrcClass(item, index) {
       let oldItem = index > 0 ? this.lrcTxt[index - 1] : 0
       if (this.lrcTime >= item.time && this.lrcTime <= oldItem.time) {
-        console.log('1111111111111111')
         return 'lrc-select'
       } else {
         return ''
@@ -563,17 +607,17 @@ export default {
             }
             .table-head,.table-body{
               .songname{
-                width:calc(63% - 240px);
+                flex:1;
+                min-width: 100px;
                 text-align: left;
               }
               .btns{
-                width:16%;
+                width:150px;
                 margin-left: 10px;
-                min-width:170px;
                 overflow:hidden;
               }
               .singer{
-                width: 21%;
+                width: 120px;
                 margin-left: 10px;
                 text-align: left;
               }

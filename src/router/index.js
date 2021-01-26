@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-09-07 17:36:09
  * @Description:
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-01-10 11:02:09
+ * @LastEditors: JWJ
+ * @LastEditTime: 2021-01-26 13:49:47
  * @FilePath: \vue-music\src\router\index.js
  */
 import Vue from 'vue'
@@ -22,6 +22,12 @@ const routes = [
     name: 'Demand',
     meta: { title: '需求列表' },
     component: () => import('@/views/demand/index')
+  },
+  {
+    path: '/demandDetails/:id',
+    name: 'DemandDetails',
+    meta: { title: '需求详情' },
+    component: () => import('@/views/demand/details')
   },
   {
     path: '/register',

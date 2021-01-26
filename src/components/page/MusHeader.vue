@@ -35,13 +35,13 @@
               <el-button class="text-btn" type="text" @click="goUploadMusic(1)">上传词曲</el-button>
             </div>
             <div class="list">
-              <el-button class="text-btn" type="text" @click="goUploadMusic(2)">上传Beat/BGM</el-button>
+              <el-button class="text-btn" type="text" @click="goUploadMusic(4)">上传作词</el-button>
             </div>
             <div class="list">
               <el-button class="text-btn" type="text" @click="goUploadMusic(3)">上传作曲</el-button>
             </div>
             <div class="list">
-              <el-button class="text-btn" type="text" @click="goUploadMusic(4)">上传作词</el-button>
+              <el-button class="text-btn" type="text" @click="goUploadMusic(2)">上传Beat/BGM</el-button>
             </div>
             <!-- <div class="list">
               <el-button class="text-btn" type="text" @click="Go('/startPlay')">歌曲管理</el-button>

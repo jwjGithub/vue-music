@@ -114,10 +114,10 @@
             </div>
             <div class="center">
               <div class="mlx40">
-                <el-button :type="zxscType === 1 ? 'primary' : 'info'" round class="mr30" @click="zxscTypeChange(1)">词曲</el-button>
-                <el-button :type="zxscType === 4 ? 'primary' : 'info'" round class="mr30" @click="zxscTypeChange(4)">纯词</el-button>
-                <el-button :type="zxscType === 3 ? 'primary' : 'info'" round class="mr30" @click="zxscTypeChange(3)">纯曲</el-button>
-                <el-button :type="zxscType === 2 ? 'primary' : 'info'" round @click="zxscTypeChange(2)">Beat/BGM</el-button>
+                <el-button :type="zxscType === 1 ? 'primary' : 'info'" size="small" round class="mr30" @click="zxscTypeChange(1)">词曲</el-button>
+                <el-button :type="zxscType === 4 ? 'primary' : 'info'" size="small" round class="mr30" @click="zxscTypeChange(4)">作词</el-button>
+                <el-button :type="zxscType === 3 ? 'primary' : 'info'" size="small" round class="mr30" @click="zxscTypeChange(3)">作曲</el-button>
+                <el-button :type="zxscType === 2 ? 'primary' : 'info'" size="small" round @click="zxscTypeChange(2)">Beat/BGM</el-button>
               </div>
             </div>
             <div class="right">
@@ -141,11 +141,11 @@
               <thead>
                 <tr>
                   <th class="text-center w10">序号</th>
-                  <th class="text-left" style="min-width:100px;">歌曲名</th>
+                  <th class="text-left" style="min-width:100px;">作品名</th>
                   <th v-if="zxscType === 1 || zxscType === 3" class="text-left" style="min-width:100px;">曲作者</th>
                   <th v-if="zxscType === 1 || zxscType === 4" class="text-left" style="min-width:100px;">词作者</th>
                   <th v-if="zxscType === 2" class="text-left" style="min-width:100px;">制作人</th>
-                  <th class="text-center" style="width:100px;">试听</th>
+                  <th v-if="zxscType !== 4" class="text-center" style="width:100px;">试听</th>
                   <th v-if="$store.getters.loginType !== 'musician'" class="text-center" style="width:100px;">购买</th>
                   <th v-if="$store.getters.userInfo.userId && $store.getters.loginType === 'company'" class="text-center" style="width:100px;">添加到自有库</th>
                 </tr>
@@ -157,7 +157,7 @@
                   <td v-if="zxscType === 1 || zxscType === 3" class="text-left">{{ setAuthorName(item.composers) }}</td>
                   <td v-if="zxscType === 1 || zxscType === 4" class="text-left">{{ setAuthorName(item.lyricists) }}</td>
                   <td v-if="zxscType === 2" class="text-left">{{ setAuthorName(item.producers) }}</td>
-                  <td class="text-center">
+                  <td v-if="zxscType !== 4" class="text-center">
                     <i class="icon icon-hear pointer" @click="GoOpen('/startPlay?type=play&id=' + item.id,'startPlay')"></i>
                   </td>
                   <td v-if="$store.getters.loginType !== 'musician'" class="text-center">

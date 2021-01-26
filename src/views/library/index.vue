@@ -80,7 +80,7 @@
             </div>
             <div class="right-btn">
               <el-button v-if="queryForm.type === 1" :type="queryForm.boutique ? 'warning' : 'info'" class="mr30" size="small" @click="setBoutique">只看精品</el-button>
-              <el-button type="warning" class="mr30" :disabled="selectCheckedList.length <= 0" size="small" @click="addPalyList">添加到在线播放列表</el-button>
+              <el-button v-if="queryForm.type !== 4" type="warning" class="mr30" :disabled="selectCheckedList.length <= 0" size="small" @click="addPalyList">批量播放</el-button>
               <!-- <div class="search-sort-btn" @click="sortChange('price',queryForm.sortType)">
                 <div>默认</div>
                 <div class="up-down">
@@ -131,7 +131,7 @@
                     <div class="align-center hover-icon">
                       <i v-if="item.isBoutique === 1" class="el-icon-trophy ft14 mr5" style="color:#ffbe33;"></i>
                       <span class="flex-1 ellipsis">{{ item.title }}</span>
-                      <i class="icon icon-play mr10 ml10" @click="GoOpen('/startPlay?type=play&id=' + item.id,'startPlay')"></i>
+                      <i v-if="queryForm.type !== 4" class="icon icon-play mr10 ml10" @click="GoOpen('/startPlay?type=play&id=' + item.id,'startPlay')"></i>
                     </div>
                   </div>
                   <div v-if="queryForm.type === 1 || queryForm.type === 3" class="table-col w12 ellipsis c-333">

@@ -4,7 +4,7 @@
       <mus-header></mus-header>
       <div class="demand-list">
         <template>
-          <div v-for="(item,index) in dataList" :key="index" class="list">
+          <div v-for="(item,index) in dataList" :key="index" class="list" @click="Go('/demandDetails/' + item.id)">
             <div class="left">
               <img src="@/assets/images/test.jpg" />
             </div>
@@ -78,13 +78,19 @@ export default {
 </script>
 <style lang="scss" scoped>
   .main{
+    height:100%;
     .main-content{
+      height:100%;
+      display: flex;
+      flex-direction: column;
       .demand-list{
         width:1000px;
         margin:0 auto;
         padding:26px;
         flex:1;
+        overflow-y:auto;
         >.list{
+          cursor: pointer;
           padding:20px;
           border-bottom:1px solid #EEE;
           display:flex;

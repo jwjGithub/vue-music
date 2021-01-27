@@ -158,11 +158,12 @@ export default {
       if (this.music.play) {
         this.music.play = false
         this.$refs.music.pause()
+        document.title = 'SongBook'
       } else {
         this.music.play = true
         Math.abs(this.music.currentTime - this.$refs.music.currentTime) > 2 ? this.$refs.music.currentTime = this.music.currentTime : ''
         this.$refs.music.play().then(() => {
-
+          document.title = '正在播放：' + (this.musicInfo.title || '暂无歌曲')
         }).catch(() => {
         // 当前第一次页面加载不允许自动播放
           this.music.play = false

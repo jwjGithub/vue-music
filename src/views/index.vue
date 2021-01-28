@@ -33,7 +33,7 @@
           <div class="demand-list">
             <template v-if="GSXQList && GSXQList.length >= 1">
               <div v-for="item in GSXQList.slice(0,2)" :key="item.id" class="list-head">
-                <div class="left"></div>
+                <div class="left" :style="{backgroundImage:'url('+ (item.companyProfile || defaultImg) +')'}"></div>
                 <div class="right">
                   <div class="list-title">
                     {{ item.title }}
@@ -43,26 +43,11 @@
                 </div>
               </div>
             </template>
-            <!-- <div class="list-head">
-              <div class="left"></div>
-              <div class="right">
-                <div class="list-title">
-                  帖子标题帖子标题帖子标题帖子标题帖子标题
-                  帖子标题帖子标题帖子标题
-                </div>
-                <div class="list-text ellipsis2">
-                  开头四十字内容预览开头四十字内容预览四十开头四
-                  十字内容预览开头四十字内容预览四十
-                  开头四十字内容预览开头四十字内容预览四十开头四
-                  十字内容预览开头四十字内容预览四十
-                </div>
-              </div>
-            </div> -->
             <template v-if="GSXQChildrenList && GSXQChildrenList.length > 0">
               <div v-for="(GSLBitem,GSLBindex) in GSXQChildrenList" :key="GSLBindex" class="lists">
                 <div v-for="(childItem,childindex) in GSLBitem" :key="childindex" class="list">
-                  <i class="icon list-icon"></i>
-                  <span class="text ellipsis1">{{ childItem.title }}</span>
+                  <i class="icon list-icon" :style="{backgroundImage:'url('+ (childItem.companyProfile || defaultImg) +')'}"></i>
+                  <span class="text ellipsis1">{{ childItem.title }}{{ childindex }}</span>
                 </div>
               </div>
             </template>
@@ -201,6 +186,7 @@ export default {
   data() {
     return {
       loading: false,
+      defaultImg: require('@/assets/images/test.jpg'),
       form: {
       },
       clickData: {}, // 点击歌曲
@@ -275,6 +261,7 @@ export default {
       }
       getQueryNeedsAnon(json).then(res => {
         this.GSXQList = res.data || []
+        // this.GSXQList = this.GSXQList.concat(res.data)
         this.setGSXQList()
       })
     },
@@ -284,16 +271,20 @@ export default {
       if (this.GSXQList.length > 2) {
         let list = this.GSXQList.slice(2)
         let arr2 = []
+        console.log(list, 'list')
         list.forEach((item, index) => {
           let item2 = JSON.parse(JSON.stringify(item))
           if ((index + 1) % 2 === 1) {
+            console.log('111111111111')
             arr2[0] = item2
           } else {
             arr2[1] = item2
+            console.log('22222222222')
             arr.push(JSON.parse(JSON.stringify(arr2)))
           }
           if ((index + 1) === list.length && (index + 1) % 2 === 1) {
-            arr.push(item)
+            console.log('3333333333')
+            arr.push([item])
           }
         })
       }

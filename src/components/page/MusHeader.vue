@@ -261,6 +261,9 @@ export default {
               }
               this.dialogOption.loading = false
               this.dialogOption.show = false
+              setTimeout(() => {
+                this.$parent.$refs.im.init()
+              }, 100)
             }).catch(() => {
               this.dialogOption.loading = false
             })
@@ -275,6 +278,9 @@ export default {
               }
               this.dialogOption.loading = false
               this.dialogOption.show = false
+              setTimeout(() => {
+                this.$parent.$refs.im.init()
+              }, 100)
             }).catch(() => {
               this.dialogOption.loading = false
             })

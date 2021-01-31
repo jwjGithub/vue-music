@@ -13,6 +13,7 @@ import './assets/styles/index.scss' // global css
 import './permission' // permission control
 // 全局组件引入
 import MusHeader from '@/components/page/MusHeader'
+import Im from '@/components/page/Im'
 import MusFooter from '@/components/page/MusFooter'
 
 // 全局方法引入
@@ -49,6 +50,7 @@ Vue.prototype.GoOpen = function(url, name) {
 }
 // 全局组件挂载
 Vue.component('MusHeader', MusHeader)
+Vue.component('Im', Im)
 Vue.component('MusFooter', MusFooter)
 Vue.use(Element)
 new Vue({

@@ -1,5 +1,6 @@
 <template>
   <div class="main index-main">
+    <im ref="im" />
     <div class="main-content">
       <mus-header :select-nav="'home'"></mus-header>
       <!-- banner轮播图 -->
@@ -184,9 +185,11 @@ import {
   getQueryNeedsAnon,
   getBannerList
 } from '@/api/index'
+import Im from '../components/page/Im.vue'
 export default {
   name: 'Index',
   components: {
+    Im
   },
   data() {
     return {
@@ -697,4 +700,3 @@ export default {
     }
   }
 </style>
-

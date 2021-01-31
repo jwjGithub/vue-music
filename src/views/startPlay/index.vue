@@ -42,7 +42,9 @@
                     <el-checkbox v-model="item.checkbox"></el-checkbox>
                   </div>
                   <div class="table-col w4">{{ index + 1 }}</div>
-                  <div class="table-col songname ellipsis">{{ item.title }}</div>
+                  <div class="table-col songname ellipsis">
+                    <span class="pointer" @dblclick="startPlay(item)">{{ item.title }}</span>
+                  </div>
                   <div class="table-col btns">
                     <i class="icon icon-audition" @click="startPlay(item)"></i>
                     <!-- <i class="icon icon-pause_s"></i> -->
@@ -63,7 +65,7 @@
               </div>
               <div class="table-footer-right ft12">
                 共有
-                <span class="ml5 mr5">19</span>
+                <span class="ml5 mr5">{{ dataList.length || 0 }}</span>
                 首歌
               </div>
             </div>
@@ -285,13 +287,10 @@ export default {
               break
             }
           }
-
           this.$refs.music.play({
             id: id,
             index: index
           })
-        } else {
-          this.$refs.music.play()
         }
       }).catch(() => {
         this.loading = false
@@ -303,7 +302,7 @@ export default {
       getUserHisMusicList().then(res => {
         this.dataList = res.data || []
         this.loading = false
-        this.$refs.music.play()
+        // this.$refs.music.play()
       }).catch(() => {
         this.loading = false
       })
@@ -314,7 +313,7 @@ export default {
       getUserCollectMusicList().then(res => {
         this.dataList = res.data || []
         this.loading = false
-        this.$refs.music.play()
+        // this.$refs.music.play()
       }).catch(() => {
         this.loading = false
       })
@@ -325,7 +324,7 @@ export default {
       getCompanyOptionalMusicList({ opBaseId: this.listActive }).then(res => {
         this.dataList = res.data || []
         this.loading = false
-        this.$refs.music.play()
+        // this.$refs.music.play()
       }).catch(() => {
         this.loading = false
       })

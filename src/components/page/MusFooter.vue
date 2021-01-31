@@ -4,9 +4,9 @@
       <div class="links">
         <div class="w12">
           <div class="link-title">快速菜单</div>
-          <div class="link-btn">词曲库</div>
-          <div class="link-btn">公司需求</div>
-          <div class="link-btn">主流榜单</div>
+          <div class="link-btn" @click="Go('/library')">词曲库</div>
+          <div class="link-btn" @click="Go('/demand')">公司需求</div>
+          <div class="link-btn" @click="Go('/ranking')">主流榜单</div>
         </div>
         <div class="w12">
           <div class="link-title">实用功能</div>

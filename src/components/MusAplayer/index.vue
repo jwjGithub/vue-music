@@ -20,7 +20,7 @@
         </div>
         <div class="music-slider">
           <div class="progress">
-            <audio ref="music" loop="loop" :src="music.url" @loadedmetadata="getmusicLength" @timeupdate="timeUpdate">
+            <audio ref="music" :loop="false" :src="music.url" @loadedmetadata="getmusicLength" @timeupdate="timeUpdate" @ended="playEnded">
               当前浏览器不支持audio
             </audio>
             <el-slider
@@ -74,7 +74,6 @@ export default {
   data() {
     return {
       current: 0, // 当前播放下标
-      total: 0, // 当前播放列表总长度
       music: {
         title: '暂无歌曲', // 歌曲名称
         artist: '', // 作者
@@ -89,6 +88,11 @@ export default {
       volume: 50
     }
   },
+  computed: {
+    total() {
+      return this.list.length || 0
+    }
+  },
   watch: {
     volume(val) {
       if (this.$refs.music) {
@@ -96,15 +100,15 @@ export default {
         sessionStorage.MUSICVOLUME = val
       }
     },
-    list: {
-      handler(n, o) {
-        if (this.list.length > 0) {
-          this.total = this.list.length
-        }
-      },
-      immediate: false, // 刷新加载
-      deep: true
-    },
+    // list: {
+    //   handler(n, o) {
+    //     if (this.list.length > 0) {
+    //       this.total = this.list.length
+    //     }
+    //   },
+    //   immediate: false, // 刷新加载
+    //   deep: true
+    // },
     musicInfo: {
       handler(n, o) {
         if (this.musicInfo) {
@@ -158,11 +162,12 @@ export default {
       if (this.music.play) {
         this.music.play = false
         this.$refs.music.pause()
+        document.title = 'SongBook'
       } else {
         this.music.play = true
         Math.abs(this.music.currentTime - this.$refs.music.currentTime) > 2 ? this.$refs.music.currentTime = this.music.currentTime : ''
         this.$refs.music.play().then(() => {
-
+          document.title = '正在播放：' + (this.musicInfo.title || '暂无歌曲')
         }).catch(() => {
         // 当前第一次页面加载不允许自动播放
           this.music.play = false
@@ -205,6 +210,10 @@ export default {
       } else {
         return '0' + time
       }
+    },
+    // 播放完成事件
+    playEnded() {
+      this.nextSong() // 下一曲
     }
   }
 }

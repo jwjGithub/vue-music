@@ -34,7 +34,7 @@
           <div class="demand-list">
             <template v-if="GSXQList && GSXQList.length >= 1">
               <div v-for="item in GSXQList.slice(0,2)" :key="item.id" class="list-head">
-                <div class="left"></div>
+                <div class="left" :style="{backgroundImage:'url('+ (item.companyProfile || defaultImg) +')'}"></div>
                 <div class="right">
                   <div class="list-title">
                     {{ item.title }}
@@ -44,26 +44,11 @@
                 </div>
               </div>
             </template>
-            <!-- <div class="list-head">
-              <div class="left"></div>
-              <div class="right">
-                <div class="list-title">
-                  帖子标题帖子标题帖子标题帖子标题帖子标题
-                  帖子标题帖子标题帖子标题
-                </div>
-                <div class="list-text ellipsis2">
-                  开头四十字内容预览开头四十字内容预览四十开头四
-                  十字内容预览开头四十字内容预览四十
-                  开头四十字内容预览开头四十字内容预览四十开头四
-                  十字内容预览开头四十字内容预览四十
-                </div>
-              </div>
-            </div> -->
             <template v-if="GSXQChildrenList && GSXQChildrenList.length > 0">
               <div v-for="(GSLBitem,GSLBindex) in GSXQChildrenList" :key="GSLBindex" class="lists">
                 <div v-for="(childItem,childindex) in GSLBitem" :key="childindex" class="list">
-                  <i class="icon list-icon"></i>
-                  <span class="text ellipsis1">{{ childItem.title }}</span>
+                  <i class="icon list-icon" :style="{backgroundImage:'url('+ (childItem.companyProfile || defaultImg) +')'}"></i>
+                  <span class="text ellipsis1">{{ childItem.title }}{{ childindex }}</span>
                 </div>
               </div>
             </template>
@@ -77,6 +62,7 @@
             <div class="left">
               <i class="icon jptj mr15"></i>
               <i class="icon icon-jptj"></i>
+              <el-button type="primary" icon="el-icon-video-play" size="mini" class="ml20" @click="openPlayAll">播放全部</el-button>
             </div>
             <div class="right">
               <span class="more" @click="Go('/library?boutique=Y')">查看更多 ></span>
@@ -84,23 +70,32 @@
           </div>
           <div class="recommend-list">
             <div v-for="(item,index) in JPTJList" :key="index" class="list" @click="goMusicDetails(item)">
-              <div class="img">
-                <img src="@/assets/images/test.jpg" />
+              <div class="top-info">
+                <div class="img">
+                  <img src="@/assets/images/test.jpg" />
+                  <div class="hover-img-paly">
+                    <i class="icon icon-play" @click.stop="GoOpen('/startPlay?type=play&id=' + item.id,'startPlay')"></i>
+                  </div>
+                </div>
+                <div class="content">
+                  <div class="name">{{ item.title }}</div>
+                  <div class="author">
+                    <span class="title">词作者：</span>
+                    <span class="text">{{ setAuthorName(item.lyricists) }}</span>
+                  </div>
+                  <div class="author">
+                    <span class="title">曲作者：</span>
+                    <span class="text">{{ setAuthorName(item.producers) }}</span>
+                  </div>
+
+                </div>
               </div>
-              <div class="content">
-                <div class="name">{{ item.title }}</div>
-                <div class="author">
-                  <span class="title">词作者：</span>
-                  <span class="text">{{ setAuthorName(item.lyricists) }}</span>
-                </div>
-                <div class="author">
-                  <span class="title">曲作者：</span>
-                  <span class="text">{{ setAuthorName(item.producers) }}</span>
-                </div>
+              <div class="bottom-style">
                 <div class="style">
                   <div v-for="(st,stIndex) in setStyleList(item.styleTagsDescArray,item.emotionTagsDescArray)" :key="stIndex" class="style-list">{{ st }}</div>
                 </div>
               </div>
+
             </div>
           </div>
         </div>
@@ -194,6 +189,7 @@ export default {
   data() {
     return {
       loading: false,
+      defaultImg: require('@/assets/images/test.jpg'),
       form: {
       },
       clickData: {}, // 点击歌曲
@@ -268,6 +264,7 @@ export default {
       }
       getQueryNeedsAnon(json).then(res => {
         this.GSXQList = res.data || []
+        // this.GSXQList = this.GSXQList.concat(res.data)
         this.setGSXQList()
       })
     },
@@ -277,16 +274,20 @@ export default {
       if (this.GSXQList.length > 2) {
         let list = this.GSXQList.slice(2)
         let arr2 = []
+        console.log(list, 'list')
         list.forEach((item, index) => {
           let item2 = JSON.parse(JSON.stringify(item))
           if ((index + 1) % 2 === 1) {
+            console.log('111111111111')
             arr2[0] = item2
           } else {
             arr2[1] = item2
+            console.log('22222222222')
             arr.push(JSON.parse(JSON.stringify(arr2)))
           }
           if ((index + 1) === list.length && (index + 1) % 2 === 1) {
-            arr.push(item)
+            console.log('3333333333')
+            arr.push([item])
           }
         })
       }
@@ -313,6 +314,14 @@ export default {
     // 跳转音乐详情
     goMusicDetails(row) {
       this.Go('/musicDetails', { id: row.id })
+    },
+    // 播放全部
+    openPlayAll() {
+      let arr = []
+      this.JPTJList.forEach(item => {
+        arr.push(item.id)
+      })
+      this.GoOpen('/startPlay?type=play&id=' + (arr.join(',')), 'startPlay')
     },
     // banner跳转
     goBanner(row) {
@@ -524,52 +533,76 @@ export default {
             justify-content: space-between;
             .list{
               width:360px;
-              height: 130px;
+              height: 144px;
               // box-shadow: 0px 5px 15px 0px  rgba(255, 174, 0, 0.6);
               border-radius: 10px;
               display:flex;
+              flex-direction: column;
               // background-color: #FFF;
-              align-items:center;
-              >.img{
-                margin-left:20px;
-                margin-right:20px;
-                width: 80px;
-                height: 80px;
-                background-color: #eeeeee;
-                border-radius: 6px;
-                >img{
-                  width:100%;
-                  height:100%;
-                  border-radius: 6px;
-                }
-              }
-              >.content{
-                padding:18px 0;
-                height:calc(100% - 36px);
-                flex:1;
-                overflow: hidden;
+              // align-items:center;
+              .top-info{
+                height: 100px;
                 display:flex;
-                flex-direction:column;
-                justify-content: space-between;
-                >.name{
-                  font-size: 18px;
-                  color: #333333;
-                }
-                >.author{
-                  display:flex;
-                  align-items:center;
-                  .title{
-                    font-size: 12px;
-                    color: #999999;
+                // align-items:center;
+                >.img{
+                  position: relative;
+                  margin-top:20px;
+                  margin-left:20px;
+                  margin-right:20px;
+                  width: 80px;
+                  height: 80px;
+                  background-color: #eeeeee;
+                  border-radius: 6px;
+                  >img{
+                    width:100%;
+                    height:100%;
+                    border-radius: 6px;
                   }
-                  .text{
-                    font-size: 14px;
+                  .hover-img-paly{
+                    position:absolute;
+                    top:0px;
+                    width:80px;
+                    height:80px;
+                    display:none;
+                    justify-content: center;
+                    align-items:center;
+                    background:rgba(0, 0, 0, 0.1)
+                  }
+                }
+                >.content{
+                  padding-top:20px;
+                  // padding-bottom:10px;
+                  height:calc(100% - 20px);
+
+                  flex:1;
+                  overflow: hidden;
+                  display:flex;
+                  flex-direction:column;
+                  justify-content: space-around;
+                  >.name{
+                    font-size: 18px;
                     color: #333333;
                   }
+                  >.author{
+                    display:flex;
+                    align-items:center;
+                    .title{
+                      font-size: 12px;
+                      color: #999999;
+                    }
+                    .text{
+                      font-size: 12px;
+                      color: #333333;
+                    }
+                  }
                 }
-                >.style{
+              }
+              .bottom-style{
+                 >.style{
                   display:flex;
                   flex-wrap: wrap;
+                  margin-top: 14px;
+                  margin-left:20px;
                   .style-list{
                     padding:1px 11px;
                     margin-right:10px;
@@ -585,7 +618,14 @@ export default {
                 cursor: pointer;
                 box-shadow: 0px 5px 15px 0px  rgba(255, 174, 0, 0.6);
                 background-color: #FFF;
-                >.content{
+                .top-info{
+                  .img{
+                    .hover-img-paly{
+                      display:flex;
+                    }
+                  }
+                }
+                >.bottom-style{
                   >.style{
                     .style-list{
                       background-color:#fff9e2;

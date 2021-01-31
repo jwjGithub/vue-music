@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-09-07 17:36:09
  * @Description:
- * @LastEditors: JWJ
- * @LastEditTime: 2021-01-26 13:49:47
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2021-01-27 21:20:02
  * @FilePath: \vue-music\src\router\index.js
  */
 import Vue from 'vue'
@@ -15,7 +15,16 @@ const routes = [
     path: '/',
     name: 'Index',
     meta: { title: '首页' },
-    component: () => import('@/views/index')
+    redirect: '/index',
+    component: () => import('@/views/index'),
+    children: [
+      {
+        path: 'index',
+        name: 'Index',
+        meta: { title: '首页' },
+        component: () => import('@/views/index')
+      }
+    ]
   },
   {
     path: '/demand',

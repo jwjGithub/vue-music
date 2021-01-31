@@ -4,17 +4,18 @@
  * @Author: jwj
  * @Date: 2020-10-13 19:29:04
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-01-17 22:29:07
+ * @LastEditTime: 2021-01-27 21:29:44
  */
 import router from './router'
 import store from './store'
 import NProgress from 'nprogress'
+import { MessageBox } from 'element-ui'
 import 'nprogress/nprogress.css'
 import { getToken, setToken } from '@/utils/auth'
 
 NProgress.configure({ showSpinner: false })
 
-const whiteList = ['/login', '/auth-redirect', '/bind', '/register', '/']
+const whiteList = ['/index', '/auth-redirect', '/bind', '/register', '/register/musician', '/register/company', '/feedback']
 router.beforeEach((to, from, next) => {
   if (to.query.token) {
     setToken(to.query.token)
@@ -40,16 +41,26 @@ router.beforeEach((to, from, next) => {
         next()
       }
     } else {
-      // // 没有token
-      // if (whiteList.indexOf(to.path) !== -1) {
-      //   // 在免登录白名单，直接进入
-      //   next()
-      // } else {
-      //   next('/')
-      //   NProgress.done()
-      // }
-      next()
-      NProgress.done()
+      // 没有token
+      if (whiteList.indexOf(to.path) !== -1) {
+        // 在免登录白名单，直接进入
+        next()
+      } else {
+        MessageBox.alert('您处于未登录状态，请登陆后使用该功能。', '系统提示',
+          {
+            confirmButtonText: '确认',
+            type: 'warning'
+          }
+        ).then(() => {
+          next('/')
+          NProgress.done()
+        }).catch(() => {
+          next('/')
+          NProgress.done()
+        })
+        // next()
+        // NProgress.done()
+      }
     }
   }
   // next()

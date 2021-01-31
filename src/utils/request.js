@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-09-22 10:48:18
  * @Description:
- * @LastEditors: JWJ
- * @LastEditTime: 2020-12-27 17:02:01
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2021-01-27 21:23:41
  * @FilePath: \vue-music\src\utils\request.js
  */
 import axios from 'axios'
@@ -29,24 +29,36 @@ service.interceptors.request.use(
     //   config.headers['token'] = getToken() // 让每个请求携带自定义token 请根据实际情况自行修改
     //   return config
     // } else {
-    // let url = window.location.href
-    // if (url.indexOf('/login') !== -1) {
-    //   return config
-    // } else {
-    //   MessageBox.confirm('登录状态已过期，您可以继续留在该页面，或者重新登录',
-    //     '系统提示',
-    //     {
-    //       confirmButtonText: '重新登录',
-    //       cancelButtonText: '取消',
-    //       type: 'warning'
+    //   let url = window.location.href
+    //   if (url.indexOf('/index') !== -1) {
+    //     return config
+    //   } else {
+    //     if (messageObj === undefined) {
+    //       messageObj = MessageBox.alert('您处于未登录状态，请登陆后使用该功能。', '系统提示', {
+    //         confirmButtonText: '确认',
+    //         type: 'warning'
+    //       }
+    //       ).then(() => {
+    //         router.push({
+    //           path: '/'
+    //         }).catch(() => {
+
+    //         })
+    //         messageObj = undefined
+    //         // store.dispatch('user/resetToken').then(() => {
+    //         //   location.reload() // 为了重新实例化vue-router对象 避免bug
+    //         // })
+    //       }).catch(() => {
+    //         router.push({
+    //           path: '/'
+    //         }).catch(() => {
+
+    //         })
+    //         messageObj = undefined
+    //       })
     //     }
-    //   ).then(() => {
-    //     store.dispatch('user/resetToken').then(() => {
-    //       location.reload() // 为了重新实例化vue-router对象 避免bug
-    //     })
-    //   })
-    //   return Promise.reject(new Error('登录已过期'))
-    // }
+    //     return Promise.reject(new Error('登录已过期'))
+    //   }
     // }
   },
   error => {
@@ -63,12 +75,11 @@ service.interceptors.response.use(res => {
       if (code === 401) {
         store.dispatch('FedLogOut')
       }
-      messageObj = MessageBox.confirm(
-        (code === 401 ? '登录状态已过期' : '没有权限访问') + '，您可以继续留在该页面，或者返回主页',
+      messageObj = MessageBox.alert(
+        (code === 401 ? '您处于未登录状态，请登陆后使用该功能。' : '没有权限访问'),
         '系统提示',
         {
-          confirmButtonText: '返回主页',
-          cancelButtonText: '取消',
+          confirmButtonText: '确认',
           type: 'warning'
         }
       ).then(() => {
@@ -82,6 +93,11 @@ service.interceptors.response.use(res => {
         //   location.reload() // 为了重新实例化vue-router对象 避免bug
         // })
       }).catch(() => {
+        router.push({
+          path: '/'
+        }).catch(() => {
+
+        })
         messageObj = undefined
       })
     }

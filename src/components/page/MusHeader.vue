@@ -133,7 +133,7 @@
       <div class="">
         <el-form ref="form" :model="form" :rules="rules" class="text-center" :inline="true">
           <el-form-item prop="username">
-            <el-input v-model="form.username" class="w28" placeholder="请输入通行证、手机号或邮箱"></el-input>
+            <el-input v-model="form.username" class="w28" placeholder="请输入用户名、手机号或邮箱"></el-input>
           </el-form-item>
           <el-form-item prop="password">
             <el-input

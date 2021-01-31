@@ -152,15 +152,37 @@ export default {
       this.getUserMessageListPage()
     },
     // 获取会话列表 status 0正常 1黑名单
-    getUserSessionList() {
-      getUserSessionList({ status: this.imStatus }).then((res) => {
+    async getUserSessionList() {
+      await getUserSessionList({ status: this.imStatus }).then((res) => {
         this.userSessionList = res.data
       })
     },
+    // 打开会话
+    openUserSession(id) {
+      // 是否存在会话列表
+      let isSession = false
+      this.userSessionList.map((res, index) => {
+        if (res.objUserId === id) {
+          isSession = true
+          this.clickItemSession(res, index)
+        }
+      })
+      // 不存在添加到会话列表
+      if (!isSession) {
+        this.addUserSession(id)
+      }
+    },
     // 添加会话
-    addUserSession() {
-      addSpeUserSession({ objUserId: 137 }).then((res) => {
-        console.log(res)
+    addUserSession(id) {
+      this.imShow = true
+      addSpeUserSession({ objUserId: id }).then(() => {
+        this.getUserSessionList().then(() => {
+          this.userSessionList.map((res, index) => {
+            if (res.objUserId === id) {
+              this.clickItemSession(res, index)
+            }
+          })
+        })
       })
     },
     // 点击用户打开会话
@@ -170,8 +192,8 @@ export default {
       }
       this.userSessionAvtiveIndex = index
       this.userSessionAvtiveSend = false
-      getUserUnreadMessageList({ recipient: res.objUserId }).then((res) => {
-        this.userAvtiveSessionList = res.data.reverse()
+      getUserUnreadMessageList({ recipient: res.objUserId }).then((res2) => {
+        this.userAvtiveSessionList = res2.data.reverse()
         setTimeout(() => {
           this.$refs.imContentModule.scrollTop = this.$refs.imContentModule.scrollHeight
         }, 0)

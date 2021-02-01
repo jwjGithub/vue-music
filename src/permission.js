@@ -4,7 +4,7 @@
  * @Author: jwj
  * @Date: 2020-10-13 19:29:04
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-01-27 21:29:44
+ * @LastEditTime: 2021-02-01 21:22:14
  */
 import router from './router'
 import store from './store'
@@ -15,7 +15,7 @@ import { getToken, setToken } from '@/utils/auth'
 
 NProgress.configure({ showSpinner: false })
 
-const whiteList = ['/index', '/auth-redirect', '/bind', '/register', '/register/musician', '/register/company', '/feedback']
+const whiteList = ['/index', '/auth-redirect', '/bind', '/register', '/register/musician', '/register/company', '/feedback', '/resetPass']
 router.beforeEach((to, from, next) => {
   if (to.query.token) {
     setToken(to.query.token)

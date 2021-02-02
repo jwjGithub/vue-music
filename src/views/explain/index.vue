@@ -87,9 +87,6 @@ export default {
         this.defaultActive = data[0].id + ''
       }
     },
-    // ssssss() {
-    //   this.$refs.im.openUserSession(12)
-    // },
     // 选中菜单
     selectMenu(id, res) {
       getIntroductionInfo(id).then((res) => {

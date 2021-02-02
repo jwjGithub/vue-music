@@ -137,19 +137,19 @@
                   <div v-if="queryForm.type === 1 || queryForm.type === 3" class="table-col w12 ellipsis c-333">
                     <div class="align-center hover-icon">
                       <span class="flex-1 ellipsis">{{ setAutorName(item.composers) }}</span>
-                      <i class="icon icon-message mr10 ml10"></i>
+                      <i class="icon icon-message mr10 ml10" @click="openIm(item)"></i>
                     </div>
                   </div>
                   <div v-if="queryForm.type === 1 || queryForm.type === 4" class="table-col w12 ellipsis c-333">
                     <div class="align-center hover-icon">
                       <span class="flex-1 ellipsis">{{ setAutorName(item.lyricists) }}</span>
-                      <i class="icon icon-message mr10 ml10"></i>
+                      <i class="icon icon-message mr10 ml10" @click="openIm(item)"></i>
                     </div>
                   </div>
                   <div v-if="queryForm.type === 2" class="table-col w12 ellipsis c-333">
                     <div class="align-center hover-icon">
                       <span class="flex-1 ellipsis">{{ setAutorName(item.producers) }}</span>
-                      <i class="icon icon-message mr10 ml10"></i>
+                      <i class="icon icon-message mr10 ml10" @click="openIm(item)"></i>
                     </div>
                   </div>
                   <div class="table-col w14 ellipsis c-999">
@@ -166,14 +166,17 @@
       </div>
       <mus-footer></mus-footer>
     </div>
+    <im ref="im" />
   </div>
 </template>
 <script>
 import { getList } from '@/api/ranking'
 import { getTagsByType, getMusicList } from '@/api/library'
+import Im from '../../components/page/Im.vue'
 export default {
   name: 'Ranking',
   components: {
+    Im
   },
   data() {
     return {
@@ -380,6 +383,13 @@ export default {
     // 添加到播放列表
     addPalyList() {
       this.GoOpen(`/startPlay?type=play&id=${this.selectCheckedList?.join(',')}&time=${new Date().getTime()}`, 'startPlay')
+    },
+    // 打开聊天界面
+    openIm(res) {
+      console.log(res)
+      if (res && res.createUserId) {
+        this.$refs.im.openUserSession(res.createUserId)
+      }
     }
   }
 }

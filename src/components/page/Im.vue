@@ -11,13 +11,13 @@
       <div>
         <div slot="header" class="im-header">
           <span class="im-header-left">联系人</span>
-          <span class="im-header-right">{{ (userSessionAvtiveIndex === -1 ? '' : userSessionList[userSessionAvtiveIndex].objUserName) }}</span>
+          <span class="im-header-right">{{ (userSessionAvtiveIndex === -1 ? '系统消息' : userSessionList[userSessionAvtiveIndex].objUserName) }}</span>
           <i class="el-icon-close" @click="imShow=false"></i>
         </div>
         <div class="im-content">
           <div class="im-content-left">
             <ul>
-              <li>
+              <li :class="{ 'active' : userSessionAvtiveIndex === -1 }" @click="clickItemSession(1, 1, true)">
                 <el-avatar size="large" src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png"></el-avatar>
                 <div class="im-content-left-name">
                   <div class="im-name-date">
@@ -27,7 +27,7 @@
                   <p>{{ sysMessage.finalContent }}</p>
                 </div>
               </li>
-              <li v-for="(item, index) in userSessionList" :key="String(index)" :class="{ 'active' : item.objUserId === (userSessionAvtiveIndex === -1 ? '' : userSessionList[userSessionAvtiveIndex].objUserId) }" @click="clickItemSession(item, index)">
+              <li v-for="(item, index) in userSessionList" :key="String(index)" :class="{ 'active' : item.objUserId === (userSessionAvtiveIndex === -1 ? '' : userSessionList[userSessionAvtiveIndex].objUserId) }" @click="clickItemSession(item, index, false)">
                 <el-avatar size="large" src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png"></el-avatar>
                 <div class="im-content-left-name">
                   <div class="im-name-date">
@@ -41,28 +41,52 @@
           </div>
           <div class="im-content-right">
             <div ref="imContentModule" class="im-content-module">
-              <template v-for="(item, index) in userAvtiveSessionList">
-                <div v-if="item.sender === $store.getters.userInfo.userId" :key="String(index)" class="news-item selfItem">
-                  <div class="news-item-content">
-                    <div class="nic-content">
-                      <p class="nic-content-text">{{ item.content }}</p>
+              <!-- 系统消息处理 -->
+              <div v-if="sysMessage.issysMessage">
+                <template v-for="(item, index) in sysMessage.list">
+                  <div :key="String(index)" class="news-item">
+                    <div class="news-avatar">
+                      <el-avatar size="large" src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png"></el-avatar>
+                    </div>
+                    <div class="news-item-content">
+                      <div class="nic-content">
+                        <h3 class="nic-content-title">{{ item.title }}</h3>
+                        <p class="nic-content-text">{{ item.content }}</p>
+                        <div class="nic-content-btns">
+                          <el-button size="small">朴素按钮</el-button>
+                          <el-button size="small">朴素按钮</el-button>
+                          <el-button size="small">朴素按钮</el-button>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                  <div class="news-avatar">
-                    <el-avatar size="large" src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png"></el-avatar>
-                  </div>
-                </div>
-                <div v-else :key="String(index)" class="news-item">
-                  <div class="news-avatar">
-                    <el-avatar size="large" src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png"></el-avatar>
-                  </div>
-                  <div class="news-item-content">
-                    <div class="nic-content">
-                      <p class="nic-content-text">{{ item.content }}</p>
+                </template>
+              </div>
+              <!-- 聊天消息处理 -->
+              <div v-else>
+                <template v-for="(item, index) in userAvtiveSessionList">
+                  <div v-if="item.sender === $store.getters.userInfo.userId" :key="String(index)" class="news-item selfItem">
+                    <div class="news-item-content">
+                      <div class="nic-content">
+                        <p class="nic-content-text">{{ item.content }}</p>
+                      </div>
+                    </div>
+                    <div class="news-avatar">
+                      <el-avatar size="large" src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png"></el-avatar>
                     </div>
                   </div>
-                </div>
-              </template>
+                  <div v-else :key="String(index)" class="news-item">
+                    <div class="news-avatar">
+                      <el-avatar size="large" src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png"></el-avatar>
+                    </div>
+                    <div class="news-item-content">
+                      <div class="nic-content">
+                        <p class="nic-content-text">{{ item.content }}</p>
+                      </div>
+                    </div>
+                  </div>
+                </template>
+              </div>
               <!-- <div class="news-item">
                 <div class="news-avatar">
                   <el-avatar size="large" src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png"></el-avatar>
@@ -122,6 +146,7 @@ export default {
       content: '',
       // 系统消息
       sysMessage: {
+        issysMessage: true,
         page: 1,
         limit: 10,
         business: 0,
@@ -135,7 +160,16 @@ export default {
   watch: {
     imShow: function(val) {
       if (val && this.isFirstShow) {
-        this.addPasteFun()
+        if (this.$store.getters.userInfo.userId) {
+          this.addPasteFun()
+        } else {
+          this.imShow = false
+          this.$notify({
+            title: '提示',
+            message: '您还未登录，请登录...',
+            type: 'warning'
+          })
+        }
       }
     }
   },
@@ -159,12 +193,21 @@ export default {
     },
     // 打开会话
     openUserSession(id) {
+      if (!this.$store.getters.userInfo.userId) {
+        this.$notify({
+          title: '提示',
+          message: '您还未登录，请登录...',
+          type: 'warning'
+        })
+        return
+      }
+      this.imShow = true
       // 是否存在会话列表
       let isSession = false
       this.userSessionList.map((res, index) => {
         if (res.objUserId === id) {
           isSession = true
-          this.clickItemSession(res, index)
+          this.clickItemSession(res, index, false)
         }
       })
       // 不存在添加到会话列表
@@ -174,30 +217,41 @@ export default {
     },
     // 添加会话
     addUserSession(id) {
-      this.imShow = true
       addSpeUserSession({ objUserId: id }).then(() => {
         this.getUserSessionList().then(() => {
           this.userSessionList.map((res, index) => {
             if (res.objUserId === id) {
-              this.clickItemSession(res, index)
+              this.clickItemSession(res, index, false)
             }
           })
         })
       })
     },
     // 点击用户打开会话
-    clickItemSession(res, index) {
-      if (res.objUserId === (this.userSessionAvtiveIndex === -1 ? '' : this.userSessionList[this.userSessionAvtiveIndex].objUserId)) {
-        return
+    clickItemSession(res, index, issysMessage) {
+      this.sysMessage.issysMessage = issysMessage
+      // 是否是系统消息
+      if (issysMessage) {
+        // 当前点击是否已选中系统消息
+        if (this.userSessionAvtiveIndex === -1) {
+          return
+        }
+        this.userSessionAvtiveIndex = -1
+        this.getUserMessageListPage()
+      } else {
+        // 当前点击消息是否已选中消息
+        if (res.objUserId === (this.userSessionAvtiveIndex === -1 ? '' : this.userSessionList[this.userSessionAvtiveIndex].objUserId)) {
+          return
+        }
+        this.userSessionAvtiveIndex = index
+        this.userSessionAvtiveSend = false
+        getUserUnreadMessageList({ recipient: res.objUserId }).then((res2) => {
+          this.userAvtiveSessionList = res2.data.reverse()
+          setTimeout(() => {
+            this.$refs.imContentModule.scrollTop = this.$refs.imContentModule.scrollHeight
+          }, 0)
+        })
       }
-      this.userSessionAvtiveIndex = index
-      this.userSessionAvtiveSend = false
-      getUserUnreadMessageList({ recipient: res.objUserId }).then((res2) => {
-        this.userAvtiveSessionList = res2.data.reverse()
-        setTimeout(() => {
-          this.$refs.imContentModule.scrollTop = this.$refs.imContentModule.scrollHeight
-        }, 0)
-      })
     },
     // 发送消息
     imSend() {
@@ -259,7 +313,7 @@ export default {
       this.websock.onclose = this.websocketclose
     },
     websocketonopen() { // 连接建立之后执行send方法发送数据
-      let actions = { 'test': '12345' }
+      let actions = {}
       this.websocketsend(JSON.stringify(actions))
     },
     websocketonerror() { // 连接建立失败重连
@@ -323,8 +377,13 @@ export default {
         business: this.sysMessage.business
       }).then((res) => {
         if (res.data && res.data.length > 0) {
-          this.sysMessage.list = res.data
           this.sysMessage.finalContent = res.data[0].content
+          // this.sysMessage.list = res.data.reverse()
+          if (!this.isFirstShow) {
+            setTimeout(() => {
+              this.$refs.imContentModule.scrollTop = this.$refs.imContentModule.scrollHeight
+            }, 0)
+          }
         }
       })
     },
@@ -509,7 +568,7 @@ export default {
                 color: #333;
               }
               .nic-content-btns{
-                padding: 10px 150px 0px 150px;
+                padding: 10px 135px 0px 135px;
                 .el-button{
                   margin: 5px 18px;
                 }

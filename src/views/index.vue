@@ -39,7 +39,7 @@
                   <div class="list-title">
                     {{ item.title }}
                   </div>
-                  <div class="list-text ellipsis2" v-html="item.content">
+                  <div class="list-text ellipsis3" v-html="item.content">
                   </div>
                 </div>
               </div>
@@ -72,7 +72,7 @@
             <div v-for="(item,index) in JPTJList" :key="index" class="list" @click="goMusicDetails(item)">
               <div class="top-info">
                 <div class="img">
-                  <img src="@/assets/images/test.jpg" />
+                  <img :src="item.profileUrl || defaultImg" />
                   <div class="hover-img-paly">
                     <i class="icon icon-play" @click.stop="GoOpen('/startPlay?type=play&id=' + item.id,'startPlay')"></i>
                   </div>
@@ -189,7 +189,7 @@ export default {
   data() {
     return {
       loading: false,
-      defaultImg: require('@/assets/images/test.jpg'),
+      defaultImg: require('@/assets/images/index/default-music-head.png'),
       form: {
       },
       clickData: {}, // 点击歌曲
@@ -313,7 +313,7 @@ export default {
     },
     // 跳转音乐详情
     goMusicDetails(row) {
-      this.Go('/musicDetails', { id: row.id })
+      this.GoOpen('/musicDetails?&id=' + row.id, row.id)
     },
     // 播放全部
     openPlayAll() {

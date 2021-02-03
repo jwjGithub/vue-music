@@ -141,6 +141,12 @@ export default {
         if (valid) {
           this.loading = true
           saveUpdatePass(this.form).then(res => {
+            let form = localStorage.SAVEPASSWORDMUSICIAN
+            if (form) {
+              let f = JSON.parse(form)
+              f.password = ''
+              localStorage.SAVEPASSWORDMUSICIAN = JSON.stringify(f)
+            }
             this.$message.success('修改密码成功，请重新登录')
             this.loading = false
             this.resetForm('form')

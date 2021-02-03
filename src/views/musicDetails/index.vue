@@ -2,8 +2,8 @@
  * @Descripttion: 音乐详情
  * @Author: jwj
  * @Date: 2021-01-10 10:58:41
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-01-24 21:18:20
+ * @LastEditors: JWJ
+ * @LastEditTime: 2021-02-03 17:55:44
 -->
 <template>
   <div class="main">
@@ -12,7 +12,9 @@
       <div class="music-details-content">
         <div class="content">
           <div class="left">
-            <div class="music-head mt20 mb20" :style="{backgroundImage: 'url('+ dataInfo.imgTempUrl +')'}"></div>
+            <div class="music-head mt20 mb20">
+              <img :src="dataInfo.imgTempUrl">
+            </div>
             <el-button type="success" icon="el-icon-caret-right" @click="GoOpen('/startPlay?type=play&id=' + dataInfo.id,'startPlay')">播放</el-button>
           </div>
           <div class="center">
@@ -144,6 +146,10 @@ export default {
             width:300px;
             height:300px;
             background-color: #e5e5e5;
+            >img{
+              width:100%;
+              height:100%;
+            }
           }
         }
         >.center{

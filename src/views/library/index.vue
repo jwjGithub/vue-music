@@ -265,6 +265,9 @@ export default {
       let json = JSON.parse(JSON.stringify(this.queryForm))
       json.styleTags = this.getSelectTag(json.styleTags)
       json.emotionTags = this.getSelectTag(json.emotionTags)
+      if (json.page === 1) {
+        json.limit = 20
+      }
       getMusicList(json).then((res) => {
         this.dataList = res.data
         this.total = res.count || 0

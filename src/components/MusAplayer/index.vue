@@ -73,6 +73,8 @@ export default {
   },
   data() {
     return {
+      timerId: null, //
+      headTitle: '', // 浏览器播放标题
       current: 0, // 当前播放下标
       music: {
         title: '暂无歌曲', // 歌曲名称
@@ -167,7 +169,9 @@ export default {
         this.music.play = true
         Math.abs(this.music.currentTime - this.$refs.music.currentTime) > 2 ? this.$refs.music.currentTime = this.music.currentTime : ''
         this.$refs.music.play().then(() => {
-          document.title = '正在播放：' + (this.musicInfo.title || '暂无歌曲')
+          this.headTitle = '————正在播放：' + (this.musicInfo.title || '暂无歌曲')
+          document.title = this.headTitle
+          this.headTileRoll()
         }).catch(() => {
         // 当前第一次页面加载不允许自动播放
           this.music.play = false
@@ -214,6 +218,16 @@ export default {
     // 播放完成事件
     playEnded() {
       this.nextSong() // 下一曲
+    },
+    headTileRoll() {
+      clearTimeout(this.timerID) // 清除定时器
+      if (this.music.play) {
+        document.title = this.headTitle.substring(1, this.headTitle.length) + this.headTitle.substring(0, 1) // substring()方法用于提取字符创中介于两个指定下标之间的字符
+        this.headTitle = document.title.substring(0, this.headTitle.length)
+        this.timerID = setTimeout(() => {
+          this.headTileRoll()
+        }, 300)
+      }
     }
   }
 }

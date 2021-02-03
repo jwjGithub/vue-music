@@ -214,7 +214,6 @@ export default {
   },
   created() {
     this.searchInput = this.searchValue
-    console.log(this.$store.getters.userInfo.userId)
   },
   methods: {
     openLogin(loginType) {

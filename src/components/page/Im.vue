@@ -18,7 +18,9 @@
           <div class="im-content-left">
             <ul>
               <li :class="{ 'active' : userSessionAvtiveIndex === -1 }" @click="clickItemSession(1, 1, true)">
-                <el-avatar size="large" src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png"></el-avatar>
+                <el-badge :value="sysMessage.unreadCount" :hidden="sysMessage.unreadCount<=0" style="vertical-align: top;">
+                  <el-avatar size="large" src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png"></el-avatar>
+                </el-badge>
                 <div class="im-content-left-name">
                   <div class="im-name-date">
                     <span class="im-left-name">系统消息</span>
@@ -28,7 +30,9 @@
                 </div>
               </li>
               <li v-for="(item, index) in userSessionList" :key="String(index)" :class="{ 'active' : item.objUserId === (userSessionAvtiveIndex === -1 ? '' : userSessionList[userSessionAvtiveIndex].objUserId) }" @click="clickItemSession(item, index, false)">
-                <el-avatar size="large" src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png"></el-avatar>
+                <el-badge :value="item.unreadMessageCount" :hidden="item.unreadMessageCount<=0" style="vertical-align: top;">
+                  <el-avatar size="large" src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png"></el-avatar>
+                </el-badge>
                 <div class="im-content-left-name">
                   <div class="im-name-date">
                     <span class="im-left-name">{{ item.objUserName }}</span>
@@ -52,10 +56,8 @@
                       <div class="nic-content">
                         <h3 class="nic-content-title">{{ item.title }}</h3>
                         <p class="nic-content-text">{{ item.content }}</p>
-                        <div class="nic-content-btns">
-                          <el-button size="small">朴素按钮</el-button>
-                          <el-button size="small">朴素按钮</el-button>
-                          <el-button size="small">朴素按钮</el-button>
+                        <div v-if="item.templateOptionInfo" class="nic-content-btns">
+                          <el-button v-for="(btnItem,btnIndex) in JSON.parse(item.templateOptionInfo)" :key="String(btnIndex)" size="small" @click="imBtnClick(item, btnItem)">{{ btnItem.name }}</el-button>
                         </div>
                       </div>
                     </div>
@@ -69,6 +71,9 @@
                     <div class="news-item-content">
                       <div class="nic-content">
                         <p class="nic-content-text">{{ item.content }}</p>
+                        <div v-if="item.templateOptionInfo" class="nic-content-btns">
+                          <el-button v-for="(btnItem,btnIndex) in JSON.parse(item.templateOptionInfo)" :key="String(btnIndex)" size="small" @click="imBtnClick(item, btnItem)">{{ btnItem.name }}</el-button>
+                        </div>
                       </div>
                     </div>
                     <div class="news-avatar">
@@ -82,6 +87,9 @@
                     <div class="news-item-content">
                       <div class="nic-content">
                         <p class="nic-content-text">{{ item.content }}</p>
+                        <div v-if="item.templateOptionInfo" class="nic-content-btns">
+                          <el-button v-for="(btnItem,btnIndex) in JSON.parse(item.templateOptionInfo)" :key="String(btnIndex)" size="small" @click="imBtnClick(item, btnItem)">{{ btnItem.name }}</el-button>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -123,7 +131,7 @@
   </div>
 </template>
 <script>
-import { getUserSessionList, addSpeUserSession, sendImMessage, getUserUnreadMessageList, getUserMessageListPage } from '@/api/im'
+import { getUserSessionList, addSpeUserSession, sendImMessage, getUserUnreadMessageList, getUserMessageListPage, handleTemplateMessage } from '@/api/im'
 export default {
   name: 'Im',
   data() {
@@ -152,7 +160,9 @@ export default {
         business: 0,
         // 系统消息列表
         list: [],
-        // 最后一条消息
+        // 系统未读消息数量
+        unreadCount: 0,
+        // 最后一条消息内容
         finalContent: ''
       }
     }
@@ -360,6 +370,9 @@ export default {
             userId: redata.recipient
           })
         }
+      } else if (redata.type === 3) {
+        // 处理系统未读消息数量
+        this.sysMessage.unreadCount = redata.messageCount
       }
     },
     websocketsend(Data) { // 数据发送
@@ -378,13 +391,26 @@ export default {
       }).then((res) => {
         if (res.data && res.data.length > 0) {
           this.sysMessage.finalContent = res.data[0].content
-          // this.sysMessage.list = res.data.reverse()
+          this.sysMessage.list = res.data.reverse()
           if (!this.isFirstShow) {
             setTimeout(() => {
               this.$refs.imContentModule.scrollTop = this.$refs.imContentModule.scrollHeight
             }, 0)
           }
         }
+      })
+    },
+    // 系统消息 操作按钮处理
+    imBtnClick(item, btnItem) {
+      handleTemplateMessage({
+        messageId: item.id,
+        optionId: btnItem.id
+      }).then(() => {
+        this.$notify({
+          title: '提示',
+          message: '提交成功！',
+          type: 'success'
+        })
       })
     },
     // 添加复制到文本框内容处理

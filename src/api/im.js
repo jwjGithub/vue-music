@@ -44,3 +44,12 @@ export function getUserMessageListPage(data) {
     data: data
   })
 }
+
+// 系统消息 操作按钮处理
+export function handleTemplateMessage(data) {
+  return request({
+    url: 'im/sysmessage/handleSysTemplateMessage',
+    method: 'post',
+    data: data
+  })
+}
